@@ -10,19 +10,6 @@
     <p v-else-if="!model || empty" class="wt-tboard__status text-sm" role="status" data-test-tier-board-waiting>
       Loading Riley's tier list…
     </p>
-    <div class="wt-tboard__tools" data-export-hide>
-      <button type="button" class="btn btn-sm btn-outline" :disabled="!model || empty || !!state?.solving || saving" data-test-tier-board-save @click="save(false)">
-        {{ saving ? "Making the picture…" : "Save as image" }}
-      </button>
-      <button v-if="canShare" type="button" class="btn btn-sm btn-ghost" :disabled="!model || empty || !!state?.solving || saving" data-test-tier-board-share @click="save(true)">
-        Share image
-      </button>
-      <label v-if="owned" class="wt-tboard__mark label cursor-pointer gap-2">
-        <input v-model="markInImage" type="checkbox" class="checkbox checkbox-sm" data-test-tier-board-mark-image>
-        <span class="label-text">Show my resonators in the picture</span>
-      </label>
-      <span v-if="saveError" class="text-sm text-error" role="alert">{{ saveError }}</span>
-    </div>
     <div v-if="model && !empty" class="wt-tboard__blocks" :aria-busy="!!state?.solving">
       <div v-for="(block, b) in model.blocks" :key="block.title" class="wt-tboard__block" :data-test-tier-board-block="b">
         <h3 class="wt-tboard__title font-semibold">{{ block.title }}</h3>
@@ -58,7 +45,20 @@
       </div>
     </div>
 
-    <dialog ref="sheet" class="wt-tboard__sheet" aria-labelledby="wt-tboard-sheet-title" data-test-tier-board-sheet @close="onDialogClose" @click.self="closeSheet()">
+    <div class="wt-tboard__tools" data-export-hide>
+      <button type="button" class="btn btn-sm btn-outline" :disabled="!model || empty || !!state?.solving || saving" data-test-tier-board-save @click="save(false)">
+        {{ saving ? "Making the picture…" : "Save as image" }}
+      </button>
+      <button v-if="canShare" type="button" class="btn btn-sm btn-ghost" :disabled="!model || empty || !!state?.solving || saving" data-test-tier-board-share @click="save(true)">
+        Share image
+      </button>
+      <label v-if="owned" class="wt-tboard__mark label cursor-pointer gap-2">
+        <input v-model="markInImage" type="checkbox" class="checkbox checkbox-sm" data-test-tier-board-mark-image>
+        <span class="label-text">Show my resonators in the picture</span>
+      </label>
+      <span v-if="saveError" class="text-sm text-error" role="alert">{{ saveError }}</span>
+    </div>
+    <dialog ref="sheet" class="wt-tboard__sheet" aria-labelledby="wt-tboard-sheet-title" data-test-tier-board-sheet @close="onDialogClose" @keydown.esc.prevent="closeSheet()" @click.self="closeSheet()">
       <div v-if="picked" class="wt-tboard__sheetbody">
         <div class="wt-tboard__sheethead">
           <h3 id="wt-tboard-sheet-title" class="font-semibold text-base">{{ picked.entry.name }}</h3>
@@ -250,6 +250,7 @@ async function save(share: boolean): Promise<void> {
   font-weight: 600;
 }
 .wt-tboard__tools {
+  margin-top: 0.5rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -271,6 +272,15 @@ async function save(share: boolean): Promise<void> {
 }
 /* a phone shows the block picked with the buttons over the page (RileyPageHost's views) */
 @media (max-width: 767px) {
+  /* the block buttons over the page name the block: its heading stays for a screen reader */
+  .wt-tboard__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .wt-tboard[data-wt-view="0"] .wt-tboard__block:not([data-test-tier-board-block="0"]),
   .wt-tboard[data-wt-view="1"] .wt-tboard__block:not([data-test-tier-board-block="1"]),
   .wt-tboard[data-wt-view="2"] .wt-tboard__block:not([data-test-tier-board-block="2"]) {

@@ -93,7 +93,8 @@ describe("Tier list and Roster value controls stay on their page (second check)"
 });
 
 describe("Tier list and Roster value on a 360 x 800 phone at 130 % text (second check)", () => {
-  for (const page of ["/tier-list", "/roster-value"]) {
+  // his table (the Tier list opens on its Board since batch 6: tierBoard.cy.ts holds the board to the same rule)
+  for (const page of ["/tier-list?view=table", "/roster-value"]) {
     it(`${page}: the first row starts above the bottom bar, under the lead, the account line and the button`, () => {
       cy.viewport(360, 800);
       cy.visit("/");
@@ -130,7 +131,7 @@ describe("His mode headings from the keyboard (second check)", () => {
     cy.viewport(1280, 900);
     cy.visit("/");
     cy.importCharacterData(configOptimizer);
-    cy.visit("/tier-list");
+    cy.visit("/tier-list?view=table");
     rileyLoaded();
     cy.get(".wt-riley-tierlist .modehead").first().should("have.attr", "tabindex", "0").and("have.attr", "role", "button").and("contain.text", "DPR");
     cy.get(".wt-riley-tierlist .modehead").first().focus().trigger("keydown", { key: "Enter" });

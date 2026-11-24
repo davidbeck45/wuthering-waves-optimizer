@@ -46,6 +46,8 @@ describe("Riley's Tier List and Value pages inside the app", () => {
     cy.location("pathname").should("eq", "/tier-list");
     cy.title().should("contain", "Tier list");
     loaded();
+    // the page opens on the Board (TierBoard.vue, batch 6): his table one tap away
+    cy.get('[data-test-riley-switch-to="table"]').click();
     tierRows().should("have.length.greaterThan", 30);
     cy.get(".wt-riley-tierlist .trow .c.tier").first().should("have.text", "T0");
     cy.get("[data-test-riley-lead]").should("contain.text", "wuwa_calc");
@@ -196,7 +198,7 @@ describe("Riley's Tier List and Value pages inside the app", () => {
   for (const width of [412, 360]) {
     it(`both pages fit a ${width} px phone at 130 % text, one block at a time`, () => {
       cy.viewport(width, S26.height);
-      cy.visit("/tier-list", seed({ v3: true, big: true }));
+      cy.visit("/tier-list?view=table", seed({ v3: true, big: true }));
       loaded();
       cy.get("[data-test-riley-views]").should("be.visible");
       expectNoSidewaysScroll(`tier list ${width}`);
