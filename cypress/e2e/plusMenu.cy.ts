@@ -99,6 +99,24 @@ describe("the Tools+ menu in sections", () => {
     });
   });
 
+  // opening the menu focuses the current page's row without scrolling the page; on a 360 px phone the menu scrolls
+  // inside and What's new's row (the last) sat 55 px under its visible end, focused but out of sight
+  it("shows the current page's row when the menu opens on a short phone (360 × 640, 130 % text, What's new)", () => {
+    cy.viewport(360, 640);
+    cy.visit("/whats-new", v3({ fontScale: 1.3 }));
+    cy.get(".plus-nav--header > summary").should("be.visible").click();
+    cy.get("[data-test-nav-plus-menu]:visible").should(($menu) => {
+      const row = $menu[0].querySelector<HTMLElement>(".plus-nav__item--on")!;
+      expect(row, "the current page's row").to.exist;
+      expect(row.ownerDocument.activeElement, "focused").to.eq(row);
+      const m = $menu[0].getBoundingClientRect();
+      const r = row.getBoundingClientRect();
+      expect(r.top, "row's top inside the menu").to.be.at.least(m.top - 0.5);
+      expect(r.bottom, "row's bottom inside the menu").to.be.at.most(m.bottom + 0.5);
+    });
+    cy.window().its("scrollY").should("eq", 0);
+  });
+
   // the floating Ask sat on the right-hand figures of the Tier list and Roster value at rest (412 and 360 px): on a v3
   // phone it is a button in the header beside Tools+ (src/sim/nav/PlusHeaderAsk.vue, src/sim/shell/askDock.ts)
   for (const path of ["/tier-list", "/roster-value"]) {

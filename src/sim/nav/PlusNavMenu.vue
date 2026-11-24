@@ -170,6 +170,15 @@ function onToggle(): void {
   // the current page's row, else the first: one selector list would pick whichever comes first in the document
   const row = root.value.querySelector<HTMLElement>(".plus-nav__item--on") ?? root.value.querySelector<HTMLElement>(".plus-nav__item");
   row?.focus({ preventScroll: true });
+  // preventScroll keeps the page still, but it also left the menu's own scroll at the top: on a 360 px phone the last
+  // rows (What's new) sat under the menu's visible end, focused and out of sight. Scroll the menu alone to the row.
+  const menu = root.value.querySelector<HTMLElement>(".plus-nav__menu");
+  if (row && menu && menu.scrollHeight > menu.clientHeight) {
+    const m = menu.getBoundingClientRect();
+    const r = row.getBoundingClientRect();
+    if (r.bottom > m.bottom) menu.scrollTop += r.bottom - m.bottom + 8;
+    else if (r.top < m.top) menu.scrollTop -= m.top - r.top + 8;
+  }
 }
 function onResize(): void {
   if (root.value?.open) placeRailMenu();
