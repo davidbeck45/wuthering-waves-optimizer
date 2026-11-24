@@ -20,6 +20,7 @@
         :style="{ '--accent': accentOf(t.element) }"
         data-test-roster-tile
         :data-test-roster-tile-id="t.id">
+        <div class="share-roster__name" :title="t.name">{{ t.name }}</div>
         <div class="share-roster__top">
           <div class="share-roster__pic" :style="{ width: `${model.grid.portrait}px`, height: `${model.grid.portrait}px` }">
             <img v-if="drawable(t.id)" :src="characterPortraitUrl(t.id)" alt="" @error="failed[t.id] = true" />
@@ -27,7 +28,6 @@
             <span class="share-roster__seq" data-test-roster-tile-seq>S{{ t.sequence }}</span>
           </div>
           <div class="share-roster__info">
-            <div class="share-roster__name" :title="t.name">{{ t.name }}</div>
             <div class="share-roster__meta">
               <span class="share-roster__stars" :class="t.rarity >= 5 ? 'share-roster__stars--five' : 'share-roster__stars--four'">{{ t.rarity }}★</span>
               <span v-if="t.element">{{ t.element }}</span>
@@ -99,7 +99,7 @@ const initials = (name: string): string =>
 const footNote = computed(() => {
   const parts: string[] = [];
   if (props.model.teamsState === "teams") parts.push("Team damage: this app's engine on these builds, each team's own rotation, enemy level 100 with 20 % resistance");
-  if (props.model.showScores) parts.push("Build Score: substat quality of the five equipped echoes (* fewer than five)");
+  if (props.model.showScores && props.model.tiles.some((t) => t.score)) parts.push("Build Score: substat quality of the five equipped echoes (* fewer than five)");
   parts.push("S = sequence, R = weapon refinement");
   return parts.join(" · ");
 });
@@ -213,13 +213,17 @@ const footNote = computed(() => {
   flex-direction: column;
   gap: 3px;
 }
+/* two lines before it cuts: "Rover (Aero)" and "Rover (Havoc)" must stay told apart in five columns */
 .share-roster__name {
   font-size: 19px;
   font-weight: 800;
   line-height: 1.2;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 .share-roster__meta {
   display: flex;
