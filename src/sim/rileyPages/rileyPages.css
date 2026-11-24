@@ -44,6 +44,10 @@
   .wt-riley-host > .skittle-root.wt-riley-pages .trow .c.name .res-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* his summary line (Reset Account, the score) wraps instead of pushing the page wide */
   .wt-riley-host > .skittle-root.wt-riley-pages .tcbody > .summary-label { flex-wrap: wrap; white-space: normal; }
+  /* his page ends in 420 px of room under the table for his own pop-ups (index.css `main { padding: 0 12px 420px }`).
+     Here the page grows with the table, so that room was a blank band between the last row and the links under it;
+     /rankings' cards already end it the same way (skittle-theme.css) */
+  .wt-riley-host > .skittle-root.wt-riley-pages main { padding-bottom: 1.25rem; }
 }
 
 /* The ticks: a 44 px target, the whole cell a label for the box (his markup) */

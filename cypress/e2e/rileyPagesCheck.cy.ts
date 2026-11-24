@@ -120,6 +120,15 @@ describe("Tier list and Roster value on a 360 x 800 phone at 130 % text (second 
         expect(first, "a row shown").to.exist;
         expect(first.getBoundingClientRect().bottom, "first row's bottom edge").to.be.at.most(win.innerHeight - bar);
       });
+      // the page ends where his table ends: his own page keeps 420 px of room under the table for his pop-ups, which
+      // inside the app was a blank band between the last row and the links under it (batch 6)
+      cy.window().should((win) => {
+        const rows = [...win.document.querySelectorAll(".wt-riley-pages .trow:not(.thead) .c.name")].filter((c) => c.getBoundingClientRect().height > 0);
+        const last = rows[rows.length - 1]!;
+        const links = win.document.querySelector(".wt-riley-credit")!;
+        const room = links.getBoundingClientRect().top - last.getBoundingClientRect().bottom;
+        expect(room, "room between the last row and the links under the table, px").to.be.within(0, 120);
+      });
       // the page still says what it is: the heading is there for a screen reader, the top bar shows the name
       cy.get(".wt-riley-title").should("exist");
     });
