@@ -40,7 +40,7 @@
   .wt-riley-host > .skittle-root.wt-riley-pages .tcwrap { width: 100%; }
   .wt-riley-host > .skittle-root.wt-riley-pages .tgrid { width: 100%; }
   .wt-riley-host > .skittle-root.wt-riley-pages .trow.thead .c { white-space: normal; overflow-wrap: anywhere; }
-  .wt-riley-host > .skittle-root.wt-riley-pages .trow.thead .c.modehead { max-width: 7.5em; }
+  .wt-riley-host > .skittle-root.wt-riley-pages .trow.thead .c.modehead { max-width: 9em; }
   .wt-riley-host > .skittle-root.wt-riley-pages .trow .c.name .res-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* his summary line (Reset Account, the score) wraps instead of pushing the page wide */
   .wt-riley-host > .skittle-root.wt-riley-pages .tcbody > .summary-label { flex-wrap: wrap; white-space: normal; }

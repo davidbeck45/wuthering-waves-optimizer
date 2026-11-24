@@ -91,3 +91,36 @@ describe("Tier list and Roster value controls stay on their page (second check)"
     cy.then(() => expect(seen, "change events that reached the document").to.deep.eq([]));
   });
 });
+
+describe("Tier list and Roster value on a 360 x 800 phone at 130 % text (second check)", () => {
+  for (const page of ["/tier-list", "/roster-value"]) {
+    it(`${page}: the first row starts above the bottom bar, under the lead, the account line and the button`, () => {
+      cy.viewport(360, 800);
+      cy.visit("/");
+      cy.importCharacterData(configOptimizer);
+      cy.visit(page, {
+        onBeforeLoad(win) {
+          const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+          settings.config = { ...settings.config, useClassicUi: false };
+          win.localStorage.setItem("settings", JSON.stringify(settings));
+        },
+        onLoad(win) {
+          const style = win.document.createElement("style");
+          style.textContent = "html { font-size: 130% !important; }";
+          win.document.head.appendChild(style);
+        },
+      });
+      rileyLoaded();
+      cy.get("[data-test-riley-mine-button]").should("be.visible");
+      cy.window().should((win) => {
+        const bar = parseFloat(win.getComputedStyle(win.document.documentElement).getPropertyValue("--nav-bottom-h")) || 0;
+        expect(bar, "bottom bar measured").to.be.greaterThan(0);
+        const first = [...win.document.querySelectorAll(".wt-riley-pages .trow:not(.thead) .c.name")].find((c) => c.getBoundingClientRect().height > 0)!;
+        expect(first, "a row shown").to.exist;
+        expect(first.getBoundingClientRect().bottom, "first row's bottom edge").to.be.at.most(win.innerHeight - bar);
+      });
+      // the page still says what it is: the heading is there for a screen reader, the top bar shows the name
+      cy.get(".wt-riley-title").should("exist");
+    });
+  }
+});

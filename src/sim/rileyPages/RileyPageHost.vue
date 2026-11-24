@@ -2,7 +2,7 @@
   <Nav :cur-page="kind === 'tierlist' ? 'tier-list' : 'roster-value'" :disable-mobile-nav="true"></Nav>
   <div class="wt-riley-page" :data-test-riley-page="kind">
     <header class="wt-riley-head px-3 pt-2">
-      <h1 class="text-lg font-semibold leading-tight">{{ title }}</h1>
+      <h1 class="wt-riley-title text-lg font-semibold leading-tight">{{ title }}</h1>
       <p class="text-sm" data-test-riley-lead><slot name="lead" /></p>
       <details class="wt-riley-about text-sm" data-test-riley-about>
         <summary class="wt-riley-about__sum link">What the numbers are</summary>
@@ -22,8 +22,9 @@
           <button type="button" class="btn btn-sm btn-outline" data-test-riley-mine-button @click="chooseMine()">
             At my own sequences and weapons
           </button>
-          <span class="opacity-80">The first time it solves every team here: about 8 s on a fast desktop, longer on a
-            phone; saved after.</span>
+          <span class="wt-riley-mine__hint opacity-80">Solves every team the first time: about 8 s on a fast desktop,
+            longer on a phone; saved after.</span>
+          <span class="wt-riley-mine__hint wt-riley-mine__hint--phone opacity-80">Takes a while the first time; saved after.</span>
         </template>
       </p>
       <div v-if="views.length" class="wt-riley-views" role="group" :aria-label="viewsLabel" data-test-riley-views>
@@ -132,10 +133,39 @@ onBeforeUnmount(() => {
   max-width: 100%;
   white-space: normal;
 }
+/* phones: the top bar already names the page (the heading stays for screen readers), and the one-time hint is small
+   print, so the first row starts above the fold at 360 x 800 with 130 % text */
+@media (max-width: 767px) {
+  .wt-riley-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .wt-riley-mine__hint {
+    display: none;
+  }
+  .wt-riley-mine .wt-riley-mine__hint--phone {
+    display: inline;
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+  .wt-riley-head {
+    padding-top: 0.25rem;
+  }
+  .wt-riley-head .wt-riley-views {
+    padding-bottom: 0.25rem;
+  }
+}
 .wt-riley-views {
   display: none;
   gap: 0.25rem;
   padding: 0.25rem 0 0.5rem;
+}
+.wt-riley-mine__hint--phone {
+  display: none;
 }
 .wt-riley-views .btn {
   min-height: 44px;

@@ -1,7 +1,7 @@
 <template>
   <RileyPageHost kind="value" title="Roster value" :views="['Not owned', 'Owned']" views-label="Which side of the value table to show">
     <template #lead>
-      What each resonator adds to the best account your roster can field, in Neutral Matrix Score, on Riley's wuwa_calc engine.
+      What each resonator adds to your best account, in Neutral Matrix Score, on Riley's engine.
     </template>
     <template #about>
       The page packs the best account out of the ticked resonators: the teams with the most damage per rotation together,
