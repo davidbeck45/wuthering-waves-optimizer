@@ -315,6 +315,7 @@ function onBackdrop(e: MouseEvent): void {
   margin-top: 0.5rem;
 }
 .gm-weakest {
+  max-width: 46rem;
   margin-top: 0.25rem;
   display: grid;
   gap: 0.15rem;
@@ -348,6 +349,8 @@ function onBackdrop(e: MouseEvent): void {
 }
 .gm-table {
   width: 100%;
+  /* a wide screen: cells a thumb's width, not a fifth of the page */
+  max-width: 46rem;
   border-collapse: separate;
   border-spacing: 0 4px;
 }
@@ -461,6 +464,7 @@ button.gm-cell:focus-visible {
   border-style: dashed;
 }
 .gm-fold {
+  max-width: 46rem;
   text-align: center;
 }
 .gm-sheet {

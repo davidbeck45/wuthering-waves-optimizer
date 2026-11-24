@@ -66,7 +66,8 @@ describe("Gear map on My account", () => {
     // the sort: the character wearing the weakest echo comes first
     cy.get("[data-test-gear-map-weak]").first().invoke("attr", "data-test-gear-map-weak").then((weakId) => {
       cy.get(`[data-test-gear-map-cell="${weakId}"]`).closest("[data-test-gear-map-row]").invoke("attr", "data-test-gear-map-row").then((who) => {
-        cy.get('[data-test-gear-map-sort="weakest"]').click().should("have.attr", "aria-pressed", "true");
+        cy.get('[data-test-gear-map-sort="weakest"]').click();
+        cy.get('[data-test-gear-map-sort="weakest"]').should("have.attr", "aria-pressed", "true");
         cy.get("[data-test-gear-map-row]").first().should("have.attr", "data-test-gear-map-row", who);
         cy.get(`[data-test-gear-map-row="${who}"] [data-test-gear-map-cell="${weakId}"]`).should("exist");
       });
