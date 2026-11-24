@@ -1929,6 +1929,7 @@ export default defineComponent({
         isOptimizerSnapshotStale(optimizerSnapshot.value, currentOptimizerRunInputs()),
     );
 
+    let baselineMoveQueued = false; // Wuthering Tools+: the watch below queues one move for a burst of changes
     // While the build's non-echo inputs still match the run, move the
     // comparison baseline with the live build (so equipping a result updates
     // the diffs). Once they differ, the baseline stays on the last matching
@@ -1952,26 +1953,18 @@ export default defineComponent({
         ],
         () => allDamages,
       ],
+      // Wuthering Tools+: one move after the changes settle, not one per recalculation. Equipping a result recalculates
+      // about sixty times (each echo's stats, then each buff panel), and each move replaced the snapshot and so
+      // re-rendered this page and every result row: enough in one flush to hit Vue's recursion limit in dev, where
+      // his Lynae and Zani optimizer specs died on "Maximum recursive updates exceeded" (fine on his code alone, at
+      // 250 re-renders an Equip; plus's own work per step tipped it over).
       () => {
-        if (!optimizerSnapshot.value || optimizerResultsStale.value) return;
-        optimizerSnapshot.value = refreshOptimizerSnapshotBaseline(
-          optimizerSnapshot.value,
-          {
-            totalAtk: totalAtk.value,
-            totalHp: totalHp.value,
-            totalDef: totalDef.value,
-            totalCritRate: totalCritRate.value,
-            totalCritDMG: totalCritDMG.value,
-            energyRegen: energyRegen.value,
-            hpPercent: totalHpPercent.value,
-            hpFlat: totalHpFlat.value,
-            attackPercent: totalAtkPercent.value,
-            attackFlat: totalAtkFlat.value,
-            defPercent: totalDefPercent.value,
-            defFlat: totalDefFlat.value,
-          },
-          allDamages,
-        );
+        if (baselineMoveQueued) return;
+        baselineMoveQueued = true;
+        setTimeout(() => {
+          baselineMoveQueued = false;
+          followOptimizerBaseline();
+        }, 0);
       },
       { deep: true },
     );
