@@ -56,6 +56,7 @@
         <input v-model="markInImage" type="checkbox" class="checkbox checkbox-sm" data-test-tier-board-mark-image>
         <span class="label-text">Show my resonators in the picture</span>
       </label>
+      <span v-if="pendingShare" class="text-sm" role="status" data-test-tier-board-share-again>The picture is ready: tap Share image once more to send it.</span>
       <span v-if="saveError" class="text-sm text-error" role="alert">{{ saveError }}</span>
     </div>
     <dialog ref="sheet" class="wt-tboard__sheet" aria-labelledby="wt-tboard-sheet-title" data-test-tier-board-sheet @close="onDialogClose" @keydown.esc.prevent="closeSheet()" @click.self="closeSheet()">
@@ -203,7 +204,28 @@ const markInImage = ref(false);
 const card = ref<HTMLElement | null>(null);
 const canShare = typeof navigator !== "undefined" && typeof navigator.canShare === "function";
 const footer = computed(() => imageFooter(state.value?.cost ?? "s0r1", !!state.value?.matrix, localDay(new Date()), markInImage.value && !!owned.value?.size));
+/** a picture made for the share sheet that wanted a fresh tap (capture.ts "needs-tap"): the next tap sends it */
+const pendingShare = ref<File | null>(null);
+watch(footer, () => { pendingShare.value = null; });
+// a new setting's tiers make the waiting picture stale (compared by placements: his DOM redraws for other reasons too)
+watch(
+  () => model.value?.blocks.map((b) => b.bands.map((x) => `${x.tier}:${x.entries.map((e) => e.name).join(",")}`).join("|")).join("/") ?? "",
+  () => { pendingShare.value = null; },
+);
+async function sendPending(file: File): Promise<void> {
+  pendingShare.value = null;
+  saveError.value = "";
+  try {
+    const out = await shareFile(file, "Wuthering Waves tier list");
+    if (out === "needs-tap") downloadBlob(file, file.name);
+  } catch (err) {
+    saveError.value = `The picture could not be shared: ${(err as Error).message}`;
+  }
+}
 async function save(share: boolean): Promise<void> {
+  // the second tap: the picture is made, so the share sheet opens inside this tap
+  if (share && pendingShare.value) return sendPending(pendingShare.value);
+  pendingShare.value = null;
   saving.value = true;
   saveError.value = "";
   exporting.value = true;
@@ -216,8 +238,12 @@ async function save(share: boolean): Promise<void> {
     const name = `tier-list-${state.value?.cost ?? "s0r1"}-${localDay(new Date())}-wtplus.png`;
     if (share) {
       const file = new File([blob], name, { type: "image/png" });
-      const out = await shareFile(file, "Wuthering Waves tier list");
-      if (out === "needs-tap") downloadBlob(blob, name);
+      if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+        downloadBlob(blob, name);
+      } else {
+        const out = await shareFile(file, "Wuthering Waves tier list");
+        if (out === "needs-tap") pendingShare.value = file;
+      }
     } else {
       downloadBlob(blob, name);
     }

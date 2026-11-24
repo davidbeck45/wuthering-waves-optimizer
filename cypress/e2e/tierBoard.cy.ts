@@ -238,4 +238,37 @@ describe("Tier list: the Board view", () => {
     });
     cy.get("[data-test-tier-board-save]").should("not.be.disabled");
   });
+
+  // check-tier-board (batch 6): a phone's share sheet refuses a share whose tap was spent making the picture
+  // (NotAllowedError, capture.ts "needs-tap"); the picture waits for one more tap, as the share cards do, never a silent download
+  it("Share image keeps the picture for one more tap when the share sheet wants a fresh tap", () => {
+    cy.viewport(412, 915);
+    const calls: Array<{ files?: File[] }> = [];
+    cy.visit("/tier-list", {
+      onBeforeLoad(win: Window) {
+        seed().onBeforeLoad(win);
+        const nav = win.navigator as Navigator & { canShare: unknown; share: unknown };
+        Object.defineProperty(nav, "canShare", { configurable: true, value: () => true });
+        Object.defineProperty(nav, "share", {
+          configurable: true,
+          value: (data: { files?: File[] }) => {
+            calls.push(data);
+            return calls.length === 1 ? Promise.reject(new win.DOMException("needs a gesture", "NotAllowedError")) : Promise.resolve();
+          },
+        });
+      },
+    });
+    loaded();
+    cy.window().then((win) => { cy.stub(win.HTMLAnchorElement.prototype, "click").as("download"); });
+    cy.get("[data-test-tier-board-share]").click();
+    cy.get("[data-test-tier-board-share-again]", { timeout: 60000 }).should("contain.text", "once more");
+    cy.get("@download").should("not.have.been.called");
+    cy.get("[data-test-tier-board-share]").click();
+    cy.wrap(calls).should("have.length", 2);
+    cy.then(() => {
+      expect(calls[1]!.files?.[0]?.type).to.eq("image/png");
+    });
+    cy.get("[data-test-tier-board-share-again]").should("not.exist");
+    cy.get("@download").should("not.have.been.called");
+  });
 });
