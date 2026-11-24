@@ -169,6 +169,22 @@ describe("Riley's Tier List and Value pages inside the app", () => {
     cy.get("[data-test-riley-mine-button]").should("be.visible");
   });
 
+  it("follows the account: a character set up since the last visit is ticked, and the line says so", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/roster-value", seed());
+    loaded();
+    box("Phrolova").should("not.be.checked");
+    cy.window().then((win) => {
+      const store = JSON.parse(win.localStorage.getItem("character") ?? "{}") as { characters: Record<string, unknown> };
+      store.characters.Phrolova = JSON.parse(JSON.stringify(store.characters.Cartethyia));
+      win.localStorage.setItem("character", JSON.stringify(store));
+    });
+    cy.reload();
+    loaded();
+    box("Phrolova").should("be.checked");
+    cy.get("[data-test-riley-owned-line]").should("contain.text", "your account changed: added Phrolova");
+  });
+
   it("an empty account keeps his default roster and says how to get your own", () => {
     cy.viewport(1280, 900);
     cy.visit("/roster-value", { onBeforeLoad(win) { win.localStorage.removeItem("character"); } });
