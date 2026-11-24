@@ -5619,3 +5619,31 @@ A team saved from Team rankings (an import from a team's page, a stock team pres
 - **Handled until the next engine.** Hide, or any Sync, writes the commit under `wtplus:syncNotice:handled` (a `marker` in `STORAGE_RULES`); the notice returns when `WUWA_CALC_COMMIT` changes. A team a Sync could not re-read keeps its old stamp, so the handled mark, not the stamps, is what takes the notice away after a Sync.
 - **What moved** (`numbersLog/compare.ts`): a team whose definition changed while its `syncedAt` moved reads "You synced this team with Team rankings: its rotation was read again from Riley's engine." instead of "You changed this team…". The log stores each team's sync time as the entry's optional `y` (row index → ms).
 - Tests: `syncNotice/*.test.ts`, `numbersLog/syncedCause.test.ts`, `syncWritePath.test.ts` (the stamps on both write paths), `cypress/e2e/syncNotice.cy.ts`.
+
+## `/rankings` on Riley's rewritten page code (batch 5, lane `riley-page`, 2026-11-23)
+
+Riley's "ui update" (wuwa_calc e7a10a9, fork 821f8db) split his page controller into `index.ts` + `loading.ts` + `pool.ts`,
+made the detail view a page of its own (`team.html`, `src/page/team.ts`, `./team#t=<team code>`), put icons before names
+(`./images/<kind>/<id>.webp`), renamed `Tier` to `Rarity`, and gave resonator filters a chain level. What the app does about each:
+
+- **His pool, the app's worker.** His `pool.ts` builds its worker URL from a template string, which Vite will not bundle,
+  and `loading.ts` (so detail.ts, pickmenu.ts) imports it. `rankings/vitePlugin.ts` (in `vite.config.ts`) resolves his
+  `./pool.js`, from his page folder only, to `rankings/rileyPool.ts`: his exports and job queue on `solver.worker.ts`, plus
+  a sync's `keep`, the rows-so-far `onTeam`, filing by the asked-for `bestKey()`, and the worker-load retirement. It
+  imports nothing of his; the controller binds his solver and model (`bindEngine`) once loaded, so a `mine` visit can still
+  start workers early. The controller calls his `loading.ts` (overlay, bar, `showError`, `solveQuiet`) as is. The header of
+  `rankings/controller.ts` maps each of his `index.ts` / `team.ts` functions to the port's.
+- **His team page is a state of `/rankings`.** "View rotation" and a card push `pageUrl(key)`'s hash (`#…&t=<code>`)
+  through vue-router; `team=` links (plus's, older ones) still open it, his `hashTeam()` reads both, and his `syncHash()`
+  writes `t=`. Same address, so the solved table survives the trip and his relative `./images/` and `./dist/solves/` stay right.
+- **Level filters.** `r=Cartethyia` is her at S0 now, `r=CartethyiaS2` at S2. His own Team Cost select settles them
+  (`settleLevels()`); the account bar and plus's `r=<name>` links do not go through it, so the controller settles after
+  every hash read and at the start of every table pass, and writes the settled hash back (`applyHashSettled`,
+  `settleLevelsNow`) — never under an open team page, whose address it would rewrite. The chips read an entry's level off
+  (`filterChips.ts` `tokensOf`) and keep the other entries' levels as written.
+- **`Rarity` numbers** (a const enum, erased): Limited 0, FreeS6 1 (a 4★ or Rover form, everyone's at S6), FreeS2 2, FreeS0 3,
+  in `rankings/rileyNames.ts` `RARITY`, checked against his source by `rileyNames.test.ts`. The everyone's-at-S6 kind was 2.
+- **Icons.** `scripts/skittle-sync.mjs` copies `images/{resonators,weapons,echoes,sonatas}` and `unknown.webp` to
+  `public/images/` (about 5 MB). Plus rules that patch his look live in `skittle-theme.css`, never in the generated
+  `skittle.css` (the "25.0s loop" rule was lost there once); on light themes his bar figures are darkened like `--mem`.
+- **Not hosted:** his Tier List and Value pages (`tierlist.ts`, `value.ts`, `roster.ts`) and his first-run tutorial.
