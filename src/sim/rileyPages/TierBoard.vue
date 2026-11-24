@@ -261,6 +261,10 @@ async function save(share: boolean): Promise<void> {
 .wt-tboard__mark {
   min-height: 44px;
 }
+/* while his solve runs the board is the last setting's: faded under the "Solving" line, never shown as the new one */
+.wt-tboard__blocks[aria-busy="true"] {
+  opacity: 0.45;
+}
 .wt-tboard__blocks {
   display: grid;
   gap: 1rem;
