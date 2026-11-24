@@ -173,6 +173,39 @@
         <!-- ---------------------------------------------------------------------------- sequences -->
         <section id="kit-sequences" class="kit-card kit-section" aria-labelledby="kit-sequences-h" data-test-kit-sequences>
           <h2 id="kit-sequences-h" class="kit-h2">Sequences that change how you play</h2>
+          <div v-if="strip.steps.length" class="kit-strip" data-test-kit-strip>
+            <p class="kit-muted">
+              S1 to S6 at a glance: <span class="kit-strip__key kit-strip__key--change" aria-hidden="true">↻</span> changes the loop<template v-if="account.owned">,
+              <span class="kit-strip__key kit-strip__key--have" aria-hidden="true">✓</span> you have it</template>. Tap a sequence for its note.
+            </p>
+            <div class="kit-strip__steps" role="group" aria-label="Sequences S1 to S6">
+              <button
+                v-for="st in strip.steps"
+                :key="st.level"
+                type="button"
+                class="kit-strip__step"
+                :class="{ 'kit-strip__step--change': st.kind, 'kit-strip__step--have': st.have, 'kit-strip__step--current': st.current }"
+                :aria-pressed="st.level === stripLevel"
+                :aria-label="`S${st.level}${st.kind ? `, ${CHANGE_WORDS[st.kind as keyof typeof CHANGE_WORDS].short}` : ', same loop'}${st.have ? ', you have it' : ''}${st.current ? ', your sequence' : ''}`"
+                :data-test-kit-strip-step="st.level"
+                :data-test-kit-strip-marks="[st.kind ? 'change' : '', st.have ? 'have' : '', st.current ? 'current' : ''].filter(Boolean).join(' ')"
+                @click="stripPick = st.level"
+                @focus="stripPick = st.level">
+                <span class="kit-strip__level">S{{ st.level }}</span>
+                <span class="kit-strip__icons" aria-hidden="true">{{ st.kind ? "↻" : "·" }}{{ st.have ? "✓" : "" }}</span>
+              </button>
+            </div>
+            <div v-if="stripRow" class="kit-strip__note" aria-live="polite" data-test-kit-strip-note>
+              <p class="kit-text">
+                <b>S{{ stripRow.level }} · {{ stripRow.name || "No name in Riley's kit yet" }}</b>
+                <span v-if="stripRow.kind" class="kit-chip kit-chip--change ml-1">{{ CHANGE_WORDS[stripRow.kind].short }}</span>
+                <span v-if="account.owned" class="kit-chip ml-1" :class="{ 'kit-chip--own': stripRow.level <= account.sequence }">{{ stripRow.level <= account.sequence ? "you have it" : "not yet" }}</span>
+              </p>
+              <p v-if="stripRow.kind" class="kit-text">This sequence {{ CHANGE_WORDS[stripRow.kind].long }}.</p>
+              <p v-if="stripRow.stepText" class="kit-muted">{{ stripRow.stepText }} over S{{ stripRow.level - 1 }}, in the ladder's team.</p>
+              <p v-if="stripRow.note" class="kit-note">{{ stripRow.note }}</p>
+            </div>
+          </div>
           <p v-if="!changes.length" class="kit-text" data-test-kit-no-changes>None. {{ name }} presses the same loop at every sequence: sequences add damage, not buttons.</p>
           <ul v-else class="kit-list" data-test-kit-changes>
             <li v-for="c in changes" :key="`${c.level}${c.kind}`" class="kit-text" :data-test-kit-change="`${c.level}-${c.kind}`">
@@ -406,7 +439,7 @@ import { rotationPath } from "../rotation/hash";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import KitBarChart from "./KitBarChart.vue";
 import KitTeamRow from "./KitTeamRow.vue";
-import { costWidths, rankChart, sameWeaponName, sequenceChart, weaponChart } from "./ladderChart";
+import { costWidths, rankChart, sameWeaponName, sequenceChart, sequenceStrip, weaponChart } from "./ladderChart";
 import {
   CHANGE_WORDS,
   ROLE_LABEL,
@@ -604,6 +637,13 @@ const sequenceRows = computed(() =>
     return { ...s, step, stepText: step == null ? "" : Math.abs(step) < 0.0005 ? "no DPS change" : `${signedPercent(step)} team DPS` };
   }),
 );
+
+// the S1–S6 strip: the same rows as "Every sequence", the one tapped or focused shows its note
+const stripPick = ref<number | null>(null);
+const strip = computed(() => sequenceStrip(sequenceRows.value, account.value?.owned ? account.value.sequence : null));
+const stripLevel = computed(() => (stripPick.value != null && strip.value.steps.some((x) => x.level === stripPick.value) ? stripPick.value : strip.value.first));
+const stripRow = computed(() => sequenceRows.value.find((r) => r.level === stripLevel.value) ?? null);
+watch(wanted, () => (stripPick.value = null));
 
 // ---- builds
 const builds = computed(() =>

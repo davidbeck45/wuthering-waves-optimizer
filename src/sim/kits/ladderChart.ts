@@ -141,3 +141,22 @@ export const MARK_WORDS: Record<BarMark, string> = {
 export function barSpeech(bar: Bar, unit = "team DPS"): string {
   return [`${bar.label}: ${bar.valueText} ${unit}`, bar.note, ...bar.marks.map((m) => MARK_WORDS[m])].filter(Boolean).join(", ");
 }
+
+export interface StripStep {
+  level: number;
+  /** the kind of loop change at this level, when it has one */
+  kind: string | null;
+  /** the account has this level (owned and at or above it) */
+  have: boolean;
+  /** the account's own sequence */
+  current: boolean;
+}
+
+/** The S1–S6 strip of "Sequences that change how you play": which levels change the loop, which the account has, and
+ *  the step that opens selected (the first change the account does not have yet, else the first change, else S1). */
+export function sequenceStrip(rows: ReadonlyArray<{ level: number; kind?: string | null }>, own: number | null): { steps: StripStep[]; first: number } {
+  const steps = rows.map((r) => ({ level: r.level, kind: r.kind ?? null, have: own != null && r.level <= own, current: own != null && r.level === own }));
+  const changing = steps.filter((s) => s.kind);
+  const first = (changing.find((s) => !s.have) ?? changing[0] ?? steps[0])?.level ?? 1;
+  return { steps, first };
+}

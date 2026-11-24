@@ -206,6 +206,10 @@ describe("resonator briefs", () => {
     cy.get('[data-test-kit-chart="weapons"] [data-test-kit-chart-marks~="held"]').should("have.length", 1).and("contain.text", "Defier's Thorn");
     cy.get('[data-test-kit-chart="weapons"] [data-test-kit-chart-bar="Defier\'s Thorn"]').should("have.attr", "data-test-kit-chart-marks", "held you");
     cy.get("[data-test-kit-cost-bar]").should("have.length", 9);
+    // the strip reads her S2: S1 and S2 had, S2 hers
+    cy.get('[data-test-kit-strip-step="2"]').should("have.attr", "data-test-kit-strip-marks", "have current");
+    cy.get('[data-test-kit-strip-step="1"]').should("have.attr", "data-test-kit-strip-marks", "have");
+    cy.get('[data-test-kit-strip-step="3"]').should("have.attr", "data-test-kit-strip-marks", "");
     cy.get("[data-test-kit-signature]").should("contain.text", "the signature");
     expectNoHorizontalScroll("the brief");
 
@@ -261,6 +265,14 @@ describe("resonator briefs", () => {
     cy.visit("/kit/aemeath", seed());
     cy.get("[data-test-kit-owned]", { timeout: 20000 }).should("have.text", "Aemeath is not on your account in this app: no weapon is equipped on them.");
     cy.get("[data-test-kit-head-own]").should("not.exist");
+    // the S1–S6 strip: S1 changes her opener, it opens selected with its note; a tap shows another step's
+    cy.get("[data-test-kit-strip-step]").should("have.length", 6);
+    cy.get('[data-test-kit-strip-step="1"]').should("have.attr", "data-test-kit-strip-marks", "change").and("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-kit-strip-step="3"]').should("have.attr", "data-test-kit-strip-marks", "");
+    cy.get("[data-test-kit-strip-note]").should("contain.text", "S1 · ").and("contain.text", "new opener");
+    cy.get('[data-test-kit-strip-step="3"]').click().should("have.attr", "aria-pressed", "true");
+    cy.get("[data-test-kit-strip-note]").should("contain.text", "S3 · ").and("not.contain.text", "new opener");
+    cy.get('[data-test-kit-change="1-chain"]').should("exist"); // the text list stays under the strip
     cy.get('[data-test-kit-chart="seq"] [data-test-kit-chart-marks~="you"]').should("not.exist");
     cy.get('[data-test-kit-link="cost"]').should("not.exist");
     cy.get('[data-test-kit-link="rank"]').should("exist");
@@ -301,7 +313,7 @@ describe("resonator briefs", () => {
       cy.visit("/kit/cartethyia", seed({ theme, teammates: true }));
       cy.get("[data-test-kit-account]", { timeout: 20000 }).should("be.visible");
       cy.get("html").should("have.attr", "data-theme", theme);
-      cy.get("[data-test-kit-brief]").find(".kit-link, .kit-pill, .kit-chip, .kit-muted, .kit-note, .kit-sub, .kit-team__unit, .kit-th, dt").each(($el) => {
+      cy.get("[data-test-kit-brief]").find(".kit-link, .kit-pill, .kit-chip, .kit-muted, .kit-note, .kit-sub, .kit-team__unit, .kit-th, dt, .kit-chart__label, .kit-chart__value, .kit-chart__note, .kit-chart__mark").each(($el) => {
         if (!$el.text().trim()) return;
         expect(contrastOf($el[0]!), `${theme}: "${$el.text().trim().slice(0, 40)}" (${$el[0]!.className})`).to.be.at.least(4.5);
       });

@@ -497,3 +497,70 @@
   margin-top: 0.1rem;
   font-size: 0.78rem;
 }
+
+/* ---- the S1–S6 strip of "Sequences that change how you play" (KitBriefView, sequenceStrip) */
+.kit-strip {
+  margin: 0.4rem 0 0.8rem;
+}
+.kit-strip__steps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.kit-strip__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.25rem 0;
+  border-radius: 0.6rem;
+  color: oklch(var(--bc));
+  background: oklch(var(--b3) / 0.6);
+  box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.12);
+  font-variant-numeric: tabular-nums;
+}
+.kit-strip__step--change {
+  background: oklch(var(--wa) / 0.22);
+  box-shadow: inset 0 0 0 1px oklch(var(--wa) / 0.7);
+}
+.kit-strip__step--have {
+  border-bottom: 3px solid oklch(var(--su));
+}
+.kit-strip__step--current {
+  outline: 2px solid oklch(var(--su));
+  outline-offset: 1px;
+}
+.kit-strip__step[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2px oklch(var(--p));
+}
+.kit-strip__step:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+.kit-strip__level {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.kit-strip__icons {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.kit-strip__key {
+  font-weight: 700;
+}
+.kit-strip__note {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.6rem;
+  background: oklch(var(--b3) / 0.45);
+}
+/* "Yours: S6 · Everbright Polestar R1" passed a 360 px screen in the header: it wraps inside its chip */
+.kit-head--hero .kit-chip {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

@@ -98,3 +98,19 @@ describe("ladder charts", () => {
     expect(drawn).toBeGreaterThan(40);
   });
 });
+
+describe("the sequence strip", () => {
+  it("marks the levels that change the loop and the ones the account has, and opens on the next change", async () => {
+    const { sequenceStrip } = await import("./ladderChart");
+    const rows = [1, 2, 3, 4, 5, 6].map((level) => ({ level, kind: level === 2 ? "loop" : level === 4 ? "order" : null }));
+    const owned = sequenceStrip(rows, 3);
+    expect(owned.steps.map((s) => s.have)).toEqual([true, true, true, false, false, false]);
+    expect(owned.steps.filter((s) => s.current).map((s) => s.level)).toEqual([3]);
+    expect(owned.steps.filter((s) => s.kind).map((s) => s.level)).toEqual([2, 4]);
+    expect(owned.first).toBe(4);
+    expect(sequenceStrip(rows, 6).first).toBe(2);
+    expect(sequenceStrip(rows, null).first).toBe(2);
+    expect(sequenceStrip(rows, null).steps.some((s) => s.have || s.current)).toBe(false);
+    expect(sequenceStrip(rows.map((r) => ({ level: r.level })), 0).first).toBe(1);
+  });
+});
