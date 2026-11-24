@@ -159,3 +159,52 @@ describe("The My account line says what a resonator not set up runs at (second c
       .and("contain.text", "Jianxin at S2");
   });
 });
+
+/** WCAG contrast of an element's text on what is painted behind it (its own and its ancestors' backgrounds). */
+function contrastOf(win: Window, el: Element): number {
+  const ctx = win.document.createElement("canvas").getContext("2d", { willReadFrequently: true })!;
+  const rgba = (css: string): number[] => {
+    ctx.clearRect(0, 0, 1, 1);
+    ctx.fillStyle = "#000";
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    return [d[0]!, d[1]!, d[2]!, d[3]! / 255];
+  };
+  const layers: number[][] = [];
+  for (let e: Element | null = el; e; e = e.parentElement) {
+    const c = rgba(win.getComputedStyle(e).backgroundColor);
+    if (c[3]! > 0) layers.push(c);
+    if (c[3]! >= 1) break;
+  }
+  let bg = [255, 255, 255];
+  for (const c of layers.reverse()) bg = bg.map((v, i) => v * (1 - c[3]!) + c[i]! * c[3]!);
+  const lum = (c: number[]): number => {
+    const f = (v: number): number => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * f(c[0]!) + 0.7152 * f(c[1]!) + 0.0722 * f(c[2]!);
+  };
+  const [a, b] = [lum(rgba(win.getComputedStyle(el).color)), lum(bg)].sort((x, y) => y - x);
+  return (a! + 0.05) / (b! + 0.05);
+}
+
+describe("Tier names readable on every theme (second check)", () => {
+  for (const theme of ["light", "dark"]) {
+    it(`T0 to T4 read at 4.5:1 or more on the ${theme} theme`, () => {
+      cy.viewport(1280, 900);
+      cy.visit("/tier-list", {
+        onBeforeLoad(win) {
+          const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
+          settings.config = { ...settings.config, theme };
+          win.localStorage.setItem("settings", JSON.stringify(settings));
+        },
+      });
+      rileyLoaded();
+      cy.get(".wt-riley-tierlist .trow .c.tier").should("have.length", 5);
+      cy.window().then((win) => {
+        for (const el of win.document.querySelectorAll(".wt-riley-tierlist .trow .c.tier")) {
+          expect(contrastOf(win, el), `${el.textContent} on ${theme}`).to.be.at.least(4.5);
+        }
+      });
+    });
+  }
+});

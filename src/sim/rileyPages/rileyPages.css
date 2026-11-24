@@ -61,3 +61,7 @@
 /* his mode headings, buttons for the keyboard (controller.ts): a visible focus */
 .skittle-root.wt-riley-pages .modehead { cursor: pointer; }
 .skittle-root.wt-riley-pages .modehead:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* his tier names (T0 red … T4 blue) are the tier's colour on a 16 % tint of it: 1.5:1 to 2.9:1 on the light themes.
+   Mixed toward the theme's text colour they keep their hue and read at 4.5:1 or more on every theme */
+.skittle-root.wt-riley-tierlist .valuepage .trow .c.tier { color: color-mix(in oklab, var(--tier) 40%, var(--ink)); }
