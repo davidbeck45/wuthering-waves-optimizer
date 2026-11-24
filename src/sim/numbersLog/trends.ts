@@ -231,9 +231,23 @@ export function bestSavedTeam(trends: readonly Trend[]): Trend | null {
 
 /** "up 12.4 % (+240,000) since 9 Nov" — the change in words, as a share of the first figure and as damage. */
 export function trendChangeText(t: Trend, fmt: (n: number) => string, day: (at: number) => string): string {
+  if (t.switched && t.first.index === t.last.index) return "nothing to compare with since the team-aware buffs switch was flipped";
   if (!t.delta) return `no change since ${day(t.first.at)}`;
   const p = t.change === null ? null : Math.abs(t.change * 100);
   const pct = p === null ? "" : `${p < 0.05 ? "under 0.1" : p.toFixed(1)} % of the first figure, `;
   const abs = `${t.delta > 0 ? "+" : "−"}${fmt(Math.abs(t.delta))} damage`;
   return `${t.delta > 0 ? "up" : "down"} ${pct}${abs} since ${day(t.first.at)}`;
+}
+
+/** What a row says under its change, when the line is not one plain stretch. */
+export function trendNote(t: Trend): string | null {
+  const parts: string[] = [];
+  if (t.switched)
+    parts.push(
+      t.first.index === t.last.index
+        ? "The newest record was taken with the team-aware buffs switch the other way: another measurement, so it is not compared with the ones before."
+        : "The team-aware buffs switch was flipped along the way: the line breaks there, and the change is read from the switch on.",
+    );
+  if (!t.current) parts.push("Not in the newest record.");
+  return parts.length ? parts.join(" ") : null;
 }

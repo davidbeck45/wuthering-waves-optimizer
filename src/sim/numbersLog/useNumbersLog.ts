@@ -11,6 +11,7 @@ import { appBuildId } from "../persist/savedResults";
 import { isNewVisitor } from "../shell/welcome";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import type { Namer } from "./compare";
+import type { NumbersLog } from "./log";
 import { logVersion, readLog, watchLog } from "./logStore";
 import { numbersState, staleness, type NumbersState, type Stale } from "./view";
 
@@ -20,6 +21,8 @@ export const NAMES: Namer = {
 };
 
 export interface NumbersLogView {
+  /** the stored log as it stands (oldest first) */
+  log: ComputedRef<NumbersLog>;
   state: ComputedRef<NumbersState>;
   /** the older record the newest is read against (its `at`); null = the one just before it */
   baseAt: Ref<number | null>;
@@ -94,5 +97,5 @@ export function useNumbersLog(options: { stale?: boolean } = {}): NumbersLogView
       if (timer) clearInterval(timer);
     });
   }
-  return { state, baseAt, running, stale, now };
+  return { log, state, baseAt, running, stale, now };
 }

@@ -4,7 +4,7 @@ import { causeText, compareEntries, type Namer } from "./compare";
 import { entryFromRanking, type RankedAccount } from "./entry";
 import { appendEntry, decodeLog, emptyLog, encodeLog, MAX_ENTRIES, type LogEntry, type NumbersLog } from "./log";
 import { DAY, HOUR, T0, account, ranking, teamRank } from "./testAccount";
-import { bestSavedTeam, buildTrends, DID_NOT_MOVE_TEXT, lineRuns, NO_CAUSE_TEXT, trendChangeText, trendList, trendSteps, type Trend } from "./trends";
+import { bestSavedTeam, buildTrends, DID_NOT_MOVE_TEXT, lineRuns, NO_CAUSE_TEXT, trendChangeText, trendList, trendNote, trendSteps, type Trend } from "./trends";
 import { IMPORT_CARD_TEXT } from "./view";
 
 const BUILD = "0.0.1+abc+aaaaaaaaaaaa";
@@ -53,6 +53,11 @@ describe("over time: the lines", () => {
     const step = trendSteps(log, t, names).find((s) => s.to === 2)!;
     expect(step.marks).toEqual(["switch"]);
     expect(step.text).toBe("The team-aware buffs switch was turned off.");
+    expect(trendNote(t)).toContain("the line breaks there");
+    // the newest record alone on its side of the switch: nothing to compare it with, said so, never "no change"
+    const alone = trend(logOf(entry({ mine: 2_000_000 }, T0), entry({ mine: 1_500_000 }, T0 + DAY, { auto: false })), "t:t-mine");
+    expect(trendChangeText(alone, String, () => "9 Nov")).toBe("nothing to compare with since the team-aware buffs switch was flipped");
+    expect(trendNote(alone)).toContain("not compared with the ones before");
   });
 
   it("sorts lines by the size of the change, largest first, in three groups, and folds the ones that never moved", () => {

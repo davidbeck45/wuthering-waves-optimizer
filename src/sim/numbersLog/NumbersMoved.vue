@@ -39,6 +39,7 @@
           state.entry.teams.length === 1 ? "" : "s"
         }}. The next time a figure moves, after you change a build or after an app update, the change shows here with its cause.
       </p>
+      <p class="nm-muted" data-test-trends-first>The line over time starts with the next record: one record is a single point, so no chart is drawn yet.</p>
       <p class="nm-muted">{{ BASIS_TEXT }}</p>
     </div>
 
@@ -99,6 +100,8 @@
         </template>
       </template>
 
+      <NumbersTrends :log="log" :now="now" />
+
       <p class="nm-basis" data-test-numbers-basis>{{ BASIS_TEXT }} The log keeps the last {{ MAX_ENTRIES }} records that differ, in this browser only.</p>
     </template>
   </section>
@@ -116,11 +119,12 @@ import { compact } from "../myRankings/format";
 import { whenText, type Comparison, type Listed } from "./compare";
 import { MAX_ENTRIES } from "./log";
 import NumbersMoveRow from "./NumbersMoveRow.vue";
+import NumbersTrends from "./NumbersTrends.vue";
 import { NAMES, useNumbersLog } from "./useNumbersLog";
 import { BASIS_TEXT, EMPTY_TEXT, importText, NO_ACCOUNT_TEXT, RUNNING_TEXT, STOCK_BY_UPDATE_TEXT, firstRecordText, pickedBase, staleText, summaryText } from "./view";
 
 const SHOWN = 8;
-const { state, baseAt, running, stale, now } = useNumbersLog();
+const { log, state, baseAt, running, stale, now } = useNumbersLog();
 /** what the picker shows: his pick while that record is still in the log, else "the one before" */
 const picked = computed<number | null>({
   get: () => pickedBase(state.value, baseAt.value),
