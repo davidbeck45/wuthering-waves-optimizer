@@ -146,3 +146,16 @@ describe("His mode headings from the keyboard (second check)", () => {
     cy.focused().should("have.class", "modehead");
   });
 });
+
+describe("The My account line says what a resonator not set up runs at (second check)", () => {
+  it("names his free 5-stars run from S2 (Jianxin, whose team page reads 'Jianxin S2'), not only S0 with R1", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/");
+    cy.importCharacterData(configOptimizer);
+    // the line is up as soon as the Team Cost is My account; the solve behind it need not finish here
+    cy.visit("/tier-list#tc=mine");
+    cy.get("[data-test-riley-mine-on]", { timeout: 60000 })
+      .should("contain.text", "4-stars and Rover forms at S6")
+      .and("contain.text", "Jianxin at S2");
+  });
+});

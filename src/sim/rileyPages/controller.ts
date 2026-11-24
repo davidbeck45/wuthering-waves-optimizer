@@ -26,6 +26,7 @@ import * as pool from "../rankings/rileyPool";
 import { patchFetch, updateAccountState, type AccountRegistration } from "../rankings/controller";
 import { accountOwnedSet, decideOwned, ownedLine, rosterOf, type OwnedSource } from "./ownedSet";
 import { rankingsTargetOf } from "./links";
+import { RARITY } from "../rankings/rileyNames";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type RileyPageKind = "tierlist" | "value";
@@ -264,7 +265,8 @@ function onLinkClick(e: MouseEvent): void {
   void router.push(to);
 }
 /* ------------------------------------------------- the Team Cost, for the "At my own sequences" button */
-export interface CostState { cost: string; hasAccount: boolean }
+/** `freeS2`: his free 5-stars everyone runs from S2 (`Rarity.FreeS2`, Jianxin today), the line's exception besides 4-stars. */
+export interface CostState { cost: string; hasAccount: boolean; freeS2: string[] }
 let costListener: ((s: CostState) => void) | null = null;
 export function onCostState(fn: ((s: CostState) => void) | null): void {
   costListener = fn;
@@ -272,7 +274,8 @@ export function onCostState(fn: ((s: CostState) => void) | null): void {
 }
 function publishCost(): void {
   if (!shared || !costListener) return;
-  costListener({ cost: shared.model.filters.cost, hasAccount: shared.solver.hasAccountState() });
+  const freeS2 = rosterOf(shared.model.TEAMS).filter((m) => m.rarity === RARITY.FreeS2).map((m) => m.name).sort();
+  costListener({ cost: shared.model.filters.cost, hasAccount: shared.solver.hasAccountState(), freeS2 });
 }
 function onCostChange(e: Event): void {
   if ((e.target as Element).id === "cost") publishCost();

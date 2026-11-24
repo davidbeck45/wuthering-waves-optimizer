@@ -16,7 +16,8 @@
       <p v-if="cost && cost.hasAccount" class="wt-riley-mine text-sm" data-test-riley-mine>
         <template v-if="cost.cost === 'mine'">
           <span data-test-riley-mine-on>At your own sequences, weapons and refinements (Team Cost "My account"). A
-            resonator you have not set up runs at S0 with R1, except 4-stars and Rover forms at S6.</span>
+            resonator you have not set up runs at S0 with R1, except 4-stars and Rover forms at S6<template
+              v-if="cost.freeS2.length"> and {{ cost.freeS2.join(", ") }} at S2</template>.</span>
         </template>
         <template v-else>
           <button type="button" class="btn btn-sm btn-outline" data-test-riley-mine-button @click="chooseMine()">
