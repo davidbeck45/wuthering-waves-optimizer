@@ -112,5 +112,11 @@ describe("share my roster", () => {
     });
     cy.get("[data-test-roster-sheet-close]").click();
     cy.get("[data-test-roster-sheet]").should("not.have.attr", "open");
+    // Back closes the sheet and stays on the page, on the first page of a visit too (sheetHistory.ts)
+    cy.get("[data-test-share-roster-choice] [data-test-roster-share-button]").click();
+    cy.get("[data-test-roster-sheet]").should("have.attr", "open");
+    cy.go("back");
+    cy.get("[data-test-roster-sheet]").should("not.have.attr", "open");
+    cy.location("pathname").should("eq", "/share");
   });
 });
