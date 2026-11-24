@@ -39,7 +39,7 @@
     <ul class="plus-nav__menu" data-test-nav-plus-menu>
       <li class="plus-nav__eyebrow" aria-hidden="true">Wuthering Tools+</li>
       <!-- the command palette (src/sim/shell/CommandPalette.vue): on a phone this is the only way to open it -->
-      <li class="plus-nav__search-row">
+      <li class="plus-nav__search-row" :class="{ 'plus-nav__search-row--half': unseen }">
         <button type="button" class="plus-nav__search" data-test-nav-plus-search @click="openPalette">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
           <span class="plus-nav__search-text">Search pages, characters, teams…</span>
@@ -54,25 +54,37 @@
           <span class="plus-nav__news-go" aria-hidden="true">›</span>
         </RouterLink>
       </li>
-      <li v-for="page in PLUS_PAGES" :key="page.path">
-        <RouterLink
-          :to="page.path"
-          class="plus-nav__item"
-          :class="{ 'plus-nav__item--on': page.path === activePath }"
-          :aria-current="page.path === activePath ? 'page' : undefined"
-          :data-test-nav-plus-page="page.path"
-          @click="close">
-          <span class="plus-nav__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="page.icon" /></svg>
-          </span>
-          <span class="plus-nav__text">
-            <span class="plus-nav__title">
-              {{ page.title }}
-              <span v-if="unseen && page.path === WHATS_NEW_PATH" class="plus-nav__new" data-test-nav-plus-new>{{ unseen }} new</span>
+      <!-- the pages in sections (PLUS_GROUPS): a column each beside the rail, stacked on a phone. Titles only: the
+           eighteen descriptions made the menu 837 px tall; each is the link's tooltip and the palette's subtitle -->
+      <li v-for="group in groups" :key="group.id" class="plus-nav__group" :data-tone="group.id">
+        <div role="group" :aria-labelledby="`${uid}-${group.id}`">
+          <p :id="`${uid}-${group.id}`" class="plus-nav__group-head" :data-test-nav-plus-group="group.id">
+            <span class="plus-nav__group-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="group.icon" /></svg>
             </span>
-            <span class="plus-nav__desc">{{ page.description }}</span>
-          </span>
-        </RouterLink>
+            {{ group.title }}
+          </p>
+          <ul class="plus-nav__group-list">
+            <li v-for="page in group.pages" :key="page.path">
+              <RouterLink
+                :to="page.path"
+                class="plus-nav__item"
+                :class="{ 'plus-nav__item--on': page.path === activePath }"
+                :aria-current="page.path === activePath ? 'page' : undefined"
+                :title="page.description"
+                :data-test-nav-plus-page="page.path"
+                @click="close">
+                <span class="plus-nav__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="page.icon" /></svg>
+                </span>
+                <span class="plus-nav__title">
+                  {{ page.title }}
+                  <span v-if="unseen && page.path === WHATS_NEW_PATH" class="plus-nav__new" data-test-nav-plus-new>{{ unseen }} new</span>
+                </span>
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
       </li>
     </ul>
   </details>
@@ -85,9 +97,9 @@
 // Wuthering Tools+ — the nav's rankings hub: the bar-chart icon opens a menu of every plus page
 // (src/sim/shell/plusPages.ts — read-only here, the registry is shared). Nav.vue mounts it in place of
 // the old /rankings link with one line; `curPage` tells the two rankings pages apart.
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, useId } from "vue";
 import { useRoute } from "vue-router";
-import { PLUS_PAGES } from "../shell/plusPages";
+import { PLUS_GROUPS, PLUS_PAGES, plusPagesIn } from "../shell/plusPages";
 import { useAssistant } from "../ai/useAssistant";
 import { modKeyLabel } from "../shell/shellDom";
 import { railMenuTop } from "./railMenu";
@@ -100,6 +112,10 @@ import { WHATS_NEW_PATH, unseenText } from "../whatsNew/whatsNew";
 // "bar": the classic icon bar; "rail" / "header": the v3 desktop rail and phone header (NavRail / NavPhoneHeader).
 const props = withDefaults(defineProps<{ curPage: string; variant?: "bar" | "rail" | "header" }>(), { variant: "bar" });
 const route = useRoute();
+/** the menu's sections, each with its pages (src/sim/shell/plusPages.ts) */
+const groups = PLUS_GROUPS.map((g) => ({ ...g, pages: plusPagesIn(g.id) }));
+/** ids for the section headings: the rail and the phone header can both be mounted */
+const uid = useId();
 const root = ref<HTMLDetailsElement | null>(null);
 const railHasRoom = useMediaQuery(`(min-height: ${RAIL_ASK_MIN_HEIGHT}px)`);
 /** how many What's new entries this browser has not seen: the dot on the icon and the count on its row */
@@ -148,7 +164,9 @@ function placeRailMenu(): void {
 function onToggle(): void {
   if (!root.value?.open) return;
   placeRailMenu();
-  (root.value.querySelector(".plus-nav__item--on, .plus-nav__item") as HTMLElement | null)?.focus({ preventScroll: true });
+  // the current page's row, else the first: one selector list would pick whichever comes first in the document
+  const row = root.value.querySelector<HTMLElement>(".plus-nav__item--on") ?? root.value.querySelector<HTMLElement>(".plus-nav__item");
+  row?.focus({ preventScroll: true });
 }
 function onResize(): void {
   if (root.value?.open) placeRailMenu();
@@ -312,11 +330,59 @@ onBeforeUnmount(() => {
     display: none;
   }
 }
+/* a section: its heading carries a small mark in the section's tone (a theme token; the heading's words say which
+   section it is, the tone only helps the eye find it) */
+.plus-nav__group {
+  --tone: var(--p);
+  min-width: 0;
+  margin-top: 0.15rem;
+}
+.plus-nav__group[data-tone="rankings"] {
+  --tone: var(--s);
+}
+.plus-nav__group[data-tone="teams"] {
+  --tone: var(--a);
+}
+.plus-nav__group[data-tone="gear"] {
+  --tone: var(--in);
+}
+.plus-nav__group[data-tone="more"] {
+  --tone: var(--bc);
+}
+.plus-nav__group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.3rem 0.6rem 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: oklch(var(--bc) / 0.75);
+}
+.plus-nav__group-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0.18rem;
+  border-radius: 0.3rem;
+  color: oklch(var(--tone));
+  background: oklch(var(--tone) / 0.16);
+  box-shadow: inset 0 0 0 1px oklch(var(--tone) / 0.45);
+}
+.plus-nav__group-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
 .plus-nav__item {
   display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  padding: 0.5rem 0.6rem;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 3px 0.5rem;
   border-radius: 0.6rem;
   text-align: left;
   color: inherit;
@@ -326,33 +392,28 @@ onBeforeUnmount(() => {
   background: oklch(var(--bc) / 0.07);
   outline: none;
 }
+.plus-nav__item:focus-visible {
+  box-shadow: inset 0 0 0 2px oklch(var(--p) / 0.8);
+}
 .plus-nav__item--on {
-  background: oklch(var(--p) / 0.12);
+  background: oklch(var(--p) / 0.14);
+  box-shadow: inset 3px 0 0 oklch(var(--p));
 }
 .plus-nav__icon {
   display: inline-flex;
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  padding: 0.4rem;
-  border-radius: 0.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.35rem;
+  border-radius: 0.45rem;
   color: oklch(var(--p));
   background: oklch(var(--p) / 0.12);
 }
-.plus-nav__text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
 .plus-nav__title {
-  font-size: 0.85rem;
-  font-weight: 650;
-  line-height: 1.3;
-}
-.plus-nav__desc {
-  font-size: 0.72rem;
-  line-height: 1.35;
-  color: oklch(var(--bc) / 0.6);
+  min-width: 0;
+  font-size: 0.84rem;
+  font-weight: 620;
+  line-height: 1.2;
 }
 /* style.css paints every `.navbar svg path` solid black on light themes (for upstream's filled icons); these are
    outline icons in the accent colour, and the caret is a stroke */
@@ -363,18 +424,79 @@ onBeforeUnmount(() => {
 :root[data-theme-style="light"] .plus-nav__caret path {
   fill: none !important;
 }
-/* wide screens: two columns, so the whole list fits without scrolling */
+/* under 1024 px (phones, tablets, the classic bar): sections stacked, two pages to a line, so every heading is on a
+   phone's screen at 130 % text; Tab follows the reading order */
+@media (max-width: 1023px) {
+  .plus-nav__group-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.25rem;
+  }
+  .plus-nav--bar .plus-nav__menu {
+    width: 26rem;
+  }
+  /* the header already says Tools+; one line each for the search and the What's new rows */
+  .plus-nav__eyebrow {
+    display: none;
+  }
+  .plus-nav__search-text,
+  .plus-nav__news-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .plus-nav__news {
+    min-height: 44px;
+  }
+  .plus-nav__group-head {
+    padding: 0.35rem 0.5rem 0.1rem;
+  }
+  .plus-nav__item {
+    gap: 0.4rem;
+    padding: 2px 0.35rem;
+  }
+  /* px, not rem: at 130 % text a rem-sized icon took the room the title needs */
+  .plus-nav__icon {
+    width: 26px;
+    height: 26px;
+    padding: 5px;
+  }
+  .plus-nav__title {
+    font-size: 0.8rem;
+  }
+  .plus-nav__group-mark {
+    width: 18px;
+    height: 18px;
+    padding: 3px;
+  }
+}
+/* wide screens: one column per section, so the menu is about 280 px tall and opens beside its button (railMenu.ts);
+   Tab runs down a column, then on to the next */
 @media (min-width: 1024px) {
   .plus-nav__menu {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 0.3rem;
     align-content: start;
-    width: 42rem;
+    width: min(56rem, calc(100vw - var(--nav-rail-w, 0px) - 1.5rem));
   }
   .plus-nav__eyebrow,
   .plus-nav__search-row,
   .plus-nav__news-row {
     grid-column: 1 / -1;
+  }
+  .plus-nav__search-row--half {
+    grid-column: 1 / span 3;
+  }
+  .plus-nav__search-row--half + .plus-nav__news-row {
+    grid-column: 4 / -1;
+  }
+  .plus-nav__group-head {
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .plus-nav__search-row--half + .plus-nav__news-row .plus-nav__news {
+    min-height: 2.75rem;
+    margin: 0.1rem 0 0.3rem;
   }
 }
 /* phones: a full-width sheet under the bar instead of a menu anchored to the icon */

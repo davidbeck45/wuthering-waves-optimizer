@@ -27,20 +27,22 @@ function v3(options: { theme?: string; fontScale?: number; teams?: unknown[] } =
 
 describe("core pages, refined", () => {
   it("opens the rail's Tools+ menu beside its button, and a calculator section from the palette and the old /optimizer address", () => {
-    cy.viewport(1440, 900);
-    cy.visit("/teams", v3());
-    cy.get(".plus-nav--rail > summary").should("be.visible").click();
-    cy.get("[data-test-nav-plus-menu]:visible").should(($menu) => {
-      const menu = $menu[0].getBoundingClientRect();
-      const item = $menu[0].closest("details")!.querySelector("summary")!.getBoundingClientRect();
-      // it used to open at the top of the window (y 12) with its button half way down
-      expect(menu.top, "menu top: no lower than the button's top").to.be.at.most(item.top + 1);
-      expect(menu.bottom, "menu bottom: reaches past the button").to.be.at.least(item.bottom - 1);
-      // beside its button, moved up only as far as it must to fit the window (railMenu.ts, margin 12). The menu grew
-      // with the pages in it (837 px with Tier list and Roster value), so "below y 100" is no longer where that lands
-      expect(menu.top, "menu top: beside its button, or as low as fits the window").to.be.closeTo(Math.max(12, Math.min(item.top, 900 - menu.height - 12)), 2);
-      expect(menu.bottom, "the menu fits the window").to.be.at.most(900);
-    });
+    // the menu in sections (src/sim/shell/plusPages.ts PLUS_GROUPS) is about 290 px tall: it opens beside its button,
+    // not moved up (railMenu.ts still moves it on a window shorter than that)
+    for (const [w, h] of [[1280, 720], [1440, 900]] as const) {
+      cy.viewport(w, h);
+      cy.visit("/teams", v3());
+      cy.get(".plus-nav--rail > summary").should("be.visible").click();
+      cy.get("[data-test-nav-plus-menu]:visible").should(($menu) => {
+        const menu = $menu[0].getBoundingClientRect();
+        const item = $menu[0].closest("details")!.querySelector("summary")!.getBoundingClientRect();
+        // it used to open at the top of the window (y 12) with its button half way down, then (18 pages, 837 px) at y 51
+        expect(menu.top, `${w} × ${h}: the menu's top is its button's top`).to.be.closeTo(item.top, 2);
+        expect(menu.left, `${w} × ${h}: beside the rail`).to.be.at.least(item.right - 1);
+        expect(menu.bottom, `${w} × ${h}: the menu fits the window`).to.be.at.most(h);
+        expect($menu[0].scrollHeight, `${w} × ${h}: nothing to scroll inside it`).to.be.at.most($menu[0].clientHeight + 1);
+      });
+    }
     cy.get("[data-test-nav-plus-search]:visible").click();
     cy.get("[data-test-palette-input]").type("optimizer");
     cy.get("[data-test-palette-item]").first().should("have.attr", "data-test-palette-item", "page:/?screen=optimizer");

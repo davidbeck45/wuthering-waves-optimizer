@@ -180,7 +180,7 @@ describe("contrast, focus and keyboard", () => {
     cy.viewport(412, 915);
     cy.visit("/account", seed({ fontScale: 1.3 }));
     cy.get("[data-test-account-card]", ENGINE).should("have.length.greaterThan", 0);
-    const SELECTORS = [".cc__rank", ".cc__meta-text", ".acc-seg__n", ".plus-nav__desc", ".plus-nav__eyebrow"];
+    const SELECTORS = [".cc__rank", ".cc__meta-text", ".acc-seg__n", ".plus-nav__group-head", ".plus-nav__eyebrow"];
     for (const [theme, style] of [["dark", "dark"], ["light", "light"], ["nord", "light"], ["pastel", "light"]] as const) {
       setTheme(theme, style);
       cy.document().then((doc) => {
