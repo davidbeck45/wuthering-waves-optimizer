@@ -2,7 +2,7 @@
 // promise must be one.
 import { describe, expect, it } from "vitest";
 import type { LockPlan, RerollAdviceResult } from "./rerollAdvice";
-import { chancePct, chanceText, goodTryText, planReport } from "./transducerCli";
+import { chancePct, chanceText, goodTryText, NO_GATE_NEED, planReport, strongestTeamNeeds } from "./transducerCli";
 import { goodTry } from "./transducerRank";
 
 const plan = (pImprove: number, p90: number): LockPlan => ({
@@ -48,5 +48,34 @@ describe("A chance", () => {
     expect(chanceText(0.3)).toBe("under 1%");
     expect(chanceText(0)).toBe("0%");
     expect(chanceText(61.4)).toBe("61%");
+  });
+});
+
+
+describe("An Energy Regen need for a resonator in no saved team", () => {
+  const team = (name: string, total: number, checks: Array<[string, number | null]>, status = "ok") => ({ name, measure: { status, energy: { total } }, checks: checks.map(([characterId, need]) => ({ characterId, need })) });
+
+  it("is their need in the strongest team that fields them, by that team's damage per second", () => {
+    const needs = strongestTeamNeeds([
+      team("Weak · Carry", 100_000, [["Carry", 131], ["Weak", 150]]),
+      team("Strong · Carry", 250_000, [["Carry", 118.2], ["Strong", 240]]),
+      team("Mid · Carry", 200_000, [["Carry", 105], ["Mid", null]]),
+    ]);
+    expect(needs.get("Carry")).toEqual({ need: 118.2, team: "Strong · Carry", dps: 250_000 });
+    expect(needs.get("Weak")).toEqual({ need: 150, team: "Weak · Carry", dps: 100_000 });
+    // nothing Mid presses in that team waits on energy: a need the app knows, and it is none
+    expect(needs.get("Mid")).toEqual({ need: null, team: "Mid · Carry", dps: 200_000 });
+    expect(NO_GATE_NEED).toBe(100);
+  });
+
+  it("skips a team that could not be measured, and keeps the first of two equally strong teams", () => {
+    const needs = strongestTeamNeeds([
+      team("Unmeasured", 900_000, [["Carry", 300]], "notMeasured"),
+      { name: "No checks", measure: { status: "ok", energy: { total: 800_000 } }, checks: null },
+      team("First", 250_000, [["Carry", 110]]),
+      team("Second", 250_000, [["Carry", 140]]),
+    ]);
+    expect(needs.get("Carry")).toEqual({ need: 110, team: "First", dps: 250_000 });
+    expect(strongestTeamNeeds([]).size).toBe(0);
   });
 });

@@ -512,9 +512,11 @@ export function registerPlusCommands(program: Command): void {
       .option("--sort <order>", "damage (expected damage per rotation per Transducer, the default), percent (share of the resonator's own rotation per Transducer), chance (to improve) or gain (of one try)", "damage")
       .option("--top <n>", "rows to print (default 25)", "25")
       .option("--no-er", "do not read Energy Regen needs from the saved teams (no line is protected)")
+      .option("--er-scan", "for a resonator in no saved team, read the Energy Regen need off the strongest team your account can field with them (the energy check over every team: about 40 s)")
+      .option("--reroll-unknown-er", "let a plan re-roll Energy Regen on a resonator the app knows no need for (in no saved team); by default such a line is kept")
       .option("--no-repeat", "a re-rolled line cannot come back as the stat it was (the game says only that locked substats are excluded; the default lets it)"),
   ).action(
-    guarded(async (options: CommonOptions & { resonator?: string; cost?: string; keep?: string; have?: string; everyone?: boolean; sort: string; top: string; er: boolean; repeat: boolean }) => {
+    guarded(async (options: CommonOptions & { resonator?: string; cost?: string; keep?: string; have?: string; everyone?: boolean; sort: string; top: string; er: boolean; repeat: boolean; erScan?: boolean; rerollUnknownEr?: boolean }) => {
       const exp = load(options);
       const { transducerReport, printTransducers } = await import("../echoLab/transducerCli");
       const num = (text: string | undefined, name: string, lo: number, hi: number): number | undefined => {
@@ -535,6 +537,8 @@ export function registerPlusCommands(program: Command): void {
           sort: options.sort as (typeof sorts)[number],
           noEr: !options.er,
           noRepeat: !options.repeat,
+          erScan: options.erScan,
+          rerollUnknownEr: options.rerollUnknownEr,
         }),
       );
       if (!wantsPretty(options)) return printJson(report);

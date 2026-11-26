@@ -28,6 +28,12 @@ export interface TransducerCliOptions {
   sort?: TransducerSort;
   /** read no Energy Regen needs (no floors) */
   noEr?: boolean;
+  /** for a resonator in no saved team, read the need off the strongest team the account can field with them (the
+   *  energy check over every team: about 40 s) */
+  erScan?: boolean;
+  /** let a plan re-roll Energy Regen on a resonator the app knows no need for (they are in no saved team). Off by
+   *  default: such a line is kept, since the app cannot tell whether the build can lose it */
+  rerollUnknownEr?: boolean;
   /** a re-rolled line cannot come back as the stat it was (the game does not say; the default lets it) */
   noRepeat?: boolean;
 }
@@ -71,12 +77,17 @@ export interface TransducerReport {
   /** equipped echoes read, and the ones left out with the reason */
   echoes: number;
   leftOut: Array<{ resonator: string; slot: number; echo: string | null; why: string }>;
+  /** where each need was read: a saved team, or the strongest team the account can field with them (erScan); a
+   *  resonator with no energy gate there is listed with need null */
+  erNeedsFrom: Array<{ resonator: string; need: number | null; source: "saved" | "strongest"; team: string }>;
   /** Energy Regen needs the advice respects, by resonator */
   erNeeds: Record<string, number>;
   erNote: string | null;
   filter: { resonator: string | null; cost: number | null; keep: number | null; everyone: boolean; sort: TransducerSort };
   /** supports and characters without a role, left out of the ranking unless `everyone` */
   supportsLeftOut: string[];
+  /** resonators whose Energy Regen lines were kept because the app knows no need for them (the default) */
+  keptUnknownEr: string[];
   /** how a re-rolled line's type is drawn: the game says only that locked substats are excluded */
   typeRule: string;
   ranking: Array<{ rank: number; pays: boolean; blocked: string | null; erUnknown: boolean; resonator: string; slot: number; echo: string | null; damagePerTransducer: number; plan: PlanReport | null }>;
@@ -142,16 +153,64 @@ export function planReport(advice: RerollAdviceResult, plan: LockPlan): PlanRepo
 
 const roleOf = (id: string): GearRole => gearRoleOf(id, KIT_INDEX_ENTRIES);
 
-/** Every character's ER need from the energy check of the saved teams, as the page's `erNeedsOf` rounds them. */
-async function erNeedsOfExport(exp: ExportFile): Promise<{ needs: Record<string, number>; note: string | null }> {
+/** The Energy Regen every build has before any bonus: the need given to a resonator whose strongest team has no energy
+ *  gate for them, so that "no need" is a need the app knows (nothing is ever short of it) and not an unknown one. */
+export const NO_GATE_NEED = 100;
+
+export interface ScannedNeed {
+  /** the member's need in that team (%); null when nothing they press there waits on energy */
+  need: number | null;
+  team: string;
+  /** that team's damage per second at the account, as the energy check measures it */
+  dps: number;
+}
+
+/** Per character, their Energy Regen need in the strongest measured team that fields them: the team with the highest
+ *  damage per second at the account (ties: the first listed). Teams that could not be measured are skipped. */
+export function strongestTeamNeeds(
+  teams: ReadonlyArray<{ name: string; measure: { status: string; energy?: { total?: number } | null }; checks: ReadonlyArray<{ characterId: string; need: number | null }> | null }>,
+): Map<string, ScannedNeed> {
+  const out = new Map<string, ScannedNeed>();
+  for (const t of teams) {
+    if (t.measure.status !== "ok" || !t.checks) continue;
+    const dps = Number(t.measure.energy?.total ?? 0);
+    for (const c of t.checks) {
+      const seen = out.get(c.characterId);
+      if (!seen || dps > seen.dps) out.set(c.characterId, { need: c.need ?? null, team: t.name, dps });
+    }
+  }
+  return out;
+}
+
+interface ErNeeds {
+  needs: Record<string, number>;
+  from: TransducerReport["erNeedsFrom"];
+  note: string | null;
+}
+
+/** Every character's ER need from the energy check of the saved teams, as the page's `erNeedsOf` rounds them; with
+ *  `scan`, a resonator in no saved team gets the need of the strongest team the account can field with them. */
+async function erNeedsOfExport(exp: ExportFile, scan = false): Promise<ErNeeds> {
   try {
     const { energyReport } = await import("../energy/energyCli");
-    const report = await energyReport(exp, { auto: true });
+    const report = await energyReport(exp, { auto: true, all: scan });
     const needs: Record<string, number> = {};
-    for (const f of [...report.floors].sort((a, b) => a.characterId.localeCompare(b.characterId))) needs[f.characterId] = Math.round(f.need * 100) / 100;
-    return { needs, note: null };
+    const from: ErNeeds["from"] = [];
+    for (const f of [...report.floors].sort((a, b) => a.characterId.localeCompare(b.characterId))) {
+      needs[f.characterId] = Math.round(f.need * 100) / 100;
+      from.push({ resonator: characterName(f.characterId), need: needs[f.characterId], source: "saved", team: f.team.name });
+    }
+    if (scan) {
+      const strongest = strongestTeamNeeds(report.teams);
+      for (const [id, s] of [...strongest].sort((a, b) => a[0].localeCompare(b[0]))) {
+        if (needs[id] != null) continue;
+        needs[id] = s.need == null ? NO_GATE_NEED : Math.round(s.need * 100) / 100;
+        from.push({ resonator: characterName(id), need: s.need == null ? null : needs[id], source: "strongest", team: s.team });
+      }
+    }
+    return { needs, from, note: null };
   } catch (err) {
-    return { needs: {}, note: `Energy Regen needs could not be read (${err instanceof Error ? err.message : String(err)}): no Energy Regen line is protected in this run.` };
+    return { needs: {}, from: [], note: `Energy Regen needs could not be read (${err instanceof Error ? err.message : String(err)}): no Energy Regen line is protected in this run.` };
   }
 }
 
@@ -160,7 +219,9 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
   const account = JSON.parse(JSON.stringify({ characters: exp.characters ?? {}, echoes: exp.inventory.echoes ?? [], equipped: exp.inventory.equipped ?? {}, teams: exp.teams ?? [] })) as LabAccount;
   const session = createLabSession(account);
   const only = options.resonator ? resolveCharacterKey(options.resonator, exp.characters) : null;
-  const { needs, note } = options.noEr ? { needs: {}, note: "Energy Regen needs were not read (--no-er): no Energy Regen line is protected in this run." } : await erNeedsOfExport(exp);
+  const { needs, from, note }: ErNeeds = options.noEr
+    ? { needs: {}, from: [], note: "Energy Regen needs were not read (--no-er): no Energy Regen line is protected in this run." }
+    : await erNeedsOfExport(exp, Boolean(options.erScan));
   const advices: RerollAdviceResult[] = [];
   const leftOut: TransducerReport["leftOut"] = [];
   let worn = 0;
@@ -183,7 +244,15 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
         leftOut.push({ resonator: characterName(id), slot: s.slot + 1, echo: echoName(s.species), why: "not a 5-star echo: only those can be re-rolled" });
         continue;
       }
-      advices.push(await rerollAdvice(session, id, s.slot, { ...(needs[id] != null ? { erNeed: needs[id] } : {}), ...(options.noRepeat ? { canRepeat: false } : {}) }, { yieldMs: 0 }));
+      advices.push(
+        await rerollAdvice(
+          session,
+          id,
+          s.slot,
+          { ...(needs[id] != null ? { erNeed: needs[id] } : {}), ...(options.noRepeat ? { canRepeat: false } : {}), ...(options.rerollUnknownEr ? {} : { keepUnknownEr: true }) },
+          { yieldMs: 0 },
+        ),
+      );
     }
   }
   const sort = options.sort ?? "damage";
@@ -219,9 +288,11 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
     ms: Math.round(performance.now() - started),
     echoes: worn,
     leftOut,
+    erNeedsFrom: from,
     erNeeds: Object.fromEntries(Object.entries(needs).map(([id, need]) => [characterName(id), need])),
     erNote: note,
     filter: { resonator: only ? characterName(only) : null, cost: options.cost ?? null, keep: options.keep ?? null, everyone, sort },
+    keptUnknownEr: [...new Set(advices.filter((a) => (everyone || dealers.has(a.characterId)) && a.erNeed == null && a.lines.some((l) => l.erFloor)).map((a) => characterName(a.characterId)))].sort(),
     typeRule: options.noRepeat
       ? "A re-rolled line takes a stat the echo did not hold before the re-roll (--no-repeat). The game says only that locked substats are excluded."
       : "A re-rolled line takes any stat the kept lines do not hold, so it may come back as the stat it was: the game says only that locked substats are excluded (--no-repeat reads it the other way).",
@@ -368,11 +439,26 @@ export function printTransducers(r: TransducerReport, top = 25): void {
     for (const x of o.exceptions.slice(0, 4)) console.log(`    ${x.resonator} slot ${x.slot} (${x.echo ?? "?"}): keep ${x.bestKeeps.join(" + ") || "nothing"} ${signed(x.bestGainPct)} against ${x.critOnlyGainPct == null ? "-" : signed(x.critOnlyGainPct)} for the crit line alone`);
   }
   if (c.noCritLine.echoes) console.log(`  ${c.noCritLine.echoes} with no crit line.`);
-  if (c.erBound) console.log(`  ${c.erBound} left out: keeping exactly the crit lines would re-roll an Energy Regen line the build needs.`);
-  const erList = Object.entries(r.erNeeds);
-  if (erList.length) console.log(`\nEnergy Regen needs respected (from your saved teams): ${erList.map(([name, need]) => `${name} ${showNeed(need).toFixed(1)}%`).join(", ")}.`);
+  if (c.erBound) console.log(`  ${c.erBound} left out: keeping exactly the crit lines would re-roll an Energy Regen line that stays (the build needs it, or the app knows no need for that resonator and keeps it).`);
+  const savedNeeds = r.erNeedsFrom.filter((x) => x.source === "saved" && x.need != null);
+  if (savedNeeds.length) console.log(`\nEnergy Regen needs respected (from your saved teams): ${savedNeeds.map((x) => `${x.resonator} ${showNeed(x.need as number).toFixed(1)}%`).join(", ")}.`);
+  const scanned = r.erNeedsFrom.filter((x) => x.source === "strongest");
+  if (scanned.length) {
+    const gated = scanned.filter((x) => x.need != null);
+    const free = scanned.filter((x) => x.need == null);
+    console.log("Energy Regen needs read off the strongest team you can field with each resonator in no saved team (wuwa_calc's damage per second at your account):");
+    for (const x of gated) console.log(`  ${x.resonator} ${showNeed(x.need as number).toFixed(1)}% in ${x.team}`);
+    if (free.length) console.log(`  No energy gate there, so no need: ${free.map((x) => `${x.resonator} (${x.team})`).join("; ")}.`);
+  }
   const unknown = [...new Set(r.ranking.filter((x) => x.pays && x.erUnknown).map((x) => x.resonator))];
-  if (unknown.length) console.log(`* re-rolls an Energy Regen line of a resonator in no saved team (${unknown.join(", ")}): the app knows no Energy Regen need for them, so check that the build can lose it.`);
+  if (unknown.length)
+    console.log(
+      `* re-rolls an Energy Regen line of a resonator in no saved team (${unknown.join(", ")}): the app knows no Energy Regen need for them, so check that the build can lose it (--reroll-unknown-er is on).`,
+    );
+  if (r.keptUnknownEr.length)
+    console.log(
+      `Energy Regen kept where the app knows no need (resonators in no saved team): ${r.keptUnknownEr.join(", ")}. --reroll-unknown-er lets a plan re-roll those lines; --er-scan reads each need off the strongest team you can field with them; saving the team you play them in tells the app for good.`,
+    );
   console.log(r.typeRule);
   console.log("Gains are a share of that resonator's own rotation damage (their best rotation, the ranking enemy). Type odds are assumed even: the game publishes only the value odds.");
 }
