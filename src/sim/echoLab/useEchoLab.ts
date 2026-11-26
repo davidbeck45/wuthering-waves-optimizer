@@ -15,7 +15,8 @@ import { CANCELLED, NOT_IN_APP, type LabAccount, type LabProgress } from "./core
 import { getEchoLabClient, labAccountOf } from "./echoLabClient";
 import { accountFingerprint } from "./fingerprint";
 import type { BenchmarkBatchResult, EchoLabJob, EchoLabPassResult, EchoLabResult } from "./pass";
-import type { RerollAdviceResult } from "./rerollAdvice";
+import type { RerollAdviceResult, RerollOptions } from "./rerollAdvice";
+import { rerollExtraKey, type RerollExtra } from "./transducerView";
 import { rerollOptionsFor } from "./rerollPick";
 import type { RollQualityResult, RollQualityTarget } from "./rollQuality";
 import type { RollRating, RollRatingItem } from "./rollRatings";
@@ -472,18 +473,20 @@ export function useEchoLab() {
     if (resultFingerprint.value === fingerprint) await confirmBenchNeeds(fingerprint);
   }
 
-  const rerollKey = (characterId: string, slot: number): string => `${resultFingerprint.value}|${characterId}|${slot}`;
+  const rerollKey = (characterId: string, slot: number, extra?: RerollExtra): string => `${resultFingerprint.value}|${characterId}|${slot}${rerollExtraKey(extra)}`;
 
-  /** Re-roll advice for one equipped echo (cached per account state). */
-  async function runReroll(characterId: string, slot: number, signal: AbortSignal): Promise<void> {
+  /** Re-roll advice for one equipped echo (cached per account state and per `extra`). */
+  async function runReroll(characterId: string, slot: number, signal: AbortSignal, extra?: RerollExtra): Promise<void> {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
-    const key = rerollKey(characterId, slot);
+    const key = rerollKey(characterId, slot, extra);
     if (rerolls.has(key) && !askedShort.has(key)) return;
     try {
       // Wuthering Tools+ energy check: an ER line the build needs is locked, and ER counts as a floor
       const { needs, whole } = await lookupErNeeds(fingerprint);
-      const options = rerollOptionsFor(needs, characterId);
+      const options: RerollOptions = { ...rerollOptionsFor(needs, characterId) };
+      if (extra?.canRepeat === false) options.canRepeat = false;
+      if (extra?.keepUnknownEr) options.keepUnknownEr = true;
       if (signal.aborted) return;
       const result = await getEchoLabClient().run({ kind: "reroll", characterId, slot, options }, account, { signal });
       if (resultFingerprint.value === fingerprint) {
@@ -496,7 +499,7 @@ export function useEchoLab() {
     }
   }
 
-  const rerollOf = (characterId: string, slot: number): RerollAdviceResult | { error: string } | null => rerolls.get(rerollKey(characterId, slot)) ?? null;
+  const rerollOf = (characterId: string, slot: number, extra?: RerollExtra): RerollAdviceResult | { error: string } | null => rerolls.get(rerollKey(characterId, slot, extra)) ?? null;
 
   /** The Tuner plan's candidates: every unfinished echo worth a Tuner, and where a fresh echo pays most. */
   async function runTunerPlan(options: { force?: boolean } = {}): Promise<void> {
