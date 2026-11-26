@@ -60,6 +60,8 @@ describe("Echo Lab: Transducers tab", () => {
     waitForRun();
     cy.get("[data-test-tdx-row]").should("have.length.at.least", 2);
     cy.get("[data-test-tdx-scope]").should("contain.text", "Equipped echoes only");
+    // the tab says "keep" where the game says "lock": once, where a player first reads it
+    cy.get("[data-test-tdx-keep-is-lock]").should("contain.text", "lock it in the game's Data Modify screen");
 
     // the best use is the first row
     cy.get("[data-test-tdx-best]").should("be.visible").invoke("attr", "data-key").then((key) => {
