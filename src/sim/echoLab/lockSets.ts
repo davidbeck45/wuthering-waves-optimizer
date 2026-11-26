@@ -157,6 +157,10 @@ interface Prepared {
   /** by number of counting stats drawn: the chance of one given set of them (the rest drawn from the dead ones) */
   typeW: number[];
   outcomes: number;
+  /** the re-rolled lines that count, as (live row, tier) sorted by row: an outcome that draws exactly these (the rest
+   *  landing on stats that add nothing) is the echo as it is, a change of exactly 0. Null when no outcome can be that
+   *  (a held value that is no tier, a re-rolled type that cannot come back) */
+  same: Array<[number, number]> | null;
 }
 
 function prepare(input: LockSetInput, rows: readonly Row[], held: ReadonlyArray<Held | null>, mask: number): Prepared {
@@ -210,7 +214,33 @@ function prepare(input: LockSetInput, rows: readonly Row[], held: ReadonlyArray<
     typeW.push(w);
     if (w > 0) outcomes += e[j];
   }
-  return { mask, locks, k: draws, scale: input.base > 0 ? anchor / input.base : 0, live, eff, n, dead, typeW, outcomes };
+  // the outcome that gives the echo back as it is
+  let same: Array<[number, number]> | null = [];
+  for (let i = 0; i < lines.length && same; i++) {
+    if (mask & (1 << i)) continue;
+    const h = held[i];
+    if (!h) same = null; // a key the model does not know
+    else if (model.share[h.index]) {
+      const a = live.findIndex((r) => r.index === h.index);
+      const t = a < 0 ? -1 : live[a].values.findIndex((v) => Math.abs(v - lines[i].value) <= 1e-6 * Math.max(1, Math.abs(v)));
+      if (t < 0) same = null; // it cannot come back (a re-rolled type that may not repeat), or its value is no tier
+      else same.push([a, t]);
+    } // a stat that adds nothing here: any other that adds nothing gives the echo back
+  }
+  if (same) same.sort((x, y) => x[0] - y[0]);
+  return { mask, locks, k: draws, scale: input.base > 0 ? anchor / input.base : 0, live, eff, n, dead, typeW, outcomes, same };
+}
+
+/** True when an outcome (its counting stats `rowAt` / `tierAt`, `picked` of them) is the echo as it is. */
+function isSame(p: Prepared, picked: number, rowAt: ArrayLike<number>, tierAt: ArrayLike<number>): boolean {
+  const same = p.same;
+  if (!same || picked !== same.length) return false;
+  for (const [a, t] of same) {
+    let hit = false;
+    for (let c = 0; c < picked; c++) if (rowAt[c] === a && tierAt[c] === t) hit = true;
+    if (!hit) return false;
+  }
+  return true;
 }
 
 // eslint-disable-next-line no-unused-vars -- the parameters of a function type
@@ -319,8 +349,10 @@ export function lockSetReader(input: LockSetInput): LockSetReader {
   const samples = Math.max(1000, Math.floor(input.samples ?? DEFAULT_LOCK_SAMPLES));
   const walk = (p: Prepared, emit: Emit): boolean => {
     const sampled = p.outcomes > exactLimit;
-    if (sampled) walkSampled(input.model, p, samples, seedFor(input, p.mask), emit);
-    else walkExact(input.model, p, emit);
+    // the lines the echo had, back as they were: no change, whatever a hair of model slack says
+    const exact: Emit = p.same ? (d, w, picked, rowAt, tierAt) => emit(isSame(p, picked, rowAt, tierAt) ? 0 : d, w, picked, rowAt, tierAt) : emit;
+    if (sampled) walkSampled(input.model, p, samples, seedFor(input, p.mask), exact);
+    else walkExact(input.model, p, exact);
     return sampled;
   };
 
@@ -442,6 +474,8 @@ export function lockSetReader(input: LockSetInput): LockSetReader {
     const p = prepare(input, rows, held, mask);
     const pair = input.model.pair;
     const seen: Array<{ index: number; share: number }> = [];
+    const rowAt: number[] = [];
+    const tierAt: number[] = [];
     let f = 1;
     for (const line of newLines) {
       const a = p.live.findIndex((r) => r.key === line.key);
@@ -449,6 +483,8 @@ export function lockSetReader(input: LockSetInput): LockSetReader {
       const row = p.live[a];
       const t = row.values.findIndex((v) => Math.abs(v - line.value) <= 1e-6 * Math.max(1, Math.abs(v)));
       if (t < 0) throw new Error(`${line.key} ${line.value} is not a tier the game rolls`);
+      rowAt.push(a);
+      tierAt.push(t);
       let g = p.eff[a][t];
       const s = (row.share as number[])[t];
       for (const c of seen) {
@@ -458,7 +494,7 @@ export function lockSetReader(input: LockSetInput): LockSetReader {
       f *= g;
       seen.push({ index: row.index, share: s });
     }
-    return p.scale * f - 1;
+    return isSame(p, rowAt.length, rowAt, tierAt) ? 0 : p.scale * f - 1;
   };
 
   const full = (1 << input.lines.length) - 1;

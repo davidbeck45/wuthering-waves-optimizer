@@ -154,12 +154,40 @@ describe("The lock-set reader, on a known formula", () => {
       { field: 4, key: "BasicAttackDMGBonus", value: tier("BasicAttackDMGBonus", -1) },
       { field: 5, key: "DEF_FLAT", value: tier("DEF_FLAT", 0) },
     ];
-    const nothing = [{ key: "HP", value: tier("HP", 0) }];
+    // keep the three DMG Bonus lines, re-roll the ATK % and the flat DEF lines into two that do nothing
+    const nothing = [{ key: "HP", value: tier("HP", 0) }, { key: "DEF", value: tier("DEF", 1) }];
+    const keptAlone = damage(lines.slice(1, 4)) / damage(lines) - 1;
     const anchored = await readerFor(lines);
-    expect(anchored.changeOf(0b01111, nothing)).toBe(0);
+    expect(anchored.changeOf(0b01110, nothing)).toBe(keptAlone);
     const modelOnly = await readerFor(lines, { anchored: false });
-    expect(modelOnly.changeOf(0b01111, nothing)).not.toBe(0);
-    expect(Math.abs(modelOnly.changeOf(0b01111, nothing))).toBeLessThan(1e-3);
+    expect(modelOnly.changeOf(0b01110, nothing)).not.toBe(keptAlone);
+    expect(Math.abs(modelOnly.changeOf(0b01110, nothing) - keptAlone)).toBeLessThan(1e-3);
+    // the flat DEF line back as another stat that does nothing is the echo as it is, with or without the anchor
+    expect(anchored.changeOf(0b01111, [{ key: "HP", value: tier("HP", 0) }])).toBe(0);
+    expect(modelOnly.changeOf(0b01111, [{ key: "HP", value: tier("HP", 0) }])).toBe(0);
+  });
+
+  it("a re-roll that brings back the very lines the echo had changes nothing, and never counts as beating it", async () => {
+    // three DMG Bonus lines in one part of the formula: the model is a hair off for them, so the Basic Attack line
+    // coming back at the value it had read as a gain of a few millionths, and every such try counted towards "the chance
+    // to beat the lines it has" (on a real echo: 4.5 % where the engine says 0.3 %)
+    const lines: HeldLine[] = [
+      { field: 1, key: "ATK", value: tier("ATK", -1) },
+      { field: 2, key: "HeavyAttackDMGBonus", value: tier("HeavyAttackDMGBonus", -1) },
+      { field: 3, key: "ResonanceSkillDMGBonus", value: tier("ResonanceSkillDMGBonus", -1) },
+      { field: 4, key: "BasicAttackDMGBonus", value: tier("BasicAttackDMGBonus", 4) },
+      { field: 5, key: "DEF_FLAT", value: tier("DEF_FLAT", 0) },
+    ];
+    const reader = await readerFor(lines);
+    const back = [{ key: "BasicAttackDMGBonus", value: tier("BasicAttackDMGBonus", 4) }];
+    expect(reader.changeOf(0b10111, back)).toBe(0);
+    // with a dead line re-rolled too, the live line coming back and the dead one landing on any dead stat is the same echo
+    expect(reader.changeOf(0b00111, [...back, { key: "HP", value: tier("HP", 2) }])).toBe(0);
+    for (const mask of [0b10111, 0b00111]) {
+      const want = truth(lines, mask);
+      const got = reader.stats(mask);
+      expect(Math.abs(got.pImprove - want.pImprove)).toBeLessThan(1e-9);
+    }
   });
 
   it("draws tries when there are too many outcomes to count, the same ones every run, close to the count", async () => {
