@@ -138,6 +138,11 @@ export function notWorthText(row: Pick<TransducerRow, "plan" | "blocked" | "pays
   return "not worth a Transducer: under 0.05 % expected";
 }
 
+/** A best result rarer than this is said to be one not to plan on (one in ten thousand tries: far past any player's
+ *  Transducers). */
+export const RARE_TOP = 1e-4;
+export const rareTopText = (chance: number): string | null => (chance > 0 && chance < RARE_TOP ? "a ceiling, not something to plan on" : null);
+
 /** "1 try in N" for the chance of a result; null when it cannot happen. */
 export function oneIn(chance: number): string | null {
   if (!(chance > 0)) return null;

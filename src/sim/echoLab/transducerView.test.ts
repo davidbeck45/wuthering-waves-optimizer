@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { noRowsText, bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { rareTopText, noRowsText, bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -125,5 +125,11 @@ describe("transducerView", () => {
     expect(noRowsText(false, "everyone", 2)).toBe("No echo under these filters.");
     expect(noRowsText(false, "dealers", 0)).toBe("No echo under these filters.");
     expect(noRowsText(true, "dealers", 2)).toBe("The first resonator is being read…");
+  });
+
+  it("says a best result of one try in millions is a ceiling, not a plan", () => {
+    expect(rareTopText(1 / 6_483_278)).toBe("a ceiling, not something to plan on");
+    expect(rareTopText(0.01)).toBeNull();
+    expect(rareTopText(0)).toBeNull();
   });
 });

@@ -67,7 +67,7 @@
           <div><dt>Expected after 3 tries · after 5</dt><dd>{{ signedPct(gainAfter(best.plan, 3), 2) }} · {{ signedPct(gainAfter(best.plan, 5), 2) }}</dd></div>
           <div class="sm:col-span-2" data-test-tdx-best-top>
             <dt>The best it can roll</dt>
-            <dd>{{ signedPct(best.plan.top.gain, 2) }} with {{ best.plan.top.lines.map((l) => lineText(l.key, l.value)).join(", ") || "the lines it has" }}<template v-if="oneIn(best.plan.top.chance)"> ({{ oneIn(best.plan.top.chance) }})</template></dd>
+            <dd>{{ signedPct(best.plan.top.gain, 2) }} with {{ best.plan.top.lines.map((l) => lineText(l.key, l.value)).join(", ") || "the lines it has" }}<template v-if="oneIn(best.plan.top.chance)"> ({{ oneIn(best.plan.top.chance) }}<template v-if="rareTopText(best.plan.top.chance)">: {{ rareTopText(best.plan.top.chance) }}</template>)</template></dd>
           </div>
         </dl>
         <p v-if="best.erUnknown" class="el-er-short mt-2 text-xs" data-test-tdx-er-caution>Caution: this re-rolls Energy Regen, and the app knows no Energy Regen need for {{ characterName(best.advice.characterId) }} (they are in no saved team). Keep it if their rotation needs it.</p>
@@ -307,7 +307,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
 import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { bestHeading, chanceText, noRowsText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { bestHeading, chanceText, noRowsText, rareTopText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
