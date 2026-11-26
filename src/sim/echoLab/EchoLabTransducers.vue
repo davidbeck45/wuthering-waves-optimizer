@@ -280,6 +280,9 @@
           <p class="mt-2" data-test-tdx-crit-summary>
             Of {{ crit.both.echoes }} echo{{ crit.both.echoes === 1 ? "" : "es" }} with both crit lines, keeping exactly the two is the best one-Transducer plan on {{ crit.both.keepsBoth }}; one crit line and another stat is better on {{ crit.both.keepsOneAndOther }}<template v-if="crit.both.keepsLess">, and keeping fewer is better on {{ crit.both.keepsLess }}</template>. Over them, the crit rule gets {{ pct(crit.both.shareOfBest, 0) }} of the best plans' expected gain.
           </p>
+          <p class="mt-1 text-xs opacity-80" data-test-tdx-crit-depends>
+            These counts are read with a re-rolled line {{ view.repeat ? "able" : "never able" }} to come back as the stat it was (the switch under the filters): the game does not publish which, and the answer changes with it.
+          </p>
           <ul v-if="crit.both.exceptions.length" class="mt-2 space-y-1">
             <li v-for="x in crit.both.exceptions.slice(0, 5)" :key="x.key" class="rounded-lg bg-base-200 px-3 py-1.5 text-xs" data-test-tdx-crit-exception>
               {{ characterName(x.advice.characterId) }}'s {{ echoName(x.advice.echo) }}: keeping {{ x.kept.map(statName).join(" and ") || "nothing" }} expects {{ signedPct(x.best.expectedGain, 2) }}; keeping the crit pair, {{ x.critPlan ? signedPct(x.critPlan.expectedGain, 2) : "no such plan" }}.

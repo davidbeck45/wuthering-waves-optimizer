@@ -113,6 +113,8 @@ describe("Echo Lab: Transducers tab", () => {
 
     // the crit question
     cy.get("[data-test-tdx-crit]").should("contain.text", "Is keeping Crit Rate and Crit DMG always right?");
+    // and says which reading of the game's rule its counts stand on
+    cy.get("[data-test-tdx-crit-depends]").should("contain.text", "able to come back as the stat it was").and("not.contain.text", "never able");
 
     // a row opens: every lock count, and a link to that resonator on the Re-roll tab
     cy.get("[data-test-tdx-row]").first().as("row").invoke("attr", "data-test-tdx-row").then((key) => {
