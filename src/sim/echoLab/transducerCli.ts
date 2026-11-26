@@ -12,7 +12,7 @@ import { KIT_INDEX_ENTRIES } from "../kits/load";
 import { builtCharacterIds, createLabSession, echoLines, prepareCharacter, type LabAccount } from "./core";
 import { showNeed } from "../energy/energyNeed";
 import { DEFAULT_LOCK_COSTS, LOCK_COST_NOTE, rerollAdvice, type LockPlan, type LockSetPlan, type RerollAdviceResult } from "./rerollAdvice";
-import { chanceOfAny, critKeepCheck, gainAfter, spendPlan, transducerRows, type CritKeepCheck, type SpendPlan, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
+import { chanceOfAny, critKeepCheck, gainAfter, goodTry, spendPlan, transducerRows, type CritKeepCheck, type SpendPlan, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
 
 export interface TransducerCliOptions {
   /** one resonator (loose name) */
@@ -55,8 +55,8 @@ export interface PlanReport {
   expectedGainPct: number;
   expectedDamage: number;
   gainPerTransducerPct: number;
-  /** one try in ten gains at least this (0 when nine in ten do not beat the echo) */
-  goodTryPct: number;
+  /** one try in ten gains at least this; null when fewer than one try in ten beats the echo */
+  goodTryPct: number | null;
   /** expected gain keeping the best of 3 and of 5 tries with the same locks */
   after3TriesPct: number;
   after5TriesPct: number;
@@ -111,7 +111,12 @@ const pct2 = (rel: number): number => Math.round(rel * 1e4) / 100;
 
 const lineText = (l: { key: string; value: number }): string => `${statLabel(l.key) ?? l.key} ${r2(l.value)}`;
 
-function planReport(advice: RerollAdviceResult, plan: LockPlan): PlanReport {
+const goodTryOf = (plan: LockPlan): number | null => {
+  const good = goodTry(plan);
+  return good == null ? null : pct2(good);
+};
+
+export function planReport(advice: RerollAdviceResult, plan: LockPlan): PlanReport {
   const byField = new Map(advice.lines.map((l) => [l.field, l]));
   const words = (fields: number[]): string[] => fields.map((f) => byField.get(f)).filter((l): l is NonNullable<typeof l> => Boolean(l)).map(lineText);
   return {
@@ -123,7 +128,7 @@ function planReport(advice: RerollAdviceResult, plan: LockPlan): PlanReport {
     expectedGainPct: pct2(plan.expectedGain),
     expectedDamage: Math.round(plan.expectedGain * advice.base),
     gainPerTransducerPct: pct2(plan.gainPerTransducer),
-    goodTryPct: pct2(Math.max(0, plan.p90)),
+    goodTryPct: goodTryOf(plan),
     after3TriesPct: pct2(gainAfter(plan, 3)),
     after5TriesPct: pct2(gainAfter(plan, 5)),
     best: { gainPct: pct2(plan.top.gain), lines: plan.top.lines.map(lineText), oneIn: plan.top.chance > 0 ? Math.round(1 / plan.top.chance) : null },
@@ -271,6 +276,9 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
   };
 }
 
+/** The sentence for "a good try": what the best one in ten gains, or that fewer than one in ten beat the echo at all. */
+export const goodTryText = (pct: number | null): string =>
+  pct == null ? "fewer than one try in ten beats the lines it has" : `a good try (one in ten) gains ${signed(pct)} or more`;
 const signed = (n: number, digits = 2): string => `${n >= 0 ? "+" : ""}${n.toFixed(digits)}%`;
 const whole = (n: number): string => `${Math.round(n)}%`;
 const s = (n: number, word: string): string => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -292,7 +300,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
     console.log(`  keep     ${p.keep.join(" + ") || "nothing"}`);
     console.log(`  re-roll  ${p.reroll.join(", ")}`);
     console.log(`  one try: ${whole(p.chanceToImprovePct)} chance to beat the lines it has · expected ${signed(p.expectedGainPct)} of ${first.resonator}'s rotation (${int(p.expectedDamage)} damage)`);
-    console.log(`  a good try (one in ten) gains ${signed(p.goodTryPct)} or more · the best it can roll: ${signed(p.best.gainPct)} (${p.best.lines.join(", ")}${p.best.oneIn ? `; 1 try in ${int(p.best.oneIn)}` : ""})`);
+    console.log(`  ${goodTryText(p.goodTryPct)} · the best it can roll: ${signed(p.best.gainPct)} (${p.best.lines.join(", ")}${p.best.oneIn ? `; 1 try in ${int(p.best.oneIn)}` : ""})`);
     console.log(`  the same locks again: ${signed(p.after3TriesPct)} expected after 3 tries, ${signed(p.after5TriesPct)} after 5`);
   }
   console.log("");
@@ -313,7 +321,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
           whole(p.chanceToImprovePct),
           signed(p.expectedGainPct),
           int(x.damagePerTransducer),
-          x.blocked === "erFloor" ? "needs its Energy Regen line: not advised" : x.pays ? signed(p.goodTryPct) : "not worth a Transducer",
+          x.blocked === "erFloor" ? "needs its Energy Regen line: not advised" : x.pays ? (p.goodTryPct == null ? "under 1 in 10 beat it" : signed(p.goodTryPct)) : "not worth a Transducer",
         ];
       }),
     ]),

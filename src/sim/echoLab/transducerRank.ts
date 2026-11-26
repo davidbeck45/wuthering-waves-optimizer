@@ -179,6 +179,10 @@ export const gainAfter = (plan: Pick<LockPlan, "bestOf" | "expectedGain">, tries
   return curve[Math.min(tries, curve.length) - 1];
 };
 
+/** What "a good try" (the best one in ten) gains with a plan's locks; null when fewer than one try in ten beats the lines
+ *  the echo has, where "one in ten gains +0.00 % or more" would read as a promise. */
+export const goodTry = (plan: Pick<LockPlan, "pImprove" | "p90">): number | null => (plan.pImprove >= 0.1 && plan.p90 > 1e-9 ? plan.p90 : null);
+
 /** The chance at least one of `tries` tries beats the current lines. */
 export const chanceOfAny = (plan: Pick<LockSetPlan, "pImprove">, tries: number): number => 1 - (1 - plan.pImprove) ** Math.max(0, tries);
 
