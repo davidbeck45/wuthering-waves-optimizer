@@ -150,7 +150,7 @@
                 <p class="mt-1 opacity-60 lg:hidden" data-test-echo-lab-reroll-plans-legend>
                   Locks = lines locked · Cost = Transducers a try · Odds = chance to improve · Gain = expected damage gain · Per win = Transducers per success.
                 </p>
-                <p class="mt-1 opacity-60">Expected gain keeps the better of the old and new lines. Transducer costs per lock count: verify in game.</p>
+                <p class="mt-1 opacity-60">Each row is the best set of lines to keep at that count, out of every way to keep that many. Expected gain keeps the better of the old and new lines. A try costs 1 Transducer with up to two lines kept, 2 with three, 3 with four: the game's rule since version 3.1.</p>
               </details>
             </div>
           </template>

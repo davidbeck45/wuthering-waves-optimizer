@@ -219,7 +219,7 @@ describe("re-roll advice", () => {
     expect(advice.lines[0].worth).toBeCloseTo(0, 6);
     expect(advice.lines.find((l) => l.key === "CritRate")?.advice).toBe("lock");
     expect(advice.plans.map((p) => [p.locks, p.cost])).toEqual([[4, 3], [3, 2], [2, 1], [1, 1], [0, 1]]);
-    expect(advice.plans[0]).toMatchObject({ method: "exact", rerolledFields: [advice.lines[0].field] });
+    expect(advice.plans[0]).toMatchObject({ method: "counted", rerolledFields: [advice.lines[0].field] });
     for (const p of advice.plans) {
       expect(p.pImprove).toBeGreaterThanOrEqual(0);
       expect(p.pImprove).toBeLessThanOrEqual(1);
@@ -227,7 +227,9 @@ describe("re-roll advice", () => {
     }
     expect(advice.recommended).not.toBeNull();
     expect(advice.recommended!.gainPerTransducer).toBe(Math.max(...advice.plans.map((p) => p.gainPerTransducer)));
-    expect(advice.lockCostNote).toBe("verify in game");
+    expect(advice.lockCostNote).toBe("the game's rule since version 3.1");
+    expect(advice.assumptions.join(" ")).toMatch(/1 Transducer with up to two lines kept, 2 with three kept and 3 with four kept/);
+    expect(advice.assumptions.join(" ")).not.toMatch(/verify in game/);
   }, T);
 });
 
@@ -265,6 +267,21 @@ describe("re-roll advice with an Energy Regen need", () => {
       expect(r.assumptions[r.assumptions.length - 1]).toMatch(/Energy Regen is a floor/);
       // the other lines keep their ranking order
       expect(r.lines.slice(0, 4).map((l) => l.key)).toEqual(plain.lines.filter((l) => l.key !== "EnergyRegen").map((l) => l.key));
+    },
+    T,
+  );
+
+  it(
+    "with no need known, the ER line is kept only when asked to (keepUnknownEr): no need, no floor to measure",
+    async () => {
+      const kept = await rerollAdvice(createLabSession(clone()), "Galbrena", slot, { keepUnknownEr: true }, quiet);
+      expect(kept.erNeed).toBeNull();
+      expect(erField(kept)).toMatchObject({ advice: "lock", erFloor: true });
+      expect(erField(kept).worth).toBeCloseTo(0, 9); // still worth nothing to the damage engine: kept on the player's word
+      for (const p of kept.plans.filter((x) => x.locks >= 1)) expect(p.lockedFields).toContain(erField(kept).field);
+      expect(kept.recommended?.rerolledFields ?? []).not.toContain(erField(kept).field);
+      // keeping it costs a lock: the plan that re-rolled it for free is gone, so the echo's best gain per Transducer is lower
+      expect(kept.recommended?.gainPerTransducer ?? 0).toBeLessThan(plain.recommended!.gainPerTransducer);
     },
     T,
   );

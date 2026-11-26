@@ -121,7 +121,7 @@ describe("Echo Lab", () => {
     cy.get('[data-test-echo-lab-reroll-line="pending"]').should("not.exist");
     cy.get("[data-test-echo-lab-reroll-first]").should("have.length.at.most", 1);
     cy.get("[data-test-echo-lab-info=reroll]").click();
-    cy.get("[data-test-echo-lab-info-panel=reroll]").should("be.visible").and("contain.text", "verify in game");
+    cy.get("[data-test-echo-lab-info-panel=reroll]").should("be.visible").and("contain.text", "the game's rule since version 3.1").and("not.contain.text", "verify in game");
 
     cy.get('[data-test-echo-lab-tab="benchmark"]').click();
     cy.get("[data-test-echo-lab-benchmark-row]", RUN).should("have.length", 3);

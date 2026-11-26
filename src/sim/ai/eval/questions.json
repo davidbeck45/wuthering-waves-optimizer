@@ -168,7 +168,7 @@
       "question": "Which of Aemeath's echoes should I re-roll first?",
       "expect": ["echo_lab"],
       "acceptable": ["substat_weights"],
-      "grounding": "echo_lab show reroll for Aemeath: the echo to re-roll first, which lines to lock, the chance a try improves it and the expected gain; Transducer costs marked 'verify in game'."
+      "grounding": "echo_lab show reroll for Aemeath: the echo to re-roll first, which lines to lock, the chance a try improves it and the expected gain; Transducers a try by lines kept (1 with up to two kept, 2 with three, 3 with four: the game's rule)."
     },
     {
       "id": "toa-floor-4",

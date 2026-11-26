@@ -55,7 +55,7 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
     "echoes; reroll gives Transducer advice for one character's equipped five-line echoes (lock or re-roll each line, the " +
     "chance a re-roll improves it, expected gain) and which echo to re-roll first. character narrows keep / spare to " +
     "upgrades for that character and is required for reroll. Damage gains are % of that character's rotation damage; tuning " +
-    "and Transducer costs are approximate (verify in game).",
+    "costs are approximate; a Transducer try costs 1 with up to two lines kept, 2 with three, 3 with four (the game's rule).",
   input_schema: {
     type: "object",
     properties: {
@@ -101,7 +101,7 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
             : "keep as is",
         })),
         notSoon: lab.slots.filter((s) => s && s.lines.length < 5).map((s) => `slot ${s!.slot + 1}: not fully tuned yet`),
-        notes: ["Gains are % of the character's rotation damage. Lock costs 1/1/1/2/3 Transducers: verify in game."],
+        notes: ["Gains are % of the character's rotation damage. A try costs 1 Transducer with up to two lines kept, 2 with three, 3 with four (the game's rule since version 3.1); every way to keep lines was compared."],
         path: `/echo-lab?tab=reroll${characterLink}`,
         label: "Echo Lab re-roll",
       });

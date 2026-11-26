@@ -67,7 +67,7 @@
             <span v-if="first.plan" class="w-full text-xs tabular-nums opacity-80">
               {{ first.plan.locks ? `Lock ${first.plan.locks}, re-roll ${first.plan.rerolledFields.length}` : `Re-roll all ${first.plan.rerolledFields.length}` }}:
               {{ pct(first.plan.pImprove, 0) }} to improve, <span class="el-up">{{ signedPct(first.plan.expectedGain, 2) }}</span> expected,
-              {{ first.plan.cost }} Transducer{{ first.plan.cost === 1 ? "" : "s" }} a try <span class="opacity-60">(verify in game)</span>
+              {{ first.plan.cost }} Transducer{{ first.plan.cost === 1 ? "" : "s" }} a try
             </span>
           </div>
           <p v-else-if="!reroll.running" class="mt-1 text-xs opacity-70" data-test-echo-lab-engine-reroll-none>{{ rerollNote }}</p>
