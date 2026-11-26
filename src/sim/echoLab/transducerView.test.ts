@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -112,5 +112,11 @@ describe("transducerView", () => {
     expect(critErBoundText(0)).toBeNull();
     expect(critErBoundText(1)).toBe("1 echo is left out: keeping exactly the crit lines there would re-roll Energy Regen the build needs, so the rule cannot be followed on it.");
     expect(critErBoundText(2)).toContain("2 echoes are left out");
+  });
+
+  it("says the best use may still change while echoes are being read", () => {
+    expect(bestHeading(true, 12, 114)).toBe("Best use so far: 12 of 114 echoes read, it may still change");
+    expect(bestHeading(false, 114, 114)).toBe("Best use of a Transducer");
+    expect(bestHeading(true, 114, 114)).toBe("Best use of a Transducer");
   });
 });

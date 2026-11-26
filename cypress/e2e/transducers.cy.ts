@@ -67,6 +67,7 @@ describe("Echo Lab: Transducers tab", () => {
     cy.get("[data-test-tdx-best]").should("be.visible").invoke("attr", "data-key").then((key) => {
       cy.get("[data-test-tdx-row]").first().should("have.attr", "data-test-tdx-row", key).and("have.attr", "data-pays", "yes");
     });
+    cy.get("[data-test-tdx-best-heading]").should("have.text", "Best use of a Transducer");
     cy.get("[data-test-tdx-best-gain]").should("contain.text", "rotation damage").and("contain.text", "damage per rotation");
     cy.get("[data-test-tdx-best-top]").should("contain.text", "The best it can roll");
 

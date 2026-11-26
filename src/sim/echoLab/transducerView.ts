@@ -206,3 +206,7 @@ export function critErBoundText(n: number): string | null {
   if (!(n > 0)) return null;
   return `${n} echo${n === 1 ? " is" : "es are"} left out: keeping exactly the crit lines there would re-roll Energy Regen the build needs, so the rule cannot be followed on ${n === 1 ? "it" : "them"}.`;
 }
+
+/** The best-use block's heading: while echoes are still being read, the best use may still change, and says so. */
+export const bestHeading = (running: boolean, answered: number, total: number): string =>
+  running && answered < total ? `Best use so far: ${answered} of ${total} echoes read, it may still change` : "Best use of a Transducer";

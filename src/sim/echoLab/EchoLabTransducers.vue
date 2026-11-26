@@ -41,7 +41,7 @@
     <template v-else>
       <!-- best use -->
       <article v-if="best && best.plan" class="tdx__best rounded-box border-2 border-primary/60 bg-base-100 p-4 max-sm:p-3" data-test-tdx-best :data-key="best.key">
-        <div class="text-xs font-semibold uppercase tracking-wide text-primary">Best use of a Transducer</div>
+        <div class="text-xs font-semibold uppercase tracking-wide text-primary" data-test-tdx-best-heading>{{ bestHeading(running, answeredCount, queue.length) }}</div>
         <div class="mt-2 flex items-center gap-3">
           <img :src="portrait(best.advice.characterId)" alt="" class="el-portrait size-11 shrink-0" />
           <div class="min-w-0">
@@ -304,7 +304,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
 import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { chanceText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { bestHeading, chanceText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
