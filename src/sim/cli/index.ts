@@ -500,6 +500,50 @@ export function registerPlusCommands(program: Command): void {
 
   withCommon(
     program
+      .command("transducers")
+      .description(
+        "Transducer ranking: which equipped echo your next Transducer should go into, which lines to keep and what a try is expected to gain, over every set-up damage dealer (the Echo Lab's Transducers tab, headless). Every way to lock each echo is compared; Energy Regen a saved team needs is never re-rolled (Wuthering Tools+)",
+      )
+      .option("--resonator <name>", "only this resonator's echoes (a support too)")
+      .option("--cost <n>", "only plans that cost this many Transducers a try: 1 (up to two lines kept), 2 (three kept) or 3 (four kept)")
+      .option("--keep <n>", "only plans that keep this many lines: 0 to 4")
+      .option("--have <n>", "the Transducers you have: adds how to spend them (which echoes, which locks, how many tries each)")
+      .option("--everyone", "also supports and characters the app has no role for (rated on their own damage only)")
+      .option("--sort <order>", "damage (expected damage per rotation per Transducer, the default), percent (share of the resonator's own rotation per Transducer), chance (to improve) or gain (of one try)", "damage")
+      .option("--top <n>", "rows to print (default 25)", "25")
+      .option("--no-er", "do not read Energy Regen needs from the saved teams (no line is protected)")
+      .option("--no-repeat", "a re-rolled line cannot come back as the stat it was (the game says only that locked substats are excluded; the default lets it)"),
+  ).action(
+    guarded(async (options: CommonOptions & { resonator?: string; cost?: string; keep?: string; have?: string; everyone?: boolean; sort: string; top: string; er: boolean; repeat: boolean }) => {
+      const exp = load(options);
+      const { transducerReport, printTransducers } = await import("../echoLab/transducerCli");
+      const num = (text: string | undefined, name: string, lo: number, hi: number): number | undefined => {
+        if (text == null) return undefined;
+        const n = Number(text);
+        if (!Number.isInteger(n) || n < lo || n > hi) throw new Error(`--${name} takes a whole number from ${lo} to ${hi}`);
+        return n;
+      };
+      const sorts = ["damage", "percent", "chance", "gain"] as const;
+      if (!sorts.includes(options.sort as (typeof sorts)[number])) throw new Error(`--sort takes one of ${sorts.join(", ")}`);
+      const report = await quiet(() =>
+        transducerReport(exp, {
+          resonator: options.resonator,
+          cost: num(options.cost, "cost", 1, 3),
+          keep: num(options.keep, "keep", 0, 4),
+          have: num(options.have, "have", 1, 60),
+          everyone: options.everyone,
+          sort: options.sort as (typeof sorts)[number],
+          noEr: !options.er,
+          noRepeat: !options.repeat,
+        }),
+      );
+      if (!wantsPretty(options)) return printJson(report);
+      printTransducers(report, Math.max(1, Number(options.top) || 25));
+    }),
+  );
+
+  withCommon(
+    program
       .command("levels <character>")
       .description("What each level is worth: every level-up the character has left (level, weapon level, the five Forte skills), what each adds on their best rotation and their strongest team, what it costs, and the order to take them in (Wuthering Tools+)")
       .option("--from <start>", 'where to count from: "saved" (the calculator\'s saved levels, the default) or "1" (a new copy at level 1)')
