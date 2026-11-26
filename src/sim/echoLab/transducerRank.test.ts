@@ -247,6 +247,41 @@ describe("Spending N Transducers", () => {
     expect(keys([y, x], 1)).toEqual(["X|0:1"]);
   });
 
+  it("never re-rolls more Energy Regen across one resonator's echoes than the build can lose and stay at its need", () => {
+    // a support with 130.8 % Energy Regen against a need of 118.9 %: any one of her three 10 % lines can go, two cannot.
+    // The floor was read one line at a time, so the split re-rolled all three and left her at 100.8 %
+    const ER = ["CritRate", "CritDMG", "EnergyRegen", "DEF_FLAT", "HP"];
+    const echo = (slot: number, gain: number): RerollAdviceResult =>
+      advice("Lynae", slot, 1000, [plan(2, gain), plan(3, gain / 4)], { name: "Lynae", keys: ER, erNeed: 118.9, erHave: 130.8 });
+    const echoes = [echo(2, 0.03), echo(3, 0.029), echo(4, 0.028)];
+    const erSteps = (p: SpendPlan): number => p.steps.filter((s) => s.plan.rerolledFields.includes(3)).length;
+    for (const budget of [1, 3, 6, 12]) {
+      const got = spendPlan(echoes, budget);
+      expect(erSteps(got)).toBeLessThanOrEqual(1);
+      // and it is still the best split among those that keep the need: one echo re-rolls its ER line, the others keep it
+      let best = 0;
+      for (let er = 0; er < 3; er++) {
+        const walk = (i: number, left: number, value: number): void => {
+          if (i === 3) {
+            best = Math.max(best, value);
+            return;
+          }
+          walk(i + 1, left, value);
+          for (const p of echoes[i].plans) {
+            if (p.rerolledFields.includes(3) && i !== er) continue;
+            for (let tries = 1; tries * p.cost <= left && tries <= p.bestOf.length; tries++) walk(i + 1, left - tries * p.cost, value + 1000 * p.bestOf[tries - 1]);
+          }
+        };
+        walk(0, budget, 0);
+      }
+      expect(got.expectedDamage).toBeCloseTo(best, 9);
+    }
+    // with room for all three (a need of 95 %), nothing holds them back
+    expect(erSteps(spendPlan(echoes.map((a) => ({ ...a, erNeed: 95 })), 3))).toBe(3);
+    // no need known: the lines are flagged on the rows, not held back here
+    expect(erSteps(spendPlan(echoes.map((a) => ({ ...a, erNeed: null, erHave: null })), 3))).toBe(3);
+  });
+
   it("reads a run of tries off the plan's curve", () => {
     const p = plan(2, 0.01, { fade: 0.5, p: 0.25 });
     expect(gainAfter(p, 0)).toBe(0);

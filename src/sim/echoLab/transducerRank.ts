@@ -12,9 +12,11 @@
 // again every time), which `LockPlan.bestOf` carries; the split over echoes is then a knapsack solved exactly.
 //
 // `critKeepCheck` puts the usual rule of thumb, "keep Crit Rate and Crit DMG, re-roll the rest", against every other
-// way to lock each echo. No engine imports (types only): the page and the CLI share it.
+// way to lock each echo. No engine imports (types, and the Energy Regen rounding of energyNeed.ts): the page and the CLI
+// share it.
 import type { LockPlan, LockSetPlan, RerollAdviceResult } from "./rerollAdvice";
 import { MIN_PLAN_GAIN } from "./rerollPick";
+import { shortBy } from "../energy/energyNeed";
 
 export interface TransducerFilter {
   /** only this resonator's echoes */
@@ -189,8 +191,10 @@ export const chanceOfAny = (plan: Pick<LockSetPlan, "pImprove">, tries: number):
 /**
  * The best way to spend `budget` Transducers over the echoes a filter lets through: per echo one set of locks and a
  * number of tries, chosen so the expected gains add up highest. Exact for what it models: tries on one echo keep the
- * same locks, and one more try on an echo adds less than the one before. It does not model changing the locks after a
- * good result: after a re-roll you keep, read the ranking again with the echo as it is then.
+ * same locks, and one more try on an echo adds less than the one before. The Energy Regen lines a resonator's plans
+ * re-roll, all lost at once, leave the build at its need (each line alone may go by the ER floor; two together may not).
+ * It does not model changing the locks after a good result: after a re-roll you keep, read the ranking again with the
+ * echo as it is then.
  */
 export function spendPlan(advices: readonly RerollAdviceResult[], budget: number, filter: TransducerFilter = {}, by: "damage" | "percent" = "damage"): SpendPlan {
   const total = Math.max(0, Math.min(MAX_BUDGET, Math.floor(Number.isFinite(budget) ? budget : 0)));
@@ -201,11 +205,12 @@ export function spendPlan(advices: readonly RerollAdviceResult[], budget: number
     weight: number;
     value: number;
   }
-  const groups: Option[][] = [];
   // one fixed order of the echoes, so a tie goes the same way whichever answer came in first (the first in this order)
   const ordered = advices
     .filter((advice) => inScope(advice, filter))
     .sort((x, y) => x.name.localeCompare(y.name) || x.slot - y.slot || x.characterId.localeCompare(y.characterId));
+  // per resonator, per echo: every plan and number of tries that pays
+  const byResonator = new Map<string, Option[][]>();
   for (const advice of ordered) {
     const options: Option[] = [];
     for (const plan of plansFor(advice, filter)) {
@@ -216,9 +221,64 @@ export function spendPlan(advices: readonly RerollAdviceResult[], budget: number
         options.push({ advice, plan, tries, weight: tries * plan.cost, value: by === "damage" ? gain * advice.base : gain });
       }
     }
-    if (options.length) groups.push(options);
+    if (!options.length) continue;
+    const list = byResonator.get(advice.characterId) ?? [];
+    list.push(options);
+    byResonator.set(advice.characterId, list);
   }
-  // multiple-choice knapsack: best[g][b] = the most value from the first g echoes with b Transducers
+  // One resonator's echoes together: the ER floor is read one line at a time (each line alone can go), so two echoes
+  // that each re-roll an Energy Regen line could take the build under its need. Per resonator, the best use of every
+  // number of Transducers whose re-rolled Energy Regen lines, all lost at once, still leave the build at its need.
+  interface Combo {
+    weight: number;
+    value: number;
+    parts: Option[];
+  }
+  const erOf = (o: Option): number => o.advice.lines.reduce((sum, l) => (l.key === "EnergyRegen" && o.plan.rerolledFields.includes(l.field) ? sum + l.value : sum), 0);
+  const groups: Combo[][] = [];
+  for (const echoes of byResonator.values()) {
+    const known = echoes.map((opts) => opts[0].advice).find((a) => a.erNeed != null && a.erHave != null) ?? null;
+    const bits = echoes.map((opts, i) => (known && opts.some((o) => erOf(o) > 0) ? 1 << i : 0));
+    type Cell = { value: number; parts: Option[] } | null;
+    let states = new Map<number, Cell[]>([[0, Array.from({ length: total + 1 }, (_, b): Cell => (b === 0 ? { value: 0, parts: [] } : null))]]);
+    echoes.forEach((opts, i) => {
+      const next = new Map<number, Cell[]>();
+      for (const [mask, cells] of states) next.set(mask, [...cells]);
+      for (const [mask, cells] of states) {
+        for (let b = 0; b <= total; b++) {
+          const cell = cells[b];
+          if (!cell) continue;
+          for (const o of opts) {
+            const nb = b + o.weight;
+            if (nb > total) continue;
+            const nm = erOf(o) > 0 ? mask | bits[i] : mask;
+            let row = next.get(nm);
+            if (!row) next.set(nm, (row = new Array<Cell>(total + 1).fill(null)));
+            const v = cell.value + o.value;
+            const at = row[nb];
+            if (!at || v > at.value + 1e-12) row[nb] = { value: v, parts: [...cell.parts, o] };
+          }
+        }
+      }
+      states = next;
+    });
+    const keepsNeed = (parts: readonly Option[]): boolean => {
+      if (!known) return true;
+      const lost = parts.reduce((sum, o) => sum + erOf(o), 0);
+      return lost <= 0 || shortBy(known.erNeed, (known.erHave as number) - lost) <= 0;
+    };
+    const combos: Combo[] = [];
+    for (let b = 1; b <= total; b++) {
+      let bestCell: Cell = null;
+      for (const cells of states.values()) {
+        const cell = cells[b];
+        if (cell && cell.parts.length && keepsNeed(cell.parts) && (!bestCell || cell.value > bestCell.value + 1e-12)) bestCell = cell;
+      }
+      if (bestCell) combos.push({ weight: b, value: bestCell.value, parts: bestCell.parts });
+    }
+    if (combos.length) groups.push(combos);
+  }
+  // multiple-choice knapsack over the resonators: best[g][b] = the most value from the first g with b Transducers
   const best: Float64Array[] = [new Float64Array(total + 1)];
   const pick: Int32Array[] = [];
   for (const options of groups) {
@@ -247,10 +307,12 @@ export function spendPlan(advices: readonly RerollAdviceResult[], budget: number
   for (let g = groups.length - 1; g >= 0; g--) {
     const o = pick[g][b];
     if (o < 0) continue;
-    const { advice, plan, tries, weight } = groups[g][o];
-    const gain = gainAfter(plan, tries);
-    steps.push({ key: rowKey(advice), advice, plan, tries, transducers: weight, expectedGain: gain, expectedDamage: gain * advice.base, pAny: chanceOfAny(plan, tries) });
-    b -= weight;
+    const combo = groups[g][o];
+    for (const { advice, plan, tries, weight } of combo.parts) {
+      const gain = gainAfter(plan, tries);
+      steps.push({ key: rowKey(advice), advice, plan, tries, transducers: weight, expectedGain: gain, expectedDamage: gain * advice.base, pAny: chanceOfAny(plan, tries) });
+    }
+    b -= combo.weight;
   }
   const value = (s: SpendStep): number => (by === "damage" ? s.expectedDamage : s.expectedGain) / s.transducers;
   steps.sort((x, y) => value(y) - value(x) || x.advice.name.localeCompare(y.advice.name) || x.advice.slot - y.advice.slot);
