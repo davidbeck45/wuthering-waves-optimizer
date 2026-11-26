@@ -169,7 +169,7 @@
         <p v-if="!spend.steps.length" class="mt-2 opacity-80" data-test-tdx-budget-none>{{ running && !advices.length ? "Reading your echoes…" : "No echo under these filters is worth a Transducer." }}</p>
         <template v-else>
           <p class="mt-2" data-test-tdx-budget-summary>
-            Spend {{ spend.used }} of {{ spend.budget }}: about {{ fmtInt(spend.expectedDamage) }} more damage per rotation expected, added over each resonator's own rotation.
+            Spend {{ spend.used }} of {{ spend.budget }}: about {{ fmtInt(spend.expectedDamage) }} more damage per rotation expected<template v-if="new Set(spend.steps.map((x) => x.advice.characterId)).size > 1">, the sum of each resonator's own rotation, one after another: not a team's damage</template><template v-else> on {{ characterName(spend.steps[0].advice.characterId) }}'s rotation</template>.
           </p>
           <ol class="mt-2 space-y-2">
             <li v-for="(s, i) in spend.steps" :key="s.key" class="rounded-lg bg-base-200 px-3 py-2" data-test-tdx-budget-step>

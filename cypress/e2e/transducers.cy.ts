@@ -107,6 +107,8 @@ describe("Echo Lab: Transducers tab", () => {
     cy.get("[data-test-tdx-have]").blur();
     query().then((q) => expect(q.get("have")).to.eq("12"));
     cy.get("[data-test-tdx-budget-summary]").should("contain.text", "of 12");
+    // a sum over different resonators says it is not a team figure
+    cy.get("[data-test-tdx-budget-summary]").should("contain.text", "not a team's damage");
     cy.get("[data-test-tdx-budget-step]").should("have.length.at.least", 1);
 
     // the crit question
