@@ -141,6 +141,9 @@ describe("rankPalette", () => {
     expect(rankPalette("which echo", items)[0]?.key).toBe("command:farm");
     // a bare "transducer" opens Echo Lab, the page it has always meant, with the ranking right under it
     expect(rankPalette("transducer", items).slice(0, 3).map((i) => i.key)).toContain("command:transducers");
+    // what a player types for it in their own words
+    expect(rankPalette("which echo should get my transducer", items)[0]?.run).toEqual({ kind: "route", path: "/echo-lab?tab=transducers" });
+    for (const q of ["reroll ranking", "re-roll ranking"]) expect(rankPalette(q, items).find((i) => i.group !== "ask")?.run, q).toEqual({ kind: "route", path: "/echo-lab?tab=transducers" });
   });
 
   it("finds Set lab by its name, on the tab rather than the page's first one", () => {
