@@ -38,6 +38,17 @@ export const TAG_LABELS: Record<WhatsNewTag, string> = {
 export const WHATS_NEW: readonly WhatsNewEntry[] = [
   // ==== ADD NEW ENTRIES HERE, newest first (one block per release day, format in the header above) ====
 
+  // ---- on the site since 2026-11-27 (batch 7: the Transducer ranking. If it reaches the site on another day, set this date to that day)
+  {
+    id: "transducer-ranking",
+    date: "2026-11-27",
+    title: "Which echo gets your next Transducer",
+    text: "Echo Lab has a Transducers tab: every echo your resonators wear, ranked by what one Transducer is expected to add to their damage, with the lines to keep and to re-roll, the chance a try improves it and the best it can roll. Filter by resonator, by Transducers a try or by lines kept, tell it how many Transducers you have for a plan, and see whether keeping Crit Rate and Crit DMG really is the best lock.",
+    where: "Tools+ menu › Echo Lab › Transducers",
+    link: "/echo-lab?tab=transducers",
+    tag: "tool",
+  },
+
   // ---- on the site since 2026-11-24 (batch 6: pictures and charts; built 2026-11-23 night. If it reaches the site on another day, set these six dates to that day)
   {
     id: "tier-board",

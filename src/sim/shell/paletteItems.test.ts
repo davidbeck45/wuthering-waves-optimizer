@@ -123,10 +123,24 @@ describe("rankPalette", () => {
     const items = paletteWithCommands(sources());
     expect(rankPalette("which set", items)[0]?.key).toBe("command:set-lab");
     expect(rankPalette("which echo", items)[0]?.key).toBe("command:farm");
+    // a bare "transducer" opens Echo Lab, the page it has always meant, with the ranking right under it
+    expect(rankPalette("transducer", items).slice(0, 3).map((i) => i.key)).toContain("command:transducers");
     expect(rankPalette("which set", items).at(-1)?.group).toBe("ask");
     // a real question still goes to Claude, whatever a keyword says
     expect(rankPalette("which set should aemeath wear", items)[0]?.group).toBe("ask");
     expect(rankPalette("why is my team so low", items)[0]?.group).toBe("ask");
+  });
+
+  it("finds the Transducer ranking by what a player would type, on its tab", () => {
+    const items = paletteWithCommands(sources());
+    for (const q of ["transducer ranking", "best use of transducer", "transducers"]) {
+      expect(rankPalette(q, items)[0]?.run, q).toEqual({ kind: "route", path: "/echo-lab?tab=transducers" });
+    }
+    // a question keeps Ask Claude first (the palette's rule); the ranking is the first place it offers after it
+    expect(rankPalette("which echo to transduce", items).find((i) => i.group !== "ask")?.run).toEqual({ kind: "route", path: "/echo-lab?tab=transducers" });
+    expect(rankPalette("which echo", items)[0]?.key).toBe("command:farm");
+    // a bare "transducer" opens Echo Lab, the page it has always meant, with the ranking right under it
+    expect(rankPalette("transducer", items).slice(0, 3).map((i) => i.key)).toContain("command:transducers");
   });
 
   it("finds Set lab by its name, on the tab rather than the page's first one", () => {
