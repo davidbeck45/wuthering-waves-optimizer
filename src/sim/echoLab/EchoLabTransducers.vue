@@ -143,6 +143,9 @@
         </div>
       </div>
 
+      <p v-if="missingCharacter" class="rounded-box border border-base-300 bg-base-100 px-3 py-2 text-sm" role="status" data-test-tdx-missing-character>
+        The link asked for {{ characterName(missingCharacter) }}, who has no fully tuned five-line echo equipped here: showing every resonator instead.
+      </p>
       <!-- unfinished, failed -->
       <div v-if="failed.length" class="alert alert-warning text-sm" data-test-tdx-failed>
         <ul>
@@ -345,6 +348,18 @@ const pickable = computed(() => queueCharacters.value.filter((id) => view.value.
 const supports = computed(() => queueCharacters.value.filter((id) => !dealers.value.has(id)));
 const unfinishedList = computed(() => unfinished(props.result.characters));
 const slotOf = (characterId: string, slot: number): LabSlotSummary | null => props.result.characters.find((c) => c.id === characterId)?.slots.find((s) => s?.slot === slot) ?? null;
+
+/** a link that names a resonator with no five-line echo here (not set up, or a typo): show everyone, and say so */
+const missingCharacter = ref<string | null>(null);
+watch(
+  [() => view.value.character, queueCharacters],
+  ([id, ids]) => {
+    if (!id || !ids.length || ids.includes(id)) return;
+    missingCharacter.value = id;
+    set({ character: null });
+  },
+  { immediate: true },
+);
 
 const extra = computed(() => extraOf(view.value));
 const answer = (characterId: string, slot: number) => lab.rerollOf(characterId, slot, extra.value);

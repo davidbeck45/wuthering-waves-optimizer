@@ -154,6 +154,20 @@ describe("Echo Lab: Transducers tab", () => {
     cy.get('[data-test-tdx-row][data-pays="yes"]').each(($row) => expect($row.find("[data-test-tdx-row-lines] .el-chip--lock")).to.have.length(0));
   });
 
+  it("falls back to every resonator, and says so, when a link names one with no five-line echo here", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab?tab=transducers&character=NotSetUp&keep=-1&cost=9&have=abc", seed());
+    cy.get("[data-test-tdx-missing-character]", RUN).should("contain.text", "showing every resonator instead");
+    query().then((q) => {
+      expect(q.get("character")).to.eq(null);
+      expect(q.get("have")).to.eq(null);
+    });
+    cy.get('[data-test-tdx-character=""]').should("have.attr", "aria-pressed", "true");
+    cy.get("[data-test-tdx-have]").should("have.value", "3");
+    waitForRun();
+    cy.get("[data-test-tdx-row]").should("have.length.at.least", 2);
+  });
+
   it("re-runs the read when a switch for what the game does not publish changes", () => {
     cy.viewport(1440, 900);
     cy.visit("/echo-lab?tab=transducers", seed());
