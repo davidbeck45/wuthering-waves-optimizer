@@ -237,6 +237,16 @@ describe("Spending N Transducers", () => {
     expect(spendPlan([long], MAX_BUDGET)).toMatchObject({ used: MAX_BUDGET, steps: [{ tries: MAX_BUDGET }] });
   });
 
+  it("gives the same split whatever order the advice came in, ties included", () => {
+    // two echoes worth exactly the same: the first one listed took the Transducer, so the answer moved with the order
+    // the worker's results arrived in
+    const x = advice("X", 0, 1000, [plan(2, 0.01)], { name: "Xian" });
+    const y = advice("Y", 1, 1000, [plan(2, 0.01)], { name: "Yao" });
+    const keys = (list: RerollAdviceResult[], budget: number): string[] => spendPlan(list, budget).steps.map((s) => `${s.key}:${s.tries}`);
+    for (const budget of [1, 3, 5]) expect(keys([y, x, c], budget)).toEqual(keys([x, c, y], budget));
+    expect(keys([y, x], 1)).toEqual(["X|0:1"]);
+  });
+
   it("reads a run of tries off the plan's curve", () => {
     const p = plan(2, 0.01, { fade: 0.5, p: 0.25 });
     expect(gainAfter(p, 0)).toBe(0);

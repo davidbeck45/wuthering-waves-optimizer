@@ -198,8 +198,11 @@ export function spendPlan(advices: readonly RerollAdviceResult[], budget: number
     value: number;
   }
   const groups: Option[][] = [];
-  for (const advice of advices) {
-    if (!inScope(advice, filter)) continue;
+  // one fixed order of the echoes, so a tie goes the same way whichever answer came in first (the first in this order)
+  const ordered = advices
+    .filter((advice) => inScope(advice, filter))
+    .sort((x, y) => x.name.localeCompare(y.name) || x.slot - y.slot || x.characterId.localeCompare(y.characterId));
+  for (const advice of ordered) {
     const options: Option[] = [];
     for (const plan of plansFor(advice, filter)) {
       if (rerollsFloor(advice, plan) || plan.expectedGain < MIN_PLAN_GAIN || !(plan.cost > 0)) continue;
