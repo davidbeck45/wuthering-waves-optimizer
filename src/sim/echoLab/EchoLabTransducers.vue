@@ -209,10 +209,6 @@
                 <img :src="portrait(row.advice.characterId)" alt="" class="el-portrait size-9 shrink-0" loading="lazy" />
                 <div class="min-w-0 flex-1">
                   <div class="truncate font-semibold leading-tight">{{ characterName(row.advice.characterId) }}</div>
-                  <div class="flex min-w-0 items-center gap-1.5 text-xs opacity-80">
-                    <img v-if="echoImage(row.advice.echo)" :src="echoImage(row.advice.echo) ?? undefined" alt="" class="size-5 shrink-0 rounded" loading="lazy" />
-                    <span class="line-clamp-2">{{ echoName(row.advice.echo) }} · cost {{ slotOf(row.advice.characterId, row.advice.slot)?.cost ?? "?" }} · {{ slotLabel(row.advice.slot) }}</span>
-                  </div>
                 </div>
                 <button
                   type="button"
@@ -224,6 +220,10 @@
                   <span class="text-xs opacity-70 max-sm:hidden">Plans</span>
                   <svg viewBox="0 0 24 24" class="size-4 opacity-70" :class="openKey === row.key && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
                 </button>
+              </div>
+              <div class="mt-1.5 flex min-w-0 items-start gap-1.5 text-xs opacity-80">
+                <img v-if="echoImage(row.advice.echo)" :src="echoImage(row.advice.echo) ?? undefined" alt="" class="size-5 shrink-0 rounded" loading="lazy" />
+                <span class="min-w-0 [overflow-wrap:anywhere]" data-test-tdx-row-echo><span class="font-medium">{{ echoName(row.advice.echo) }}</span> · echo cost {{ slotOf(row.advice.characterId, row.advice.slot)?.cost ?? "?" }} · {{ slotLabel(row.advice.slot) }}</span>
               </div>
               <div v-if="row.plan" class="mt-2 flex flex-wrap gap-1 text-xs" data-test-tdx-row-lines>
                 <span v-for="l in keptLines(row)" :key="`k${l.field}`" class="el-chip el-chip--lock" :aria-label="`Keep ${lineText(l.key, l.value)}`">Keep {{ lineText(l.key, l.value) }}</span>

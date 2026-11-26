@@ -219,6 +219,11 @@ describe("Echo Lab: Transducers tab", () => {
         });
         expect(over.map((el) => `${el.tagName}.${el.className}`), "past the right edge").to.deep.equal([]);
       });
+      // every row's echo name, echo cost and slot can be read in full: nothing clamped or cut
+      cy.get("[data-test-tdx-row-echo]").each(($e) => {
+        expect($e[0].scrollHeight, $e.text()).to.be.at.most($e[0].clientHeight + 1);
+        expect($e.text()).to.match(/echo cost \d · (Slot \d|Main echo)/);
+      });
       // tap targets
       cy.get("[data-test-tdx-cost], [data-test-tdx-keep], [data-test-tdx-row-toggle]").each(($b) => expect($b[0].getBoundingClientRect().height).to.be.at.least(43.5));
       // the tab strip still reads: every tab label inside its button
