@@ -28,8 +28,10 @@ export const SAME_SCORE = 1e-9;
 export const DEFAULT_EXACT_LIMIT = 150_000;
 /** Tries drawn for a lock set too big to count. */
 export const DEFAULT_LOCK_SAMPLES = 40_000;
-/** How many tries with the same locks `bestOf` is worked out for. */
-export const MAX_TRIES = 12;
+/** How many tries with the same locks `bestOf` is worked out for: as many as the largest "I have N Transducers" budget
+ *  (transducerRank.ts `MAX_BUDGET`) can buy at one Transducer a try, so a spend plan never stops on one echo because the
+ *  curve ran out while another try still paid. */
+export const MAX_TRIES = 60;
 
 /** A line the echo holds now. */
 export interface HeldLine {

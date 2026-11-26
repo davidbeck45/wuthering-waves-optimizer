@@ -3,6 +3,7 @@
 // against the full search. Advice objects are written by hand: no engine here.
 import { describe, expect, it } from "vitest";
 import type { LineAdvice, LockPlan, LockSetPlan, RerollAdviceResult } from "./rerollAdvice";
+import { MAX_TRIES } from "./lockSets";
 import { chanceOfAny, critKeepCheck, gainAfter, MAX_BUDGET, plansFor, rowPlan, spendPlan, transducerRows, type SpendPlan } from "./transducerRank";
 
 const COST = [1, 1, 1, 2, 3];
@@ -224,6 +225,16 @@ describe("Spending N Transducers", () => {
     // never a plan that re-rolls Energy Regen the build needs
     const needs = advice("N", 0, 1e6, [plan(2, 0.05), plan(3, 0.001)], { keys: ["CritRate", "CritDMG", "EnergyRegen", "DEF_FLAT", "HP"], floor: [3], erNeed: 120, erHave: 121 });
     expect(spendPlan([needs], 2).steps.map((s) => s.plan.locks)).toEqual([3]);
+  });
+
+  it("can put every Transducer of the largest budget on one echo when each try still adds", () => {
+    // Phrolova alone with 60 Transducers: her best echo took 12 one-Transducer tries and stopped, though a 13th still
+    // paid, because the best-of-n curve ended at 12 tries. The curve now reaches as many tries as the largest budget.
+    expect(MAX_TRIES).toBeGreaterThanOrEqual(MAX_BUDGET);
+    const long = advice("L", 0, 1000, [plan(2, 0.01, { fade: 0.97 })]);
+    const steps = (long.plans[0].bestOf = Array.from({ length: MAX_TRIES }, (_, i) => 0.01 * (1 - 0.97 ** (i + 1)) / 0.03));
+    expect(steps[MAX_BUDGET - 1]).toBeGreaterThan(steps[MAX_BUDGET - 2]);
+    expect(spendPlan([long], MAX_BUDGET)).toMatchObject({ used: MAX_BUDGET, steps: [{ tries: MAX_BUDGET }] });
   });
 
   it("reads a run of tries off the plan's curve", () => {
