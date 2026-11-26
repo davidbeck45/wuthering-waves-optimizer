@@ -168,3 +168,34 @@ export function chanceText(p: number): string {
   if (pc < 0.5) return "under 1%";
   return `${Math.round(pc)}%`;
 }
+
+/** Rows of one resonator with a known Energy Regen need whose plans each re-roll Energy Regen: each alone leaves the
+ *  build at its need, all of them together would not (the ranking reads one echo at a time; "I have N Transducers"
+ *  plans them together). Row key → how many rows of that resonator share it. */
+interface ErRow {
+  key: string;
+  pays: boolean;
+  plan: { rerolledFields: readonly number[] } | null;
+  advice: { characterId: string; erNeed: number | null; erHave: number | null; lines: ReadonlyArray<{ field: number; key: string; value: number }> };
+}
+export function jointErRows(rows: readonly ErRow[]): Map<string, number> {
+  const byCharacter = new Map<string, Array<{ key: string; lost: number }>>();
+  for (const row of rows) {
+    const { advice, plan } = row;
+    if (!plan || !row.pays || advice.erNeed == null || advice.erHave == null) continue;
+    const lost = advice.lines.filter((l) => l.key === "EnergyRegen" && plan.rerolledFields.includes(l.field)).reduce((sum, l) => sum + l.value, 0);
+    if (lost <= 0) continue;
+    const list = byCharacter.get(advice.characterId) ?? [];
+    list.push({ key: row.key, lost });
+    byCharacter.set(advice.characterId, list);
+  }
+  const out = new Map<string, number>();
+  for (const [, list] of byCharacter) {
+    if (list.length < 2) continue;
+    const advice = rows.find((r) => r.key === list[0].key)!.advice;
+    const lost = list.reduce((sum, x) => sum + x.lost, 0);
+    if ((advice.erHave as number) - lost >= (advice.erNeed as number) - 1e-9) continue;
+    for (const x of list) out.set(x.key, list.length);
+  }
+  return out;
+}

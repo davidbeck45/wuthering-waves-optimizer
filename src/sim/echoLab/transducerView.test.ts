@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -89,5 +89,22 @@ describe("transducerView", () => {
     expect(chanceText(0.003)).toBe("under 1%");
     expect(chanceText(0)).toBe("0%");
     expect(chanceText(0.61)).toBe("61%");
+  });
+
+  it("flags rows of one resonator that each re-roll Energy Regen the build can lose alone but not together", () => {
+    const er = (field: number, value: number) => ({ field, key: "EnergyRegen", value });
+    const row = (characterId: string, slot: number, value: number, erHave: number | null, erNeed: number | null, pays = true) => ({
+      key: `${characterId}|${slot}`,
+      pays,
+      plan: { rerolledFields: [2, 3] },
+      advice: { characterId, erHave, erNeed, lines: [{ field: 1, key: "CritRate", value: 8.1 }, er(2, value)] },
+    });
+    // Lynae on David's account: 130.8 against 118.9, three 10 to 10.8 lines (each alone fine, together 100 %)
+    const rows = [row("Lynae", 2, 10, 130.8, 118.9), row("Lynae", 3, 10.8, 130.8, 118.9), row("Lynae", 4, 10, 130.8, 118.9), row("Mornye", 0, 10, 287, 260), row("Mornye", 1, 10, 287, 260), row("Phrolova", 0, 10.8, null, null), row("Phrolova", 1, 10.8, null, null)];
+    const flagged = jointErRows(rows);
+    expect([...flagged.keys()].sort()).toEqual(["Lynae|2", "Lynae|3", "Lynae|4"]);
+    expect(flagged.get("Lynae|3")).toBe(3);
+    // one row alone, or a row that does not pay, is never flagged
+    expect(jointErRows([row("Lynae", 2, 10, 130.8, 118.9), row("Lynae", 3, 10.8, 130.8, 118.9, false)]).size).toBe(0);
   });
 });

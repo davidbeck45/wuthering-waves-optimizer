@@ -233,6 +233,9 @@
                 <div class="max-sm:col-span-2"><dt>A good try (1 in 10 gains this or more)</dt><dd data-test-tdx-row-good>{{ goodTryText(goodTry(row.plan)) }}</dd></div>
               </dl>
               <p v-if="notWorthText(row)" class="mt-1 text-xs" data-test-tdx-row-why>{{ notWorthText(row) }}</p>
+              <p v-if="jointEr.get(row.key)" class="el-er-short mt-1 text-xs" data-test-tdx-row-er-joint>
+                Re-rolls Energy Regen, and so do {{ (jointEr.get(row.key) ?? 1) - 1 }} more of {{ characterName(row.advice.characterId) }}'s echoes here: each alone leaves {{ characterName(row.advice.characterId) }} at their Energy Regen need, all of them together would not. "I have N Transducers" above plans them together.
+              </p>
               <p v-if="row.erUnknown" class="el-er-short mt-1 text-xs" data-test-tdx-row-er>Re-rolls Energy Regen: the app knows no Energy Regen need for {{ characterName(row.advice.characterId) }} (in no saved team).</p>
             </div>
             <div v-if="openKey === row.key" class="border-t border-base-200 px-3 pb-3 pt-2 text-xs" data-test-tdx-row-detail>
@@ -296,7 +299,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
 import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { chanceText, extraOf, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { chanceText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
@@ -366,6 +369,7 @@ const scope = computed<TransducerFilter>(() => ({
 }));
 const filter = computed<TransducerFilter>(() => ({ ...scope.value, cost: view.value.cost, keep: view.value.keep }));
 const rows = computed(() => transducerRows(advices.value, filter.value, view.value.sort));
+const jointEr = computed(() => jointErRows(rows.value));
 const payingCount = computed(() => rows.value.filter((r) => r.pays).length);
 const best = computed(() => (rows.value[0]?.pays ? rows.value[0] : null));
 const spend = computed(() => spendPlan(advices.value, view.value.have, filter.value, view.value.sort === "percent" ? "percent" : "damage"));
