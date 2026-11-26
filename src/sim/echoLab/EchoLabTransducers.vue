@@ -22,6 +22,15 @@
       </p>
     </header>
 
+    <div v-if="unfinishedList.length" class="rounded-box border border-base-300 bg-base-100 px-3 py-2 text-sm" data-test-tdx-unfinished>
+        <div class="font-semibold">Not fully tuned ({{ unfinishedList.length }})</div>
+        <ul class="mt-1 space-y-0.5">
+          <li v-for="u in unfinishedList" :key="`${u.characterId}|${u.slot}`">
+            {{ characterName(u.characterId) }}'s {{ echoName(slotOf(u.characterId, u.slot)?.echo) }}: {{ u.lines }} of 5 lines: finish tuning it first
+            (<a :href="tuneHref" class="link link-primary" @click.prevent="emit('tune')">Tune or Feed</a>).
+          </li>
+        </ul>
+      </div>
     <!-- nothing to rank -->
     <div v-if="!queue.length" class="rounded-box border border-base-300 bg-base-100 p-5 text-sm" data-test-tdx-empty>
       <p class="font-semibold">No equipped echo has all five substat lines yet.</p>
@@ -134,15 +143,6 @@
       </div>
 
       <!-- unfinished, failed -->
-      <div v-if="unfinishedList.length" class="rounded-box border border-base-300 bg-base-100 px-3 py-2 text-sm" data-test-tdx-unfinished>
-        <div class="font-semibold">Not fully tuned ({{ unfinishedList.length }})</div>
-        <ul class="mt-1 space-y-0.5">
-          <li v-for="u in unfinishedList" :key="`${u.characterId}|${u.slot}`">
-            {{ characterName(u.characterId) }}'s {{ echoName(slotOf(u.characterId, u.slot)?.echo) }}: {{ u.lines }} of 5 lines: finish tuning it first
-            (<a :href="tuneHref" class="link link-primary" @click.prevent="emit('tune')">Tune or Feed</a>).
-          </li>
-        </ul>
-      </div>
       <div v-if="failed.length" class="alert alert-warning text-sm" data-test-tdx-failed>
         <ul>
           <li v-for="f in failed" :key="f.key">{{ characterName(f.characterId) }}'s {{ echoName(slotOf(f.characterId, f.slot)?.echo) }} could not be read: {{ f.error }}. The rest of the ranking stands.</li>

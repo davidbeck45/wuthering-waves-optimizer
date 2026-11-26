@@ -10,12 +10,23 @@ const fixture = ((fixtureModule as unknown as { default?: Account }).default ?? 
 
 const RUN = { timeout: 90000 };
 
-function seed(fontScale?: number) {
+/** every equipped echo with its fifth line taken off: nothing a Transducer may touch */
+function fourLines(): Account["echoes"] {
+  return fixture.echoes.map((e) => {
+    if (!fixture.equipped[e.echoId]) return e;
+    const rest = { ...(e as Record<string, unknown>) };
+    delete rest.echoSubStatsType5;
+    delete rest.echoSubStatsValue5;
+    return rest as Account["echoes"][number];
+  });
+}
+
+function seed(fontScale?: number, echoes: Account["echoes"] = fixture.echoes) {
   return {
     onBeforeLoad(win: Window) {
       win.sessionStorage.clear();
       win.localStorage.setItem("character", JSON.stringify({ characters: fixture.characters, activeCharacter: "Cartethyia" }));
-      win.localStorage.setItem("inventory", JSON.stringify({ echoes: fixture.echoes, equipped: fixture.equipped, echoPresets: [], equippedPresets: {} }));
+      win.localStorage.setItem("inventory", JSON.stringify({ echoes, equipped: fixture.equipped, echoPresets: [], equippedPresets: {} }));
       const settings = JSON.parse(win.localStorage.getItem("settings") ?? "{}");
       settings.config = { ...settings.config, useClassicUi: false };
       win.localStorage.setItem("settings", JSON.stringify(settings));
@@ -151,6 +162,17 @@ describe("Echo Lab: Transducers tab", () => {
       expect(q.get("keepEr")).to.eq(null);
     });
     waitForRun();
+  });
+
+  it("says what to do when no equipped echo is fully tuned, and lists them with a way to Tune or Feed", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/echo-lab?tab=transducers", seed(undefined, fourLines()));
+    cy.get("[data-test-tdx-empty]", RUN).should("contain.text", "No equipped echo has all five substat lines");
+    cy.get("[data-test-tdx-row]").should("not.exist");
+    cy.get("[data-test-tdx-unfinished] li").should("have.length.at.least", 10).first().should("contain.text", "4 of 5 lines: finish tuning it first");
+    cy.get("[data-test-tdx-unfinished] a").first().click();
+    cy.get('[data-test-echo-lab-tab="tune"]').should("have.attr", "aria-selected", "true");
+    cy.location("search").should("eq", "?tab=tune");
   });
 
   for (const [width, height] of [
