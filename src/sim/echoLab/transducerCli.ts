@@ -93,6 +93,8 @@ export interface TransducerReport {
     bothCritLines: { echoes: number; keepsExactlyBoth: number; keepsOneAndAnother: number; keepsLess: number; critOnlyShareOfBestPct: number; exceptions: CritException[] };
     oneCritLine: { echoes: number; keepsIt: number; exceptions: CritException[] };
     noCritLine: { echoes: number };
+    /** echoes where keeping exactly the crit lines would re-roll Energy Regen the build needs */
+    erBound: number;
   };
   echoesDetail: TransducerEchoReport[];
 }
@@ -261,6 +263,7 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
       },
       oneCritLine: { echoes: check.one.echoes, keepsIt: check.one.keepsCrit, exceptions: check.one.exceptions.map(exception) },
       noCritLine: { echoes: check.none.echoes },
+      erBound: check.erBound,
     },
     echoesDetail: advices
       .filter((a) => everyone || dealers.has(a.characterId))
@@ -365,6 +368,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
     for (const x of o.exceptions.slice(0, 4)) console.log(`    ${x.resonator} slot ${x.slot} (${x.echo ?? "?"}): keep ${x.bestKeeps.join(" + ") || "nothing"} ${signed(x.bestGainPct)} against ${x.critOnlyGainPct == null ? "-" : signed(x.critOnlyGainPct)} for the crit line alone`);
   }
   if (c.noCritLine.echoes) console.log(`  ${c.noCritLine.echoes} with no crit line.`);
+  if (c.erBound) console.log(`  ${c.erBound} left out: keeping exactly the crit lines would re-roll an Energy Regen line the build needs.`);
   const erList = Object.entries(r.erNeeds);
   if (erList.length) console.log(`\nEnergy Regen needs respected (from your saved teams): ${erList.map(([name, need]) => `${name} ${showNeed(need).toFixed(1)}%`).join(", ")}.`);
   const unknown = [...new Set(r.ranking.filter((x) => x.pays && x.erUnknown).map((x) => x.resonator))];

@@ -331,4 +331,17 @@ describe("Keep Crit Rate and Crit DMG, re-roll the rest?", () => {
     const needs = advice("N", 0, 1000, [plan(2, 0.02, { locked: [1, 2] }), plan(3, 0.01)], { keys: ["CritRate", "CritDMG", "EnergyRegen", "DEF_FLAT", "HP"], floor: [3], erNeed: 120, erHave: 121 });
     expect(critKeepCheck([needs])).toMatchObject({ echoes: 1, paying: 0 });
   });
+
+  it("leaves out an echo where keeping exactly the two crit lines would re-roll Energy Regen the build needs", () => {
+    // the build needs the ER line (field 3), so the best one-Transducer plan keeps it and one crit line; keeping the two
+    // crit lines would re-roll it. That echo read as "one crit line and another stat is better", and the crit-only plan's
+    // 0.9 % counted against a best of 0.5 %: the rule cannot be followed there, so it is not counted for or against
+    const keys = ["CritRate", "CritDMG", "EnergyRegen", "DEF_FLAT", "HP"];
+    const bound = advice("Bound", 0, 1000, [plan(2, 0.005, { locked: [1, 3] })], { keys, floor: [3], erNeed: 120, erHave: 125, allPlans: [set([1, 3], 0.005), set([1, 2], 0.009)] });
+    const agrees = advice("Agrees", 0, 1000, [plan(2, 0.01, { locked: [1, 2] })], { keys: both, allPlans: [set([1, 2], 0.01)] });
+    const check = critKeepCheck([bound, agrees]);
+    expect(check.both).toMatchObject({ echoes: 1, keepsBoth: 1, keepsOneAndOther: 0, exceptions: [], shareOfBest: 1 });
+    expect(check.erBound).toBe(1);
+    expect(check.paying).toBe(2);
+  });
 });

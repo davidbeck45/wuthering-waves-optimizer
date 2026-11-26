@@ -363,6 +363,9 @@ export interface CritKeepCheck {
   };
   /** echoes with neither, where a one-Transducer plan pays */
   none: { echoes: number };
+  /** echoes where keeping exactly the crit lines would re-roll an Energy Regen line the build needs: the rule cannot be
+   *  followed there, so they count in none of the groups above */
+  erBound: number;
 }
 
 const sameFields = (a: readonly number[], b: readonly number[]): boolean => a.length === b.length && [...a].sort().join() === [...b].sort().join();
@@ -379,6 +382,7 @@ export function critKeepCheck(advices: readonly RerollAdviceResult[], filter: Tr
     both: { echoes: 0, keepsBoth: 0, keepsOneAndOther: 0, keepsLess: 0, exceptions: [], shareOfBest: 1 },
     one: { echoes: 0, keepsCrit: 0, exceptions: [] },
     none: { echoes: 0 },
+    erBound: 0,
   };
   let critGain = 0;
   let bestGain = 0;
@@ -392,6 +396,10 @@ export function critKeepCheck(advices: readonly RerollAdviceResult[], filter: Tr
     const kept = best.lockedFields.map((f) => keyOf.get(f) ?? "");
     const critFields = advice.lines.filter((l) => l.key === CRIT_RATE || l.key === CRIT_DMG).map((l) => l.field);
     const critPlan = critFields.length ? advice.allPlans.find((p) => sameFields(p.lockedFields, critFields)) ?? null : null;
+    if (critPlan && rerollsFloor(advice, critPlan)) {
+      out.erBound += 1;
+      continue;
+    }
     const row: CritKeepRow = { key: rowKey(advice), advice, best, kept, critPlan, edge: critPlan ? best.expectedGain - critPlan.expectedGain : 0 };
     const keptCrit = kept.filter((k) => k === CRIT_RATE || k === CRIT_DMG).length;
     if (critFields.length === 2) {
