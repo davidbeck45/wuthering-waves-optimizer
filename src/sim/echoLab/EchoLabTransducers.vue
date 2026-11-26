@@ -243,13 +243,13 @@
               <p class="mb-1 opacity-80">The best lines to keep at each count. Gains are of {{ characterName(row.advice.characterId) }}'s rotation damage.</p>
               <table class="w-full table-fixed tabular-nums">
                 <thead>
-                  <tr class="align-bottom leading-tight opacity-70">
-                    <th class="w-[2.6rem] pb-1 text-left font-medium">Kept</th>
-                    <th class="pb-1 text-right font-medium">Cost</th>
-                    <th class="pb-1 text-right font-medium">Odds</th>
-                    <th class="pb-1 text-right font-medium">Gain</th>
-                    <th class="pb-1 text-right font-medium">Per T.</th>
-                    <th class="pb-1 text-right font-medium">3 tries</th>
+                  <tr class="align-bottom leading-tight opacity-70 [&>th]:break-words [&>th]:hyphens-auto" data-test-tdx-plan-head>
+                    <th class="w-[2.9rem] pb-1 text-left font-medium">Lines kept</th>
+                    <th class="pb-1 text-right font-medium">Trans&shy;ducers a try</th>
+                    <th class="pb-1 text-right font-medium">Chance to improve</th>
+                    <th class="pb-1 text-right font-medium">Gain of one try</th>
+                    <th class="pb-1 text-right font-medium">Gain per Trans&shy;ducer</th>
+                    <th class="pb-1 text-right font-medium">After 3 tries</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -263,7 +263,7 @@
                   </tr>
                 </tbody>
               </table>
-              <p class="mt-1 opacity-70">Kept = lines kept · Cost = Transducers a try · Odds = chance one try improves it · Gain = expected gain of one try · Per T. = gain per Transducer · 3 tries = expected after 3 tries with the same lines kept.</p>
+              <p class="mt-1 opacity-70" data-test-tdx-plan-legend>Gains are expected gains, of {{ characterName(row.advice.characterId) }}'s rotation damage. After 3 tries = the expected gain of 3 tries with the same lines kept, keeping the best.</p>
               <a :href="rerollHref(row.advice.characterId)" class="link link-primary mt-2 inline-block py-2" data-test-tdx-row-reroll @click.prevent="emit('reroll', row.advice.characterId)">{{ characterName(row.advice.characterId) }} on the Re-roll tab, line by line ›</a>
             </div>
           </li>

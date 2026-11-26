@@ -119,6 +119,10 @@ describe("Echo Lab: Transducers tab", () => {
       cy.get("@row").find("[data-test-tdx-row-toggle]").click();
       cy.get("@row").find("[data-test-tdx-row-toggle]").should("have.attr", "aria-expanded", "true");
       cy.get("@row").find("[data-test-tdx-plan]").should("have.length", 5);
+      // every header says what it is in words a thumb can read: no "Per T." to hover over
+      cy.get("@row").find("[data-test-tdx-plan-head] th").then(($th) => {
+        expect([...$th].map((th) => th.textContent!.replace(/\u00ad/g, "").trim())).to.deep.eq(["Lines kept", "Transducers a try", "Chance to improve", "Gain of one try", "Gain per Transducer", "After 3 tries"]);
+      });
       cy.get("@row").find("[data-test-tdx-row-reroll]").should("have.attr", "href", `/echo-lab?tab=reroll&character=${id}`);
       cy.get("@row").find("[data-test-tdx-row-reroll]").click();
       cy.location("search").should("eq", `?tab=reroll&character=${id}`);
