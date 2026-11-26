@@ -286,8 +286,8 @@ describe("Echo Lab: Set lab", () => {
       cy.get("[data-test-echo-lab-sets-best]", RUN).should("not.be.empty");
       rows();
       expectInside("another character");
-      // the tab strip keeps all seven tabs on the page
-      cy.get("[data-test-echo-lab-tab]").should("have.length", 7).each(($tab) => {
+      // the tab strip keeps all eight tabs on the page
+      cy.get("[data-test-echo-lab-tab]").should("have.length", 8).each(($tab) => {
         expect($tab[0].getBoundingClientRect().right, $tab.text()).to.be.at.most(width);
       });
     });

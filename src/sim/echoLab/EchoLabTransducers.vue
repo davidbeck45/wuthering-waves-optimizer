@@ -67,12 +67,12 @@
 
       <!-- filters -->
       <div class="rounded-box border border-base-300 bg-base-100 p-3 text-sm" data-test-tdx-filters>
-        <div class="mb-1 text-xs font-semibold uppercase tracking-wide opacity-60">Resonator</div>
+        <div class="mb-1 text-xs font-semibold uppercase tracking-wide opacity-60">Resonator <span class="font-normal normal-case tracking-normal">· {{ pickable.length }}, swipe for more</span></div>
         <ul class="tdx__rail -mx-1 flex gap-1.5 overflow-x-auto px-1 py-1" aria-label="Resonator">
           <li class="shrink-0">
             <button type="button" class="tdx__pick" :class="!view.character && 'tdx__pick--on'" :aria-pressed="!view.character" data-test-tdx-character="" @click="set({ character: null })">All</button>
           </li>
-          <li v-for="id in queueCharacters" :key="id" class="shrink-0">
+          <li v-for="id in pickable" :key="id" class="shrink-0">
             <button
               type="button"
               class="tdx__pick tdx__pick--face"
@@ -206,7 +206,7 @@
                   <div class="truncate font-semibold leading-tight">{{ characterName(row.advice.characterId) }}</div>
                   <div class="flex min-w-0 items-center gap-1.5 text-xs opacity-80">
                     <img v-if="echoImage(row.advice.echo)" :src="echoImage(row.advice.echo) ?? undefined" alt="" class="size-5 shrink-0 rounded" loading="lazy" />
-                    <span class="truncate">{{ echoName(row.advice.echo) }} · cost {{ slotOf(row.advice.characterId, row.advice.slot)?.cost ?? "?" }} · {{ slotLabel(row.advice.slot) }}</span>
+                    <span class="line-clamp-2">{{ echoName(row.advice.echo) }} · cost {{ slotOf(row.advice.characterId, row.advice.slot)?.cost ?? "?" }} · {{ slotLabel(row.advice.slot) }}</span>
                   </div>
                 </div>
                 <button
@@ -227,7 +227,7 @@
               <dl v-if="row.plan" class="tdx__nums mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs sm:grid-cols-5">
                 <div><dt>Transducers a try</dt><dd>{{ row.plan.cost }}</dd></div>
                 <div><dt>Chance to improve</dt><dd>{{ pct(row.plan.pImprove, 0) }}</dd></div>
-                <div><dt>Gain of one try</dt><dd :class="row.pays && 'el-up'">{{ signedPct(row.plan.expectedGain, 2) }}</dd></div>
+                <div><dt>Gain of one try, of their rotation</dt><dd :class="row.pays && 'el-up'">{{ signedPct(row.plan.expectedGain, 2) }}</dd></div>
                 <div><dt>Damage per Transducer</dt><dd>{{ fmtInt(row.damagePerTransducer) }} a rotation</dd></div>
                 <div><dt>A good try</dt><dd>{{ signedPct(goodTry(row.plan), 2) }}</dd></div>
               </dl>
@@ -331,6 +331,8 @@ const isDealer = (id: string): boolean => gearRoleOf(id, KIT_INDEX_ENTRIES) === 
 const queue = computed(() => runQueue(props.result.characters, isDealer));
 const queueCharacters = computed(() => [...new Set(queue.value.map((q) => q.characterId))]);
 const dealers = computed(() => new Set(queueCharacters.value.filter(isDealer)));
+/** the resonator picker: whoever the "who" choice covers, and the one picked */
+const pickable = computed(() => queueCharacters.value.filter((id) => view.value.who === "everyone" || dealers.value.has(id) || id === view.value.character));
 const supports = computed(() => queueCharacters.value.filter((id) => !dealers.value.has(id)));
 const unfinishedList = computed(() => unfinished(props.result.characters));
 const slotOf = (characterId: string, slot: number): LabSlotSummary | null => props.result.characters.find((c) => c.id === characterId)?.slots.find((s) => s?.slot === slot) ?? null;
