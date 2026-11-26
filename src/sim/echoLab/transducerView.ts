@@ -199,3 +199,10 @@ export function jointErRows(rows: readonly ErRow[]): Map<string, number> {
   }
   return out;
 }
+
+/** The crit check's echoes left out because keeping exactly the crit lines would re-roll Energy Regen the build needs
+ *  (`CritKeepCheck.erBound`), in words; null when there are none. */
+export function critErBoundText(n: number): string | null {
+  if (!(n > 0)) return null;
+  return `${n} echo${n === 1 ? " is" : "es are"} left out: keeping exactly the crit lines there would re-roll Energy Regen the build needs, so the rule cannot be followed on ${n === 1 ? "it" : "them"}.`;
+}

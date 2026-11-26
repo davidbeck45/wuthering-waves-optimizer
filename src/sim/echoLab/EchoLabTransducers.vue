@@ -285,6 +285,7 @@
             </li>
           </ul>
         </template>
+        <p v-if="critErBoundText(crit.erBound)" class="mt-2 text-xs opacity-80" data-test-tdx-crit-erbound>{{ critErBoundText(crit.erBound) }}</p>
       </section>
     </template>
   </section>
@@ -299,7 +300,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
 import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { chanceText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { chanceText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -106,5 +106,11 @@ describe("transducerView", () => {
     expect(flagged.get("Lynae|3")).toBe(3);
     // one row alone, or a row that does not pay, is never flagged
     expect(jointErRows([row("Lynae", 2, 10, 130.8, 118.9), row("Lynae", 3, 10.8, 130.8, 118.9, false)]).size).toBe(0);
+  });
+
+  it("says how many echoes the crit check left out for Energy Regen, and why", () => {
+    expect(critErBoundText(0)).toBeNull();
+    expect(critErBoundText(1)).toBe("1 echo is left out: keeping exactly the crit lines there would re-roll Energy Regen the build needs, so the rule cannot be followed on it.");
+    expect(critErBoundText(2)).toContain("2 echoes are left out");
   });
 });
