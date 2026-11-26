@@ -89,7 +89,9 @@ describe("Echo Lab: Transducers tab", () => {
     // the budget follows N
     cy.get("[data-test-tdx-have]").should("have.value", "3");
     cy.get("[data-test-tdx-budget-summary]").should("contain.text", "of 3");
-    cy.get("[data-test-tdx-have]").clear().type("12").blur();
+    cy.get("[data-test-tdx-have]").clear();
+    cy.get("[data-test-tdx-have]").type("12");
+    cy.get("[data-test-tdx-have]").blur();
     query().then((q) => expect(q.get("have")).to.eq("12"));
     cy.get("[data-test-tdx-budget-summary]").should("contain.text", "of 12");
     cy.get("[data-test-tdx-budget-step]").should("have.length.at.least", 1);
@@ -100,9 +102,12 @@ describe("Echo Lab: Transducers tab", () => {
     // a row opens: every lock count, and a link to that resonator on the Re-roll tab
     cy.get("[data-test-tdx-row]").first().as("row").invoke("attr", "data-test-tdx-row").then((key) => {
       const id = String(key).split("|")[0];
-      cy.get("@row").find("[data-test-tdx-row-toggle]").should("have.attr", "aria-expanded", "false").click().should("have.attr", "aria-expanded", "true");
+      cy.get("@row").find("[data-test-tdx-row-toggle]").should("have.attr", "aria-expanded", "false");
+      cy.get("@row").find("[data-test-tdx-row-toggle]").click();
+      cy.get("@row").find("[data-test-tdx-row-toggle]").should("have.attr", "aria-expanded", "true");
       cy.get("@row").find("[data-test-tdx-plan]").should("have.length", 5);
-      cy.get("@row").find("[data-test-tdx-row-reroll]").should("have.attr", "href", `/echo-lab?tab=reroll&character=${id}`).click();
+      cy.get("@row").find("[data-test-tdx-row-reroll]").should("have.attr", "href", `/echo-lab?tab=reroll&character=${id}`);
+      cy.get("@row").find("[data-test-tdx-row-reroll]").click();
       cy.location("search").should("eq", `?tab=reroll&character=${id}`);
       cy.get(`[data-test-echo-lab-reroll-character="${id}"]`).should("have.attr", "aria-pressed", "true");
     });

@@ -110,6 +110,7 @@ export interface QueueItem {
  * first, and a resonator's five-line echoes slot by slot, so the rows that matter most arrive first and a resonator's
  * five come in together.
  */
+// eslint-disable-next-line no-unused-vars -- the parameters of a function type
 export function runQueue(characters: readonly QueueCharacter[], isDealer: (id: string) => boolean): QueueItem[] {
   const order = [...characters].sort((a, b) => Number(isDealer(b.id)) - Number(isDealer(a.id)) || b.base - a.base || a.id.localeCompare(b.id));
   const out: QueueItem[] = [];
@@ -118,6 +119,7 @@ export function runQueue(characters: readonly QueueCharacter[], isDealer: (id: s
 }
 
 /** The resonators whose every queued echo has an answer (a result or an error): the ones the ranking shows. */
+// eslint-disable-next-line no-unused-vars -- the parameters of a function type
 export function readCharacters(queue: readonly QueueItem[], answered: (item: QueueItem) => boolean): Set<string> {
   const pending = new Set<string>();
   const all = new Set<string>();
