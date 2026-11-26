@@ -157,3 +157,14 @@ export function unfinished(characters: readonly QueueCharacter[]): Array<{ chara
   for (const c of characters) for (const s of c.slots) if (s && s.lines.length < 5) out.push({ characterId: c.id, slot: s.slot, lines: s.lines.length });
   return out;
 }
+
+/** A chance in words, the CLI's rule (`chanceText` in transducerCli.ts): one that is not certain never reads "100%"
+ *  (12 tries at 61 % is 99.99 %, "over 99%"), one that is not zero never "0%" ("under 1%"). */
+export function chanceText(p: number): string {
+  if (!(p > 0)) return "0%";
+  if (p >= 1) return "100%";
+  const pc = p * 100;
+  if (pc >= 99.5) return "over 99%";
+  if (pc < 0.5) return "under 1%";
+  return `${Math.round(pc)}%`;
+}

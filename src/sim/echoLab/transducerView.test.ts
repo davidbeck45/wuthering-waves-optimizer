@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -78,5 +78,16 @@ describe("transducerView", () => {
     expect(goodTryText(goodTry({ pImprove: 0.08, p90: 0.0001 }))).toBe(NO_GOOD_TRY);
     expect(goodTryText(goodTry({ pImprove: 0.4, p90: 0.0336 }))).toBe("+3.36%");
     expect(goodTryText(goodTry({ pImprove: 0.4, p90: 0 }))).not.toContain("0.00");
+  });
+
+  it("never prints a chance that is not certain as 100 %, nor one that is not zero as 0 %", () => {
+    // 12 tries at 61 %: 99.999 %
+    expect(chanceText(1 - 0.39 ** 12)).toBe("over 99%");
+    expect(chanceText(0.996)).toBe("over 99%");
+    expect(chanceText(0.994)).toBe("99%");
+    expect(chanceText(1)).toBe("100%");
+    expect(chanceText(0.003)).toBe("under 1%");
+    expect(chanceText(0)).toBe("0%");
+    expect(chanceText(0.61)).toBe("61%");
   });
 });
