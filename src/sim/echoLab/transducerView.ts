@@ -1,7 +1,7 @@
 // Wuthering Tools+ Echo Lab — the Transducers tab's pure helpers: the view in the address (no storage key), the order
 // the run asks for echoes in, which resonators are fully read (the ranking re-sorts only when a resonator's five are
 // in, so rows never jump under a finger), and the words for a row that does not pay. No engine imports.
-import type { LockPlan, RerollOptions } from "./rerollAdvice";
+import type { RerollOptions } from "./rerollAdvice";
 import type { TransducerRow, TransducerSort } from "./transducerRank";
 import { MAX_BUDGET } from "./transducerRank";
 
@@ -146,8 +146,10 @@ export function oneIn(chance: number): string | null {
   return `1 try in ${n >= 1000 ? Math.round(n).toLocaleString("en-US") : Math.round(n)}`;
 }
 
-/** What one try in ten gains or more (`p90`), never below zero: you may keep the old lines. */
-export const goodTry = (plan: Pick<LockPlan, "p90">): number => Math.max(0, plan.p90);
+/** "A good try" in words: what one try in ten gains or more, read from the engine's `goodTry` (null when fewer than one
+ *  try in ten beats the lines the echo has, said so in words: never "+0.00%"). */
+export const NO_GOOD_TRY = "fewer than one try in ten beats the lines it has";
+export const goodTryText = (good: number | null): string => (good == null ? NO_GOOD_TRY : `${good > 0 ? "+" : "−"}${Math.abs(good * 100).toFixed(2)}%`);
 
 /** The equipped echoes the ranking cannot read, with why: fewer than five lines. */
 export function unfinished(characters: readonly QueueCharacter[]): Array<{ characterId: string; slot: number; lines: number }> {

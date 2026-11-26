@@ -62,7 +62,7 @@
             <dt>Expected gain of one try</dt>
             <dd class="el-up" data-test-tdx-best-gain>{{ signedPct(best.plan.expectedGain, 2) }} of {{ characterName(best.advice.characterId) }}'s rotation damage, about {{ fmtInt(best.damage) }} damage per rotation</dd>
           </div>
-          <div><dt>A good try (1 in 10 gains this or more)</dt><dd>{{ signedPct(goodTry(best.plan), 2) }}</dd></div>
+          <div><dt>A good try (1 in 10 gains this or more)</dt><dd data-test-tdx-best-good>{{ goodTryText(goodTry(best.plan)) }}</dd></div>
           <div><dt>Expected after 3 tries · after 5</dt><dd>{{ signedPct(gainAfter(best.plan, 3), 2) }} · {{ signedPct(gainAfter(best.plan, 5), 2) }}</dd></div>
           <div class="sm:col-span-2" data-test-tdx-best-top>
             <dt>The best it can roll</dt>
@@ -230,7 +230,7 @@
                 <div><dt>Chance to improve</dt><dd>{{ pct(row.plan.pImprove, 0) }}</dd></div>
                 <div><dt>Gain of one try, of their rotation</dt><dd :class="row.pays && 'el-up'">{{ signedPct(row.plan.expectedGain, 2) }}</dd></div>
                 <div><dt>Damage per Transducer</dt><dd>{{ fmtInt(row.damagePerTransducer) }} a rotation</dd></div>
-                <div><dt>A good try</dt><dd>{{ signedPct(goodTry(row.plan), 2) }}</dd></div>
+                <div class="max-sm:col-span-2"><dt>A good try (1 in 10 gains this or more)</dt><dd data-test-tdx-row-good>{{ goodTryText(goodTry(row.plan)) }}</dd></div>
               </dl>
               <p v-if="notWorthText(row)" class="mt-1 text-xs" data-test-tdx-row-why>{{ notWorthText(row) }}</p>
               <p v-if="row.erUnknown" class="el-er-short mt-1 text-xs" data-test-tdx-row-er>Re-rolls Energy Regen: the app knows no Energy Regen need for {{ characterName(row.advice.characterId) }} (in no saved team).</p>
@@ -295,8 +295,8 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
-import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { extraOf, goodTry, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
+import { extraOf, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";

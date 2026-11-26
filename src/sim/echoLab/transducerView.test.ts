@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_VIEW, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { goodTry } from "./transducerRank";
+import { DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -69,5 +70,13 @@ describe("transducerView", () => {
     expect(oneIn(0.8)).toBe("almost every try");
     expect(oneIn(0.01)).toBe("1 try in 100");
     expect(oneIn(1 / 12345)).toBe("1 try in 12,345");
+  });
+
+  it("says in words when fewer than one try in ten beats the echo, never +0.00%", () => {
+    // 8 % chance to improve: the tenth-best try is no better than the lines the echo has
+    expect(goodTryText(goodTry({ pImprove: 0.08, p90: 0 }))).toBe(NO_GOOD_TRY);
+    expect(goodTryText(goodTry({ pImprove: 0.08, p90: 0.0001 }))).toBe(NO_GOOD_TRY);
+    expect(goodTryText(goodTry({ pImprove: 0.4, p90: 0.0336 }))).toBe("+3.36%");
+    expect(goodTryText(goodTry({ pImprove: 0.4, p90: 0 }))).not.toContain("0.00");
   });
 });
