@@ -425,13 +425,18 @@ async function runAll(): Promise<void> {
   controller = mine;
   const want = extra.value;
   const items = queue.value;
-  if (items.every((q) => lab.rerollOf(q.characterId, q.slot, want))) {
+  // an echo that failed counts as not read: opening the tab again asks for it again
+  const done = (q: { characterId: string; slot: number }): boolean => {
+    const a = lab.rerollOf(q.characterId, q.slot, want);
+    return Boolean(a) && !(a && "error" in a);
+  };
+  if (items.every(done)) {
     running.value = false;
     return;
   }
   running.value = true;
   const started = performance.now();
-  for (const q of items) {
+  for (const q of items.filter((q) => !done(q))) {
     if (mine.signal.aborted) return;
     await lab.runReroll(q.characterId, q.slot, mine.signal, want);
   }

@@ -480,7 +480,9 @@ export function useEchoLab() {
     const { account, fingerprint } = snapshot();
     adopt(fingerprint);
     const key = rerollKey(characterId, slot, extra);
-    if (rerolls.has(key) && !askedShort.has(key)) return;
+    const held = rerolls.get(key);
+    // an answer that failed is asked again (a page that asks again is retrying); a result stands
+    if (held && !("error" in held) && !askedShort.has(key)) return;
     try {
       // Wuthering Tools+ energy check: an ER line the build needs is locked, and ER counts as a floor
       const { needs, whole } = await lookupErNeeds(fingerprint);
