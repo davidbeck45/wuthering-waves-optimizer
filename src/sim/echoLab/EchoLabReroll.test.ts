@@ -18,7 +18,7 @@ const slot: LabSlotSummary = { slot: 0, echoId: "e1", echo: "Hecate", set: null,
 const character = { id: "Mornye", name: "Mornye", rotationName: "Loop", rotationSource: "team", base: 1_000_000, complete: true, totalCost: 12, upgrades: 0, bestUpgrade: null, perPoint: {}, slots: [slot, null, null, null, null] } as LabCharacterSummary;
 const result = { fingerprint: "f", characters: [character], skipped: [], echoes: [], counts: {}, scorings: 0, ms: 0 } as unknown as BestOwnerResult;
 
-function adviceWith(floorField: number | null): RerollAdviceResult {
+function adviceWith(floorField: number | null, need: number | null = floorField === null ? null : 260): RerollAdviceResult {
   return {
     characterId: "Mornye",
     name: "Mornye",
@@ -32,13 +32,13 @@ function adviceWith(floorField: number | null): RerollAdviceResult {
     lockCostNote: "",
     assumptions: [],
     scorings: 0,
-    erNeed: floorField === null ? null : 260,
-    erHave: floorField === null ? null : 268,
+    erNeed: need,
+    erHave: need === null ? null : 268,
   } as unknown as RerollAdviceResult;
 }
 
-async function chips(floorField: number | null) {
-  advice.result = adviceWith(floorField);
+async function chips(floorField: number | null, need?: number | null) {
+  advice.result = need === undefined ? adviceWith(floorField) : adviceWith(floorField, need);
   const view = mount(EchoLabReroll, { props: { result, benchmarks: null, character: "Mornye" }, global: { stubs: { EchoLabEcho: true, EchoLabPopover: true } } });
   await nextTick();
   return view;
@@ -58,6 +58,20 @@ describe("re-roll advisor: a Keep chip on the line an ER need holds up", () => {
     const plain = rows.map((r) => r.find(".el-chip")).filter((c) => c.text() === "Keep");
     expect(plain).toHaveLength(4);
     for (const c of plain) expect(c.attributes("aria-label")).toBe("Keep: no re-roll pays on this echo");
+    view.unmount();
+  });
+
+  it("says the app knows no need when the line is kept for a resonator in no saved team", async () => {
+    // the advice keeps the line (keepUnknownEr) but carries no need: "the build needs this" would be a claim nobody measured
+    const view = await chips(0, null);
+    const floor = view.find("[data-test-echo-lab-reroll-er-floor] .el-chip");
+    expect(floor.text()).toBe("KeepER");
+    expect(floor.attributes("aria-label")).toBe("Keep: Energy Regen is kept, the app knows no need for this resonator");
+    expect(floor.attributes("title")).toMatch(/knows no Energy Regen need for this resonator \(in no saved team\)/);
+    const note = view.find("[data-test-echo-lab-reroll-er-note]").text();
+    expect(note).toMatch(/^Keep ER 8\.6%: the app knows no Energy Regen need for Mornye \(in no saved team\)/);
+    expect(note).toMatch(/Save the team you play them in/);
+    expect(note).not.toMatch(/the build needs/);
     view.unmount();
   });
 

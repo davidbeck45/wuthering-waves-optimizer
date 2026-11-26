@@ -100,10 +100,10 @@
                     <span v-if="line.chip === 'reroll'" class="el-chip el-chip--reroll max-sm:px-1.5" :title="`Re-roll this line (${ordinal(line.order ?? 1)} of the plan's ${planOf(slot.slot)?.rerolledFields.length ?? 1})`" :aria-label="`Re-roll, line ${line.order} of the plan`">
                       <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" /></svg><span class="max-sm:hidden">Re-roll</span><span class="opacity-60">#{{ line.order }}</span>
                     </span>
-                    <span v-else-if="line.chip === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Lock: the build needs this Energy Regen' : 'Lock'" :title="line.erFloor ? 'Lock: without this line the build falls under its Energy Regen need' : 'Lock this line when you re-roll'">
+                    <span v-else-if="line.chip === 'lock'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? erChipLabel('Lock', line.erUnknown) : 'Lock'" :title="line.erFloor ? erChipTitle('Lock', line.erUnknown) : 'Lock this line when you re-roll'">
                       <svg viewBox="0 0 24 24" class="size-3" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-sm:hidden">Lock</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
                     </span>
-                    <span v-else-if="line.chip === 'keep'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? 'Keep: the build needs this Energy Regen' : 'Keep: no re-roll pays on this echo'" :title="line.erFloor ? 'Keep: without this line the build falls under its Energy Regen need' : 'Keep: no re-roll pays on this echo'">
+                    <span v-else-if="line.chip === 'keep'" class="el-chip el-chip--lock max-sm:px-1.5" :aria-label="line.erFloor ? erChipLabel('Keep', line.erUnknown) : 'Keep: no re-roll pays on this echo'" :title="line.erFloor ? erChipTitle('Keep', line.erUnknown) : 'Keep: no re-roll pays on this echo'">
                       <svg viewBox="0 0 24 24" class="size-3 sm:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg><span class="max-sm:hidden">Keep</span><span v-if="line.erFloor" class="text-[0.65rem]">ER</span>
                     </span>
                     <span v-else class="loading loading-dots loading-xs opacity-50"></span>
@@ -244,17 +244,23 @@ interface LineRow {
   chip: PlanChip | null;
   /** a re-rolled line's place in the plan (1 = most worth replacing) */
   order: number | null;
-  /** an Energy Regen line the build needs to stay at its ER need */
+  /** an Energy Regen line the advice keeps: the build needs it to stay at its ER need, or no need is known */
   erFloor: boolean;
+  /** kept because the app knows no Energy Regen need for the character (in no saved team), not because one says so */
+  erUnknown: boolean;
 }
 function linesFor(slot: LabSlotSummary): LineRow[] {
   const r = resultOf(slot.slot);
-  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, chip: null, order: null, erFloor: false }));
+  if (!r) return slot.lines.map((l) => ({ ...l, worth: null, fresh: null, chip: null, order: null, erFloor: false, erUnknown: false }));
   const chips = planChips(r.lines, planOf(slot.slot));
   return [...r.lines]
     .sort((a, b) => a.field - b.field)
-    .map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, chip: chips.get(l.field)?.chip ?? "lock", order: chips.get(l.field)?.order ?? null, erFloor: !!l.erFloor }));
+    .map((l) => ({ key: l.key, value: l.value, worth: l.worth, fresh: l.freshWorth, chip: chips.get(l.field)?.chip ?? "lock", order: chips.get(l.field)?.order ?? null, erFloor: !!l.erFloor, erUnknown: !!l.erFloor && r.erNeed == null }));
 }
+/** the words on a chip that keeps an Energy Regen line: a need holds it, or the app knows none and takes no chance */
+const erChipLabel = (verb: "Lock" | "Keep", unknown: boolean): string => (unknown ? `${verb}: Energy Regen is kept, the app knows no need for this resonator` : `${verb}: the build needs this Energy Regen`);
+const erChipTitle = (verb: "Lock" | "Keep", unknown: boolean): string =>
+  unknown ? `${verb}: the app knows no Energy Regen need for this resonator (in no saved team), so it never advises re-rolling this line` : `${verb}: without this line the build falls under its Energy Regen need`;
 const ordinal = (n: number): string => (n === 1 ? "first" : n === 2 ? "second" : n === 3 ? "third" : n === 4 ? "fourth" : "fifth");
 
 /** the character's ER against the need the advice respects (every echo's advice carries the same pair) */
@@ -269,8 +275,11 @@ const erLine = computed(() => {
 function erFloorNote(slot: LabSlotSummary): string | null {
   const r = resultOf(slot.slot);
   const line = r?.lines.find((l) => l.erFloor);
-  if (!r || !line || r.erNeed == null) return null;
+  if (!r || !line) return null;
   const keep = `Keep ${lineText(line.key, line.value)}`;
+  // no need the app knows: the line is kept because nothing says the build can lose it
+  if (r.erNeed == null)
+    return `${keep}: the app knows no Energy Regen need for ${characterName(r.characterId)} (in no saved team), so it never advises re-rolling this line. Save the team you play them in and the app will know; the Transducers tab can also read the echoes without this rule.`;
   const need = `${showNeed(r.erNeed).toFixed(1)}%`;
   if (r.erHave == null) return `${keep}: the build needs ${need} Energy Regen, and re-rolling this line would leave it short.`;
   const have = `${(Math.round(r.erHave * 10) / 10).toFixed(1)}%`;
