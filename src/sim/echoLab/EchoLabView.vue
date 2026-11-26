@@ -145,7 +145,8 @@
           :focus="farmFocus"
           @team="(characterId, slot) => lab.runFarmTeam(characterId, slot)" />
         <EchoLabSets v-else-if="tab === 'sets'" v-model:character="rerollCharacter" :characters="pass.bestOwner.characters" :preferred="activeCharacter" @farm="showFarm" />
-        <EchoLabReroll v-else-if="tab === 'reroll'" v-model:character="rerollCharacter" :result="pass.bestOwner" :benchmarks="benchmarks" :preferred="activeCharacter" />
+        <EchoLabReroll v-else-if="tab === 'reroll'" v-model:character="rerollCharacter" :result="pass.bestOwner" :benchmarks="benchmarks" :preferred="activeCharacter" @transducers="tab = 'transducers'" />
+        <EchoLabTransducers v-else-if="tab === 'transducers'" v-model:view="transducerView" :result="pass.bestOwner" @reroll="showReroll" @tune="tab = 'tune'" />
         <EchoLabBenchmark v-else-if="tab === 'benchmark'" :result="benchmarks" :status="benchStatus" @run="(force) => lab.runBenchmarks({ force })" />
 
         <p v-if="pass.bestOwner.skipped.length" class="mt-4 text-xs opacity-60" data-test-echo-lab-skipped>
@@ -158,8 +159,8 @@
 
 <script setup lang="ts">
 // Wuthering Tools+ Echo Lab — the /echo-lab page: the engine-backed echo decisions (src/sim/echoLab/, run in a Web
-// Worker) in seven views — inventory verdicts, Tune or Feed, the Tuner plan, Farm next, the Set lab, the re-roll advisor
-// and the build benchmark. Header KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and
+// Worker) in eight views — inventory verdicts, Tune or Feed, the Tuner plan, Farm next, the Set lab, the re-roll advisor,
+// the Transducer ranking and the build benchmark. Header KPIs, progress with cancel, results cached per account (useEchoLab.ts). Works in the v3 and
 // the classic UI.
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -173,17 +174,19 @@ import EchoLabPlan from "./EchoLabPlan.vue";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import EchoLabReroll from "./EchoLabReroll.vue";
 import EchoLabSets from "./EchoLabSets.vue";
+import EchoLabTransducers from "./EchoLabTransducers.vue";
 import EchoLabTune from "./EchoLabTune.vue";
 import EchoLabVerdicts from "./EchoLabVerdicts.vue";
 import { DEFAULT_FILTERS, characterName, echoName, leftOutNote, phaseLabel, type VerdictFilters } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
+import { viewFromQuery, viewToQuery, type TransducerView } from "./transducerView";
 import { onAccountAdopted } from "../storage/crossTabSync";
 import { autoTeamBuffs } from "../teamContext/autoTeamBuffs";
 import { useSavedNote } from "../persist/useSavedNote";
 import "./echoLab.css";
 
-type TabId = "verdicts" | "tune" | "plan" | "farm" | "sets" | "reroll" | "benchmark";
-const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "farm", "sets", "reroll", "benchmark"];
+type TabId = "verdicts" | "tune" | "plan" | "farm" | "sets" | "reroll" | "transducers" | "benchmark";
+const TAB_IDS: TabId[] = ["verdicts", "tune", "plan", "farm", "sets", "reroll", "transducers", "benchmark"];
 const PASS_PHASES = ["characters", "weights", "echoes"] as const;
 
 // each page sets its own tab title (Ryan's #672)
@@ -202,7 +205,7 @@ const activeCharacter = computed(() => (useCharacterStore() as unknown as { acti
 
 const canRun = computed(() => lab.echoCount.value > 0 && lab.builtCount.value > 0);
 /** this tab's figures were worked out without every ER need (useEchoLab `lookupErNeeds`) */
-const floorsMissing = computed(() => (tab.value === "benchmark" ? lab.benchmarksShort.value && !!benchmarks.value && !benchStatus.running : (tab.value === "sets" || tab.value === "reroll") && lab.needsShort.value));
+const floorsMissing = computed(() => (tab.value === "benchmark" ? lab.benchmarksShort.value && !!benchmarks.value && !benchStatus.running : (tab.value === "sets" || tab.value === "reroll" || tab.value === "transducers") && lab.needsShort.value));
 /** the pass found no character with a weapon and five echoes: no verdict means anything (every echo would read Feed) */
 const noBuilds = computed(() => !!pass.value && !passStatus.running && pass.value.bestOwner.characters.length === 0);
 
@@ -213,6 +216,13 @@ const queryTab = (): TabId => (queryEcho() ? "verdicts" : TAB_IDS.includes(route
 const tab = ref<TabId>(queryTab());
 const rerollCharacter = ref<string | null>(typeof route.query.character === "string" ? route.query.character : null);
 const filters = ref<VerdictFilters>({ ...DEFAULT_FILTERS, echo: queryEcho() });
+/** the Transducers tab's filters, budget and switches (all in the address, transducerView.ts) */
+const transducerView = ref<TransducerView>(viewFromQuery(queryTab() === "transducers" ? route.query : {}));
+/** the Transducers tab's "on the Re-roll tab" link: that resonator, line by line */
+function showReroll(characterId: string): void {
+  rerollCharacter.value = characterId;
+  tab.value = "reroll";
+}
 /** the character the link asked for: the Set lab and Re-roll tabs move on from one they can't show, and this says so
  *  until the player picks someone themselves */
 const askedCharacter = ref(rerollCharacter.value);
@@ -231,13 +241,25 @@ function showFarm(characterId: string): void {
   farmFocus.value = characterId;
   tab.value = "farm";
 }
-watch([tab, rerollCharacter, () => filters.value.echo], ([t, c, e]) => {
+watch([tab, rerollCharacter, () => filters.value.echo, transducerView], ([t, c, e, v]) => {
   const query: Record<string, string> = {};
   if (t !== "verdicts") query.tab = t;
   if ((t === "reroll" || t === "sets") && c) query.character = c;
   if (t === "verdicts" && e) query.echo = e;
-  if (route.query.tab !== query.tab || route.query.character !== query.character || route.query.echo !== query.echo) void router.replace({ query });
+  if (t === "transducers") Object.assign(query, viewToQuery(v));
+  const now = Object.fromEntries(Object.entries(route.query).filter(([, x]) => typeof x === "string")) as Record<string, string>;
+  const same = Object.keys(query).length === Object.keys(now).length && Object.entries(query).every(([k, x]) => now[k] === x);
+  if (!same) void router.replace({ query });
 });
+// a link to the Transducers tab with filters while the page is open (the palette, What's new) lands on them
+watch(
+  () => route.query,
+  (q) => {
+    if (queryTab() !== "transducers") return;
+    const asked = viewFromQuery(q);
+    if (JSON.stringify(viewToQuery(asked)) !== JSON.stringify(viewToQuery(transducerView.value))) transducerView.value = asked;
+  },
+);
 // another chip tapped while the page is up (the palette, a second link): show that echo
 watch(
   () => route.query.echo,
@@ -307,6 +329,7 @@ const tabs = computed(() => {
     { id: "farm" as const, label: "Farm next", short: "Farm next", count: farm.value ? farm.value.rows.length : null },
     { id: "sets" as const, label: "Set lab", short: "Set lab", count: null },
     { id: "reroll" as const, label: "Re-roll advisor", short: "Re-roll", count: null },
+    { id: "transducers" as const, label: "Transducers", short: "Transducers", count: null },
     { id: "benchmark" as const, label: "Build benchmark", short: "Benchmark", count: null },
   ];
 });

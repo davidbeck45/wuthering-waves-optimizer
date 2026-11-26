@@ -44,6 +44,10 @@
         <p class="w-full text-xs leading-snug opacity-70" data-test-echo-lab-reroll-legend>
           <b>Worth</b> = the damage the build loses without that line. <b>Fresh</b> = what a new random line in its place adds on average. The chips follow the plan under each echo: <b>Re-roll</b> marks the lines it replaces, <b>Lock</b> the ones it keeps. A plan can re-roll a line worth a little more than a fresh roll when locking it too would cost another Transducer.
         </p>
+        <p class="w-full text-xs leading-snug">
+          Which echo of your whole account gets the next Transducer?
+          <a href="/echo-lab?tab=transducers" class="link link-primary inline-block py-1" data-test-echo-lab-reroll-to-transducers @click.prevent="emit('transducers')">All echoes ranked ›</a>
+        </p>
       </header>
 
       <div class="grid grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
@@ -178,6 +182,7 @@ import { useEchoLab } from "./useEchoLab";
 
 const props = defineProps<{ result: BestOwnerResult; benchmarks: BenchmarkBatchResult | null; preferred?: string | null }>();
 const selected = defineModel<string | null>("character", { default: null });
+const emit = defineEmits<{ transducers: [] }>();
 const lab = useEchoLab();
 
 const characters = computed<LabCharacterSummary[]>(() => [...props.result.characters].sort((a, b) => b.base - a.base));
