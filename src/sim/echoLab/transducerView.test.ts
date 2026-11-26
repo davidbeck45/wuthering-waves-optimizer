@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { noRowsText, bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -118,5 +118,12 @@ describe("transducerView", () => {
     expect(bestHeading(true, 12, 114)).toBe("Best use so far: 12 of 114 echoes read, it may still change");
     expect(bestHeading(false, 114, 114)).toBe("Best use of a Transducer");
     expect(bestHeading(true, 114, 114)).toBe("Best use of a Transducer");
+  });
+
+  it("says to choose Everyone when only supports are set up and the ranking is for damage dealers", () => {
+    expect(noRowsText(false, "dealers", 2)).toContain('choose "Everyone"');
+    expect(noRowsText(false, "everyone", 2)).toBe("No echo under these filters.");
+    expect(noRowsText(false, "dealers", 0)).toBe("No echo under these filters.");
+    expect(noRowsText(true, "dealers", 2)).toBe("The first resonator is being read…");
   });
 });

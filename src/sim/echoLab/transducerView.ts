@@ -210,3 +210,11 @@ export function critErBoundText(n: number): string | null {
 /** The best-use block's heading: while echoes are still being read, the best use may still change, and says so. */
 export const bestHeading = (running: boolean, answered: number, total: number): string =>
   running && answered < total ? `Best use so far: ${answered} of ${total} echoes read, it may still change` : "Best use of a Transducer";
+
+/** What an empty ranking says: still reading, or why it is empty and what to do (supports are left out under "Damage
+ *  dealers": switch to Everyone). */
+export function noRowsText(running: boolean, who: TransducerWho, supportsLeftOut: number): string {
+  if (running) return "The first resonator is being read…";
+  if (who === "dealers" && supportsLeftOut > 0) return `No damage dealer here has a fully tuned echo under these filters. ${supportsLeftOut} support${supportsLeftOut === 1 ? " is" : "s are"} left out: choose "Everyone" under Who to rank ${supportsLeftOut === 1 ? "its" : "their"} echoes.`;
+  return "No echo under these filters.";
+}

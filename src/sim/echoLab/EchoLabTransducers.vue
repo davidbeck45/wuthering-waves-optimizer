@@ -193,7 +193,7 @@
           <span class="text-xs opacity-70">{{ payingCount }} of {{ rows.length }} echoes worth a Transducer under these filters</span>
         </div>
         <p v-if="!rows.length" class="rounded-box border border-dashed border-base-300 px-4 py-6 text-center text-sm opacity-70" data-test-tdx-no-rows>
-          {{ running ? "The first resonator is being read…" : "No echo under these filters." }}
+          {{ noRowsText(running, view.who, view.character ? 0 : supports.length) }}
         </p>
         <ol class="space-y-2">
           <li
@@ -307,7 +307,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
 import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { bestHeading, chanceText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { bestHeading, chanceText, noRowsText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
