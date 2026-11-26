@@ -2,7 +2,7 @@
 // promise must be one.
 import { describe, expect, it } from "vitest";
 import type { LockPlan, RerollAdviceResult } from "./rerollAdvice";
-import { goodTryText, planReport } from "./transducerCli";
+import { chancePct, chanceText, goodTryText, planReport } from "./transducerCli";
 import { goodTry } from "./transducerRank";
 
 const plan = (pImprove: number, p90: number): LockPlan => ({
@@ -33,5 +33,20 @@ describe("A good try", () => {
     expect(goodTry(plan(0.3, 0.012))).toBe(0.012);
     expect(planReport(advice, plan(0.3, 0.012)).goodTryPct).toBe(1.2);
     expect(goodTryText(1.2)).toBe("a good try (one in ten) gains +1.20% or more");
+  });
+});
+
+describe("A chance", () => {
+  it("never reads as certain or impossible when it is not", () => {
+    // 12 tries at 61 % each: 1 − 0.39¹² = 99.99 %, and the spend table said "100%" chance of a better echo
+    const pct = chancePct(1 - 0.39 ** 12);
+    expect(pct).toBe(99.99);
+    expect(chancePct(1)).toBe(100);
+    expect(chancePct(0.00001)).toBe(0.01);
+    expect(chanceText(pct)).toBe("over 99%");
+    expect(chanceText(100)).toBe("100%");
+    expect(chanceText(0.3)).toBe("under 1%");
+    expect(chanceText(0)).toBe("0%");
+    expect(chanceText(61.4)).toBe("61%");
   });
 });

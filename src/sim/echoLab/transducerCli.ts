@@ -108,6 +108,8 @@ interface CritException {
 
 const r2 = (n: number): number => Math.round(n * 100) / 100;
 const pct2 = (rel: number): number => Math.round(rel * 1e4) / 100;
+/** A chance (0 to 1) in percent, two decimals, and never rounded up to 100 or down to 0 when it is neither. */
+export const chancePct = (p: number): number => (p >= 1 ? 100 : p <= 0 ? 0 : Math.min(99.99, Math.max(0.01, pct2(p))));
 
 const lineText = (l: { key: string; value: number }): string => `${statLabel(l.key) ?? l.key} ${r2(l.value)}`;
 
@@ -124,7 +126,7 @@ export function planReport(advice: RerollAdviceResult, plan: LockPlan): PlanRepo
     reroll: words(plan.rerolledFields),
     linesKept: plan.locks,
     transducersPerTry: plan.cost,
-    chanceToImprovePct: pct2(plan.pImprove),
+    chanceToImprovePct: chancePct(plan.pImprove),
     expectedGainPct: pct2(plan.expectedGain),
     expectedDamage: Math.round(plan.expectedGain * advice.base),
     gainPerTransducerPct: pct2(plan.gainPerTransducer),
@@ -240,7 +242,7 @@ export async function transducerReport(exp: ExportFile, options: TransducerCliOp
               transducers: s.transducers,
               expectedGainPct: pct2(s.expectedGain),
               expectedDamage: Math.round(s.expectedDamage),
-              chanceOfAnyPct: pct2(chanceOfAny(s.plan, s.tries)),
+              chanceOfAnyPct: chancePct(chanceOfAny(s.plan, s.tries)),
             };
           }),
         }
@@ -281,6 +283,9 @@ export const goodTryText = (pct: number | null): string =>
   pct == null ? "fewer than one try in ten beats the lines it has" : `a good try (one in ten) gains ${signed(pct)} or more`;
 const signed = (n: number, digits = 2): string => `${n >= 0 ? "+" : ""}${n.toFixed(digits)}%`;
 const whole = (n: number): string => `${Math.round(n)}%`;
+/** A chance in percent for a player: never "100%" or "0%" unless it is certain or impossible (99.7 % is "over 99%"). */
+export const chanceText = (pct: number): string =>
+  pct >= 100 ? "100%" : pct >= 99.5 ? "over 99%" : pct <= 0 ? "0%" : pct < 0.5 ? "under 1%" : `${Math.round(pct)}%`;
 const s = (n: number, word: string): string => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export function printTransducers(r: TransducerReport, top = 25): void {
@@ -299,7 +304,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
     console.log(`Best use of ${s(p.transducersPerTry, "Transducer")}: ${first.resonator}, slot ${first.slot} (${first.echo ?? "echo"})`);
     console.log(`  keep     ${p.keep.join(" + ") || "nothing"}`);
     console.log(`  re-roll  ${p.reroll.join(", ")}`);
-    console.log(`  one try: ${whole(p.chanceToImprovePct)} chance to beat the lines it has · expected ${signed(p.expectedGainPct)} of ${first.resonator}'s rotation (${int(p.expectedDamage)} damage)`);
+    console.log(`  one try: ${chanceText(p.chanceToImprovePct)} chance to beat the lines it has · expected ${signed(p.expectedGainPct)} of ${first.resonator}'s rotation (${int(p.expectedDamage)} damage)`);
     console.log(`  ${goodTryText(p.goodTryPct)} · the best it can roll: ${signed(p.best.gainPct)} (${p.best.lines.join(", ")}${p.best.oneIn ? `; 1 try in ${int(p.best.oneIn)}` : ""})`);
     console.log(`  the same locks again: ${signed(p.after3TriesPct)} expected after 3 tries, ${signed(p.after5TriesPct)} after 5`);
   }
@@ -318,7 +323,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
           p.keep.join(" + ") || "nothing",
           `${p.reroll.join(", ")}${x.erUnknown ? " *" : ""}`,
           String(p.transducersPerTry),
-          whole(p.chanceToImprovePct),
+          chanceText(p.chanceToImprovePct),
           signed(p.expectedGainPct),
           int(x.damagePerTransducer),
           x.blocked === "erFloor" ? "needs its Energy Regen line: not advised" : x.pays ? (p.goodTryPct == null ? "under 1 in 10 beat it" : signed(p.goodTryPct)) : "not worth a Transducer",
@@ -338,7 +343,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
       console.log(
         table([
           ["  Resonator", "Echo (slot)", "Keep", "Tries", "Transducers", "Chance of a better echo", "Expected"],
-          ...r.spend.steps.map((x) => [`  ${x.resonator}`, `${x.echo ?? "?"} (${x.slot})`, x.keep.join(" + ") || "nothing", String(x.tries), String(x.transducers), whole(x.chanceOfAnyPct), `${signed(x.expectedGainPct)} (${int(x.expectedDamage)})`]),
+          ...r.spend.steps.map((x) => [`  ${x.resonator}`, `${x.echo ?? "?"} (${x.slot})`, x.keep.join(" + ") || "nothing", String(x.tries), String(x.transducers), chanceText(x.chanceOfAnyPct), `${signed(x.expectedGainPct)} (${int(x.expectedDamage)})`]),
         ]),
       );
       console.log("  Tries on one echo keep the same locks. After a re-roll you keep, update the echo and read the ranking again.");
