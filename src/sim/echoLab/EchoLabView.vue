@@ -111,7 +111,7 @@
         Cancelled. <button type="button" class="link link-primary" @click="lab.refresh({ force: true })">Run the Echo Lab</button>
       </div>
 
-      <!-- tabs: two a row on a phone, three a row below xl (six in one row ran past a 768 px tablet at 130 % text), one row from xl -->
+      <!-- tabs: two a row on a phone (a short name wraps inside its button rather than run past it at 360 px and 130 % text), three a row below xl (six in one row ran past a 768 px tablet at 130 % text), one row from xl -->
       <div v-if="pass" class="mt-4">
         <div role="tablist" class="echo-lab__tabs mb-3 grid grid-cols-2 gap-1 rounded-box bg-base-200 p-1 sm:grid-cols-3 xl:flex xl:w-fit" aria-label="Echo Lab views">
           <button
@@ -124,7 +124,7 @@
             :aria-selected="tab === t.id"
             :data-test-echo-lab-tab="t.id"
             @click="tab = t.id">
-            <span class="max-sm:hidden">{{ t.label }}</span><span class="whitespace-nowrap sm:hidden">{{ t.short }}</span>
+            <span class="max-sm:hidden">{{ t.label }}</span><span class="text-center leading-tight sm:hidden">{{ t.short }}</span>
             <span v-if="t.count !== null" class="badge badge-sm" :class="tab === t.id ? 'badge-primary' : 'badge-ghost'">{{ t.count }}</span>
           </button>
         </div>

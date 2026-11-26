@@ -126,11 +126,12 @@ describe("Echo Lab Tuner plan and roll quality", () => {
       expect(echo.width, "echo block width").to.be.greaterThan(card.width * 0.6);
       expect(when.top, "chip under the step number").to.be.at.least(order.bottom - 1);
     });
-    // seven tabs in a two-column grid since the Set lab (2026-11-04): three full rows, and the last tab fills the fourth
-    // (echoLab.css gives an odd last tab both columns, so no hole is left beside it)
+    // eight tabs in a two-column grid since the Transducers tab (2026-11-26): four full rows, the last tab half the strip
+    // (with seven, echoLab.css gave the odd last tab both columns so no hole was left beside it)
+    cy.get("[data-test-echo-lab-tab]").should("have.length", 8);
     cy.get('[data-test-echo-lab-tab="benchmark"]').then(($b) => {
       const tabs = $b[0].parentElement!.getBoundingClientRect();
-      expect($b[0].getBoundingClientRect().width).to.be.within(tabs.width * 0.85, tabs.width);
+      expect($b[0].getBoundingClientRect().width).to.be.within(tabs.width * 0.4, tabs.width * 0.55);
     });
     cy.get('[data-test-echo-lab-tab="verdicts"]').click();
     cy.get('[data-test-echo-lab-row="labtune0003"]', RUN).click();

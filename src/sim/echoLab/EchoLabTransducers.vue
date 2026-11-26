@@ -14,7 +14,7 @@
         </EchoLabPopover>
       </div>
       <p class="mt-1 text-xs opacity-70" data-test-tdx-scope>Equipped echoes only: spare echoes in your inventory are not ranked.</p>
-      <p v-if="queue.length" class="mt-2 flex flex-wrap items-center gap-x-2 text-sm" role="status" data-test-tdx-progress>
+      <p v-if="queue.length" class="mt-2 flex flex-wrap items-center gap-x-2 text-sm" role="status" data-test-tdx-progress :data-running="running ? 'yes' : 'no'">
         <span v-if="running" class="loading loading-spinner loading-xs text-primary" aria-hidden="true"></span>
         <span>{{ answeredCount }} of {{ queue.length }} echoes read</span>
         <span v-if="!running && runMs !== null" class="text-xs opacity-60">· {{ (runMs / 1000).toFixed(1) }} s</span>
