@@ -230,6 +230,16 @@ describe("re-roll advice", () => {
     expect(advice.lockCostNote).toBe("the game's rule since version 3.1");
     expect(advice.assumptions.join(" ")).toMatch(/1 Transducer with up to two lines kept, 2 with three kept and 3 with four kept/);
     expect(advice.assumptions.join(" ")).not.toMatch(/verify in game/);
+    expect(advice.assumptions.join(" ")).toMatch(/may come back as the type it replaced/);
+  }, T);
+
+  it("says what it assumed when a re-rolled line may not come back as the stat it was", async () => {
+    // canRepeat: false read the game's rule the other way, and the advice still said the line "may come back"
+    const advice = await rerollAdvice(createLabSession(clone()), "Galbrena", 0, { canRepeat: false }, quiet);
+    const text = advice.assumptions.join(" ");
+    expect(text).not.toMatch(/may come back/);
+    expect(text).toMatch(/never comes back as the stat it replaced/);
+    expect(text).toMatch(/The game does not publish/);
   }, T);
 });
 

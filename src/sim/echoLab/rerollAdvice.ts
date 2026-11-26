@@ -39,6 +39,16 @@ export const REROLL_ASSUMPTIONS = [
   `Every way to keep lines is compared, 31 of them, and each number of kept lines shows its best. ${LINE_MODEL_NOTE}`,
 ] as const;
 
+/** The type assumption under `canRepeat: false`, in place of REROLL_ASSUMPTIONS[2]. */
+export const REROLL_NO_REPEAT_ASSUMPTION =
+  "A re-rolled line takes a type the echo did not hold before the re-roll (it never comes back as the stat it replaced), every type as likely as the next, at a value from Kuro's published tier odds. The game does not publish how often each type lands, nor whether a line can come back as the stat it was.";
+
+/** The assumptions an advice stands on, as its options read the game's unpublished rules. */
+export const rerollAssumptions = (canRepeat: boolean, erNeed: number | null): readonly string[] => {
+  const base: readonly string[] = canRepeat ? REROLL_ASSUMPTIONS : REROLL_ASSUMPTIONS.map((a, i) => (i === 2 ? REROLL_NO_REPEAT_ASSUMPTION : a));
+  return erNeed != null ? [...base, rerollErNote(erNeed)] : base;
+};
+
 export interface RerollOptions {
   /** Transducers per re-roll by locked-line count (index 0-4) */
   lockCosts?: readonly number[];
@@ -376,7 +386,7 @@ async function computeRerollAdvice(
     recommended,
     allPlans,
     lockCostNote: LOCK_COST_NOTE,
-    assumptions: erNeed != null ? [...REROLL_ASSUMPTIONS, rerollErNote(erNeed)] : REROLL_ASSUMPTIONS,
+    assumptions: rerollAssumptions(options.canRepeat ?? true, erNeed),
     scorings: session.scorings - startScorings,
     erNeed,
     erHave,
