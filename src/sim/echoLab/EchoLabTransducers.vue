@@ -175,6 +175,7 @@
               <div class="font-semibold">{{ i + 1 }}. {{ characterName(s.advice.characterId) }}'s {{ echoName(s.advice.echo) }}: {{ s.tries }} tr{{ s.tries === 1 ? "y" : "ies" }}, {{ s.transducers }} Transducer{{ s.transducers === 1 ? "" : "s" }}</div>
               <div class="text-xs">Keep {{ planWords(s.advice, s.plan.lockedFields) || "nothing" }}; re-roll {{ planWords(s.advice, s.plan.rerolledFields) }}.</div>
               <div class="text-xs opacity-80">{{ pct(s.pAny, 0) }} chance at least one try improves it · {{ signedPct(s.expectedGain, 2) }} of {{ characterName(s.advice.characterId) }}'s rotation damage expected</div>
+              <div v-if="rerollsUnknownEr(s.advice, s.plan)" class="el-er-short text-xs" data-test-tdx-budget-er>Re-rolls Energy Regen: the app knows no Energy Regen need for {{ characterName(s.advice.characterId) }} (in no saved team).</div>
             </li>
           </ol>
         </template>
@@ -294,7 +295,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
-import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
+import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
 import { extraOf, goodTry, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
