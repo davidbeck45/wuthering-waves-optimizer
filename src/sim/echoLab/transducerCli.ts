@@ -309,7 +309,7 @@ export function printTransducers(r: TransducerReport, top = 25): void {
     console.log(`  re-roll  ${p.reroll.join(", ")}`);
     console.log(`  one try: ${chanceText(p.chanceToImprovePct)} chance to beat the lines it has · expected ${signed(p.expectedGainPct)} of ${first.resonator}'s rotation (${int(p.expectedDamage)} damage)`);
     console.log(`  ${goodTryText(p.goodTryPct)} · the best it can roll: ${signed(p.best.gainPct)} (${p.best.lines.join(", ")}${p.best.oneIn ? `; 1 try in ${int(p.best.oneIn)}` : ""})`);
-    console.log(`  the same locks again: ${signed(p.after3TriesPct)} expected after 3 tries, ${signed(p.after5TriesPct)} after 5`);
+    console.log(`  with the same lines kept, keeping the best result: ${signed(p.after3TriesPct)} expected from 3 tries in all, ${signed(p.after5TriesPct)} from 5`);
   }
   console.log("");
   const shown = r.ranking.slice(0, top);
