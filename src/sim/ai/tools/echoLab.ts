@@ -5,7 +5,7 @@ import type { EchoVerdict } from "../../echoLab/bestOwner";
 import { feedGroups, reasonText, savedBuildsHolding } from "../../echoLab/echoLabView";
 import { runJob } from "../../echoLab/pass";
 import type { RerollAdviceResult } from "../../echoLab/rerollAdvice";
-import { MIN_PLAN_GAIN, pickRerollFirst, planChips } from "../../echoLab/rerollPick";
+import { MIN_PLAN_GAIN, pickRerollFirst, planChips, rerollOptionsFor } from "../../echoLab/rerollPick";
 import { echoLabFor } from "./memo";
 import { characterName, compactJson, defineTool, echoName, nullableString, pct, resolveOwnCharacter, round, setName, statLabel, topN } from "./shared";
 
@@ -79,7 +79,9 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
       const advices: RerollAdviceResult[] = [];
       for (const s of lab.slots) {
         if (!s || s.lines.length < 5) continue;
-        advices.push((await runJob(session, { kind: "reroll", characterId: who, slot: s.slot })) as RerollAdviceResult);
+        // this tool reads no Energy Regen needs, so every Energy Regen line is kept, as the page does for a character it
+        // knows no need for (rerollOptionsFor)
+        advices.push((await runJob(session, { kind: "reroll", characterId: who, slot: s.slot, options: rerollOptionsFor(null, who) })) as RerollAdviceResult);
       }
       const first = pickRerollFirst(advices);
       return compactJson({
@@ -101,7 +103,7 @@ export const echoLabTool = defineTool<{ show: Show; character?: string }>({
             : "keep as is",
         })),
         notSoon: lab.slots.filter((s) => s && s.lines.length < 5).map((s) => `slot ${s!.slot + 1}: not fully tuned yet`),
-        notes: ["Gains are % of the character's rotation damage. A try costs 1 Transducer with up to two lines kept, 2 with three, 3 with four (the game's rule since version 3.1); every way to keep lines was compared."],
+        notes: ["Gains are % of the character's rotation damage. A try costs 1 Transducer with up to two lines kept, 2 with three, 3 with four (the game's rule since version 3.1); every way to keep lines was compared. Energy Regen lines are always kept here: this tool reads no Energy Regen needs (the Echo Lab page reads them from the saved teams)."],
         path: `/echo-lab?tab=reroll${characterLink}`,
         label: "Echo Lab re-roll",
       });

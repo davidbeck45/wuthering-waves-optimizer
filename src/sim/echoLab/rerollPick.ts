@@ -29,10 +29,14 @@ export function pickRerollFirst<T extends { slot: number; recommended: LockPlan 
 }
 
 /** The re-roll options of one character with their ER need (`erNeedsOf(useEnergyNeeds())`) — the very options the
- *  Echo Lab's re-roll tab, the calculator panel's `reroll` jobs and `engineView` use, so the worker's result cache
- *  answers any of them from another's run. `{}` without a need (the job's cache key is then the old one). */
-export const rerollOptionsFor = (needs: Readonly<Record<string, number>> | null | undefined, id: string): { erNeed?: number } =>
-  needs?.[id] != null && Number.isFinite(needs[id]) ? { erNeed: needs[id] } : {};
+ *  Echo Lab's re-roll tab, the Transducers tab, the calculator panel's `reroll` jobs and `engineView` use, so the
+ *  worker's result cache answers any of them from another's run. Without a need the app knows (the character is in no
+ *  saved team the energy check could measure) every Energy Regen line is kept (`keepUnknownEr`): the app cannot tell
+ *  whether the build can lose it, and a Transducer is not the place to find out. On one account the ranking's second
+ *  pick re-rolled an 8.4 % line of a resonator 0.2 points over the need of the strongest team that fields them
+ *  (2026-11-26). The Transducers tab's switch lifts it for a read (`useEchoLab` runReroll's `extra`). */
+export const rerollOptionsFor = (needs: Readonly<Record<string, number>> | null | undefined, id: string): { erNeed?: number; keepUnknownEr?: true } =>
+  needs?.[id] != null && Number.isFinite(needs[id]) ? { erNeed: needs[id] } : { keepUnknownEr: true };
 
 export type PlanChip = "lock" | "reroll" | "keep";
 

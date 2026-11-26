@@ -73,9 +73,11 @@ describe("re-roll first (pickRerollFirst)", () => {
     const full = view.echoes.filter((e) => e.lines >= 5);
     expect(full.length).toBeGreaterThan(0);
     const advices = [];
-    for (const e of full) advices.push(await rerollAdvice(createLabSession(account), "Galbrena", e.slot, {}, quiet));
+    // no need known for Galbrena: the panel and the tab both keep every Energy Regen line (rerollOptionsFor)
+    for (const e of full) advices.push(await rerollAdvice(createLabSession(account), "Galbrena", e.slot, rerollOptionsFor({}, "Galbrena"), quiet));
     const pick = pickRerollFirst(advices);
     expect(pick).not.toBeNull();
+    for (const a of advices) for (const l of a.lines.filter((x) => x.key === "EnergyRegen")) expect(a.recommended?.rerolledFields ?? []).not.toContain(l.field);
     expect(view.rerollFirst?.slot).toBe(pick!.slot);
     expect(view.rerollFirst?.recommended).toEqual(pick!.recommended);
 
@@ -103,7 +105,9 @@ describe("the calculator panel and the Echo Lab tabs agree under an Energy Regen
       expect(plain.benchmark!.erNeed).toBeNull();
 
       expect(rerollOptionsFor(erNeeds, "Galbrena")).toEqual({ erNeed: have + 4 });
-      expect(rerollOptionsFor(erNeeds, "Cartethyia")).toEqual({});
+      // a character the energy check has no need for: their Energy Regen lines are kept, the app cannot tell
+      expect(rerollOptionsFor(erNeeds, "Cartethyia")).toEqual({ keepUnknownEr: true });
+      expect(rerollOptionsFor(null, "Galbrena")).toEqual({ keepUnknownEr: true });
       const advices = [];
       for (const e of view.echoes.filter((x) => x.lines >= 5)) advices.push(await rerollAdvice(createLabSession(account), "Galbrena", e.slot, rerollOptionsFor(erNeeds, "Galbrena"), quiet));
       const pick = pickRerollFirst(advices);
