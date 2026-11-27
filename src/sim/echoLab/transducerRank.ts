@@ -71,6 +71,11 @@ export const floorFields = (advice: Pick<RerollAdviceResult, "lines">): Set<numb
 export const rerollsUnknownEr = (advice: Pick<RerollAdviceResult, "lines" | "erNeed">, plan: Pick<LockSetPlan, "rerolledFields"> | null): boolean =>
   Boolean(plan) && advice.erNeed == null && advice.lines.some((l) => l.key === "EnergyRegen" && (plan as Pick<LockSetPlan, "rerolledFields">).rerolledFields.includes(l.field));
 
+/** The Energy Regen lines an advice keeps because the app knows no need for the resonator (the default the re-roll
+ *  screens share, rerollPick.ts `rerollOptionsFor`): none when a need is known, or the read let them go. */
+export const keptUnknownEr = (advice: Pick<RerollAdviceResult, "lines" | "erNeed">): Array<{ key: string; value: number }> =>
+  advice.erNeed == null ? advice.lines.filter((l) => l.erFloor).map((l) => ({ key: l.key, value: l.value })) : [];
+
 /** True when the plan re-rolls an Energy Regen line the build needs to stay at its need. */
 export const rerollsFloor = (advice: Pick<RerollAdviceResult, "lines">, plan: Pick<LockSetPlan, "rerolledFields">): boolean => {
   const floor = floorFields(advice);

@@ -38,7 +38,7 @@ export const TAG_LABELS: Record<WhatsNewTag, string> = {
 export const WHATS_NEW: readonly WhatsNewEntry[] = [
   // ==== ADD NEW ENTRIES HERE, newest first (one block per release day, format in the header above) ====
 
-  // ---- on the site since 2026-11-27 (batch 7: the Transducer ranking. If it reaches the site on another day, set this date to that day)
+  // ---- on the site since 2026-11-27 (batch 7: the Transducer ranking. If it reaches the site on another day, set these two dates to that day)
   {
     id: "transducer-ranking",
     date: "2026-11-27",
@@ -47,6 +47,15 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
     where: "Tools+ menu › Echo Lab › Transducers",
     link: "/echo-lab?tab=transducers",
     tag: "tool",
+  },
+  {
+    id: "reroll-keeps-energy-regen",
+    date: "2026-11-27",
+    title: "Re-roll advice keeps Energy Regen it cannot judge",
+    text: "For a resonator in no saved team the app cannot tell how much Energy Regen their rotation needs, so Echo Lab no longer advises re-rolling their Energy Regen lines: on the Re-roll tab, in the calculator's Echo Lab panel and on the new Transducers tab. Save the team you play them in and the advice weighs the line against their real need. The Transducers tab has a switch to read your echoes without the rule. Transducer costs are the game's own now (1 a try with up to two lines kept, 2 with three, 3 with four), and each number of kept lines shows the best of every way to keep that many.",
+    where: "Tools+ menu › Echo Lab › Re-roll advisor",
+    link: "/echo-lab?tab=reroll",
+    tag: "better",
   },
 
   // ---- on the site since 2026-11-24 (batch 6: pictures and charts; built 2026-11-23 night. If it reaches the site on another day, set these six dates to that day)

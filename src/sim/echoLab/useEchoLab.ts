@@ -488,7 +488,8 @@ export function useEchoLab() {
       const { needs, whole } = await lookupErNeeds(fingerprint);
       const options: RerollOptions = { ...rerollOptionsFor(needs, characterId) };
       if (extra?.canRepeat === false) options.canRepeat = false;
-      if (extra?.keepUnknownEr) options.keepUnknownEr = true;
+      // the Transducers tab's switch: let a plan re-roll Energy Regen the app knows no need for (kept otherwise)
+      if (extra?.rerollUnknownEr) delete options.keepUnknownEr;
       if (signal.aborted) return;
       const result = await getEchoLabClient().run({ kind: "reroll", characterId, slot, options }, account, { signal });
       if (resultFingerprint.value === fingerprint) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { goodTry } from "./transducerRank";
-import { rareTopText, noRowsText, bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep } from "./transducerView";
+import { rareTopText, noRowsText, bestHeading, critErBoundText, jointErRows, chanceText, DEFAULT_VIEW, NO_GOOD_TRY, goodTryText, costOfKeep, extraOf, notWorthText, oneIn, readCharacters, rerollExtraKey, runQueue, unfinished, viewFromQuery, viewToQuery, withCost, withKeep, keptErNote, critRerollFacts } from "./transducerView";
 
 const five = [1, 2, 3, 4, 5];
 
@@ -8,12 +8,42 @@ describe("transducerView", () => {
   it("adds nothing to the cache key for the Re-roll tab's own job", () => {
     expect(rerollExtraKey()).toBe("");
     expect(rerollExtraKey({})).toBe("");
-    expect(rerollExtraKey({ canRepeat: true, keepUnknownEr: false })).toBe("");
+    expect(rerollExtraKey({ canRepeat: true, rerollUnknownEr: false })).toBe("");
     expect(rerollExtraKey({ canRepeat: false })).toBe("|norepeat");
-    expect(rerollExtraKey({ canRepeat: false, keepUnknownEr: true })).toBe("|norepeat,keepEr");
+    expect(rerollExtraKey({ canRepeat: false, rerollUnknownEr: true })).toBe("|norepeat,rerollEr");
+    // the default view keeps Energy Regen the app knows no need for, as the Re-roll tab's own job does: no extra
+    expect(DEFAULT_VIEW.keepEr).toBe(true);
     expect(extraOf(DEFAULT_VIEW)).toBeUndefined();
-    expect(extraOf({ repeat: false, keepEr: false })).toEqual({ canRepeat: false });
-    expect(extraOf({ repeat: true, keepEr: true })).toEqual({ keepUnknownEr: true });
+    expect(extraOf({ repeat: false, keepEr: true })).toEqual({ canRepeat: false });
+    expect(extraOf({ repeat: true, keepEr: false })).toEqual({ rerollUnknownEr: true });
+    expect(extraOf({ repeat: false, keepEr: false })).toEqual({ canRepeat: false, rerollUnknownEr: true });
+  });
+
+  it("says which Energy Regen lines are kept for a resonator the app knows no need for, and how to read without the rule", () => {
+    expect(keptErNote([], "Galbrena")).toBeNull();
+    const note = keptErNote(["ER 8.4%"], "Galbrena") as string;
+    expect(note).toMatch(/^Keeps ER 8\.4%: the app knows no Energy Regen need for Galbrena \(in no saved team\)\./);
+    expect(note).toMatch(/Turn "Keep Energy Regen where the app knows no need" off/);
+    expect(note).toMatch(/save the team you play them in/);
+    expect(keptErNote(["ER 8.4%", "ER 10%"], "X")).toMatch(/^Keeps ER 8\.4% and ER 10%:/);
+  });
+
+  it("says what a plan that re-rolls a crit line weighed", () => {
+    const line = (field: number, key: string, worth: number) => ({ field, key, value: 10, worth });
+    // a low Crit DMG roll beside a high ATK % and Crit Rate: the two lines worth most are kept
+    const lines = [line(1, "CritRate", 0.03), line(2, "ATK", 0.026), line(3, "CritDMG", 0.021), line(4, "DEF_FLAT", 0), line(5, "HP", 0)];
+    const facts = critRerollFacts(lines, { lockedFields: [2, 1], rerolledFields: [3, 4, 5] });
+    expect(facts?.crit).toMatchObject({ key: "CritDMG", worth: 0.021 });
+    expect(facts?.kept.map((l) => l.key)).toEqual(["CritRate", "ATK"]);
+    expect(facts?.keptWorthMore).toBe(true);
+    // a kept line worth less than the crit line that goes: the facts say so, the row then makes no "worth most" claim
+    expect(critRerollFacts(lines, { lockedFields: [1, 4], rerolledFields: [2, 3, 5] })?.keptWorthMore).toBe(false);
+    // both crit lines re-rolled: the one worth most is named
+    expect(critRerollFacts(lines, { lockedFields: [2], rerolledFields: [1, 3, 4, 5] })?.crit.key).toBe("CritRate");
+    // a plan that keeps both crit lines, and no plan: nothing to say
+    expect(critRerollFacts(lines, { lockedFields: [1, 3], rerolledFields: [2, 4, 5] })).toBeNull();
+    expect(critRerollFacts(lines, null)).toBeNull();
+    expect(critRerollFacts(lines, { lockedFields: [], rerolledFields: [1, 2, 3, 4, 5] })).toMatchObject({ kept: [], keptWorthMore: false });
   });
 
   it("costs a try by the game's rule", () => {
@@ -23,9 +53,12 @@ describe("transducerView", () => {
   it("reads a view from the address and writes back only what differs", () => {
     expect(viewFromQuery({})).toEqual(DEFAULT_VIEW);
     expect(viewToQuery(DEFAULT_VIEW)).toEqual({});
-    const q = { character: "Zani", cost: "2", keep: "3", who: "everyone", sort: "chance", have: "7", repeat: "0", keepEr: "1" };
+    const q = { character: "Zani", cost: "2", keep: "3", who: "everyone", sort: "chance", have: "7", repeat: "0", keepEr: "0" };
     const v = viewFromQuery(q);
-    expect(v).toEqual({ character: "Zani", cost: 2, keep: 3, who: "everyone", sort: "chance", have: 7, repeat: false, keepEr: true });
+    expect(v).toEqual({ character: "Zani", cost: 2, keep: 3, who: "everyone", sort: "chance", have: 7, repeat: false, keepEr: false });
+    // only "0" turns the keep off: a link from before the default changed (keepEr=1) still keeps
+    expect(viewFromQuery({ keepEr: "1" }).keepEr).toBe(true);
+    expect(viewFromQuery({ keepEr: "x" }).keepEr).toBe(true);
     expect(viewToQuery(v)).toEqual(q);
     // nonsense falls back to the default
     expect(viewFromQuery({ cost: "9", keep: "x", sort: "nope", have: "0", who: "all" })).toEqual(DEFAULT_VIEW);

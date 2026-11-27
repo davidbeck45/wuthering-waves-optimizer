@@ -108,9 +108,13 @@ describe("Echo Lab: Transducers tab", () => {
     cy.get("[data-test-tdx-have]").blur();
     query().then((q) => expect(q.get("have")).to.eq("12"));
     cy.get("[data-test-tdx-budget-summary]").should("contain.text", "of 12");
-    // a sum over different resonators says it is not a team figure
-    cy.get("[data-test-tdx-budget-summary]").should("contain.text", "not a team's damage");
     cy.get("[data-test-tdx-budget-step]").should("have.length.at.least", 1);
+    // a sum over different resonators says it is not a team figure; steps on one resonator name whose rotation it is
+    cy.get("[data-test-tdx-budget-any]").then(($lines) => {
+      const names = new Set([...$lines].map((el) => (el.textContent ?? "").match(/of (.+?)'s rotation damage expected/)?.[1]));
+      expect(names.has(undefined), "every step names whose rotation its gain is a share of").to.eq(false);
+      cy.get("[data-test-tdx-budget-summary]").should("contain.text", names.size > 1 ? "not a team's damage" : `on ${[...names][0]}'s rotation`);
+    });
 
     // the crit question
     cy.get("[data-test-tdx-crit]").should("contain.text", "Is keeping Crit Rate and Crit DMG always right?");
@@ -172,13 +176,21 @@ describe("Echo Lab: Transducers tab", () => {
     cy.viewport(1440, 900);
     cy.visit("/echo-lab?tab=transducers", seed());
     waitForRun();
+    // nobody on this account is in a saved team, so the app knows no Energy Regen need: such a line is kept, and the row says so
+    cy.get("[data-test-tdx-row-er-kept]").should("have.length.at.least", 1);
+    cy.get("[data-test-tdx-row-er-kept]").first().should("contain.text", "the app knows no Energy Regen need for").and("contain.text", "save the team you play them in");
+    cy.get("[data-test-tdx-row-er]").should("not.exist");
     cy.get("[data-test-tdx-repeat]").should("be.checked").click();
     query().then((q) => expect(q.get("repeat")).to.eq("0"));
     // a new read of every echo, which finishes
     waitForRun();
-    cy.get("[data-test-tdx-keep-er]").click();
-    query().then((q) => expect(q.get("keepEr")).to.eq("1"));
+    // Energy Regen the app knows no need for is kept by default (the Re-roll tab's own rule); off lets a plan re-roll it
+    cy.get("[data-test-tdx-keep-er]").should("be.checked").click();
+    query().then((q) => expect(q.get("keepEr")).to.eq("0"));
     waitForRun();
+    // read without the rule: no line is "kept for no known need", and a plan that re-rolls one carries the caution
+    cy.get("[data-test-tdx-row-er-kept]").should("not.exist");
+    cy.get("[data-test-tdx-row-er]").should("have.length.at.least", 1);
     // back to the defaults: the Re-roll tab's jobs, already read
     cy.get("[data-test-tdx-repeat]").click();
     cy.get("[data-test-tdx-keep-er]").click();

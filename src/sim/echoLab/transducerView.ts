@@ -6,14 +6,20 @@ import type { TransducerRow, TransducerSort } from "./transducerRank";
 import { MAX_BUDGET } from "./transducerRank";
 
 /** The choices a page may add to a re-roll job (the Transducers tab's switches). None of them = the very job the
- *  Re-roll tab and the calculator's panel send, under the same cache key, so the pages share one cache. */
-export type RerollExtra = Pick<RerollOptions, "canRepeat" | "keepUnknownEr">;
+ *  Re-roll tab and the calculator's panel send, under the same cache key, so the pages share one cache. That job keeps
+ *  Energy Regen on a resonator the app knows no need for (rerollPick.ts `rerollOptionsFor`); `rerollUnknownEr` lifts it
+ *  for a read. */
+export interface RerollExtra {
+  canRepeat?: RerollOptions["canRepeat"];
+  /** let a plan re-roll Energy Regen on a resonator the app knows no need for (in no saved team) */
+  rerollUnknownEr?: boolean;
+}
 
 /** The part of the re-roll cache key the extra options add: "" for the default job. */
 export function rerollExtraKey(extra?: RerollExtra | null): string {
   const parts: string[] = [];
   if (extra?.canRepeat === false) parts.push("norepeat");
-  if (extra?.keepUnknownEr) parts.push("keepEr");
+  if (extra?.rerollUnknownEr) parts.push("rerollEr");
   return parts.length ? `|${parts.join(",")}` : "";
 }
 
@@ -31,12 +37,12 @@ export interface TransducerView {
   have: number;
   /** a re-rolled line can come back as the stat it was (the default) */
   repeat: boolean;
-  /** keep Energy Regen where the app knows no need */
+  /** keep Energy Regen where the app knows no need (the default, and what the Re-roll tab always does) */
   keepEr: boolean;
 }
 
 export const DEFAULT_HAVE = 3;
-export const DEFAULT_VIEW: TransducerView = { character: null, cost: null, keep: null, who: "dealers", sort: "damage", have: DEFAULT_HAVE, repeat: true, keepEr: false };
+export const DEFAULT_VIEW: TransducerView = { character: null, cost: null, keep: null, who: "dealers", sort: "damage", have: DEFAULT_HAVE, repeat: true, keepEr: true };
 const SORTS: readonly TransducerSort[] = ["damage", "percent", "chance", "gain"];
 
 /** Transducers a try for a number of kept lines: the game's rule (1 with up to two kept, 2 with three, 3 with four). */
@@ -63,7 +69,7 @@ export function viewFromQuery(query: Readonly<Record<string, unknown>>): Transdu
     sort,
     have: intIn(query.have, 1, MAX_BUDGET) ?? DEFAULT_HAVE,
     repeat: query.repeat !== "0",
-    keepEr: query.keepEr === "1",
+    keepEr: query.keepEr !== "0",
   };
 }
 
@@ -77,7 +83,7 @@ export function viewToQuery(view: TransducerView): Record<string, string> {
   if (view.sort !== DEFAULT_VIEW.sort) q.sort = view.sort;
   if (view.have !== DEFAULT_HAVE) q.have = String(view.have);
   if (!view.repeat) q.repeat = "0";
-  if (view.keepEr) q.keepEr = "1";
+  if (!view.keepEr) q.keepEr = "0";
   return q;
 }
 
@@ -92,7 +98,7 @@ export function withKeep(view: TransducerView, keep: number | null): TransducerV
 
 /** The extra job options a view asks for (undefined = the Re-roll tab's own job). */
 export const extraOf = (view: Pick<TransducerView, "repeat" | "keepEr">): RerollExtra | undefined =>
-  view.repeat && !view.keepEr ? undefined : { ...(view.repeat ? {} : { canRepeat: false }), ...(view.keepEr ? { keepUnknownEr: true } : {}) };
+  view.repeat && view.keepEr ? undefined : { ...(view.repeat ? {} : { canRepeat: false }), ...(view.keepEr ? {} : { rerollUnknownEr: true }) };
 
 export interface QueueCharacter {
   id: string;
@@ -142,6 +148,44 @@ export function notWorthText(row: Pick<TransducerRow, "plan" | "blocked" | "pays
  *  Transducers). */
 export const RARE_TOP = 1e-4;
 export const rareTopText = (chance: number): string | null => (chance > 0 && chance < RARE_TOP ? "a ceiling, not something to plan on" : null);
+
+export interface WorthLine {
+  field: number;
+  key: string;
+  value: number;
+  /** what the build loses without this line (relative): the engine's figure */
+  worth: number;
+}
+
+export interface CritRerollFacts {
+  /** the crit line the plan re-rolls (the one worth most, when it re-rolls both) */
+  crit: WorthLine;
+  /** the lines the plan keeps, the one worth most first */
+  kept: WorthLine[];
+  /** every kept line is worth at least as much on this build as the crit line that goes */
+  keptWorthMore: boolean;
+}
+
+/**
+ * A plan that re-rolls a Crit Rate or Crit DMG line goes against the usual rule of thumb, so a row says what the
+ * search weighed: the crit line and what it is worth on this build, against the lines kept instead. Null when the plan
+ * re-rolls no crit line.
+ */
+export function critRerollFacts(lines: readonly WorthLine[], plan: { lockedFields: readonly number[]; rerolledFields: readonly number[] } | null): CritRerollFacts | null {
+  if (!plan) return null;
+  const isCrit = (key: string): boolean => key === "CritRate" || key === "CritDMG";
+  const gone = lines.filter((l) => isCrit(l.key) && plan.rerolledFields.includes(l.field)).sort((a, b) => b.worth - a.worth || a.field - b.field);
+  if (!gone.length) return null;
+  const kept = lines.filter((l) => plan.lockedFields.includes(l.field)).sort((a, b) => b.worth - a.worth || a.field - b.field);
+  return { crit: gone[0], kept, keptWorthMore: kept.length > 0 && kept.every((l) => l.worth >= gone[0].worth) };
+}
+
+/** The note under an echo whose Energy Regen lines are kept because the app knows no need for the resonator: which
+ *  lines, why, and how to read the echo without the rule. Null when none is kept for that reason. */
+export function keptErNote(lines: readonly string[], name: string): string | null {
+  if (!lines.length) return null;
+  return `Keeps ${lines.join(" and ")}: the app knows no Energy Regen need for ${name} (in no saved team). Turn "Keep Energy Regen where the app knows no need" off to read this echo without it, or save the team you play them in.`;
+}
 
 /** "1 try in N" for the chance of a result; null when it cannot happen. */
 export function oneIn(chance: number): string | null {

@@ -71,6 +71,7 @@
           </div>
         </dl>
         <p v-if="best.erUnknown" class="el-er-short mt-2 text-xs" data-test-tdx-er-caution>Caution: this re-rolls Energy Regen, and the app knows no Energy Regen need for {{ characterName(best.advice.characterId) }} (they are in no saved team). Keep it if their rotation needs it.</p>
+        <p v-else-if="keptErText(best.advice)" class="mt-2 text-xs opacity-70" data-test-tdx-er-kept>{{ keptErText(best.advice) }}</p>
         <p class="mt-2 text-xs opacity-70">Gains keep the better of the old and the new lines: you may discard a try, the Transducers are spent either way.</p>
       </article>
       <p v-else-if="!running && rows.length" class="rounded-box border border-base-300 bg-base-100 p-4 text-sm" data-test-tdx-best-none>No echo under these filters is expected to gain even 0.05 % from a Transducer: keep them as they are.</p>
@@ -134,11 +135,11 @@
           <div class="mb-1 text-xs font-semibold uppercase tracking-wide opacity-60">What the game does not publish</div>
           <label class="flex cursor-pointer items-start gap-2 py-1">
             <input type="checkbox" class="toggle toggle-sm toggle-primary mt-0.5" :checked="view.repeat" data-test-tdx-repeat @change="set({ repeat: ($event.target as HTMLInputElement).checked })" />
-            <span>A re-rolled line can come back as the stat it was <span class="block text-xs opacity-70">The game's text excludes only kept (locked) substats; nothing more is published. Off reads it the other way.</span></span>
+            <span>A re-rolled line can come back as the stat it was <span class="block text-xs opacity-70">The game's text excludes only kept (locked) substats; nothing more is published. Off reads it the other way. Either way each stat is taken as equally likely: the game publishes the odds of the values only.</span></span>
           </label>
           <label class="flex cursor-pointer items-start gap-2 py-1">
             <input type="checkbox" class="toggle toggle-sm toggle-primary mt-0.5" :checked="view.keepEr" data-test-tdx-keep-er @change="set({ keepEr: ($event.target as HTMLInputElement).checked })" />
-            <span>Keep Energy Regen where the app knows no need <span class="block text-xs opacity-70">For resonators in no saved team the app cannot tell how much Energy Regen they need. Each type is assumed equally likely on a re-roll: the game does not publish the odds.</span></span>
+            <span>Keep Energy Regen where the app knows no need <span class="block text-xs opacity-70">On, the safe choice: for a resonator in no saved team the app cannot tell how much Energy Regen their rotation needs, so their Energy Regen lines are kept, as on the Re-roll tab. Off: a plan may re-roll such a line, and says so. Saving the team you play them in tells the app their need for good.</span></span>
           </label>
         </div>
       </div>
@@ -241,6 +242,8 @@
                 Re-rolls Energy Regen, and so do {{ (jointEr.get(row.key) ?? 1) - 1 }} more of {{ characterName(row.advice.characterId) }}'s echoes here: each alone leaves {{ characterName(row.advice.characterId) }} at their Energy Regen need, all of them together would not. "I have N Transducers" above plans them together.
               </p>
               <p v-if="row.erUnknown" class="el-er-short mt-1 text-xs" data-test-tdx-row-er>Re-rolls Energy Regen: the app knows no Energy Regen need for {{ characterName(row.advice.characterId) }} (in no saved team).</p>
+              <p v-else-if="keptErText(row.advice)" class="mt-1 text-xs opacity-70" data-test-tdx-row-er-kept>{{ keptErText(row.advice) }}</p>
+              <p v-if="row.pays && critRerollText(row)" class="mt-1 text-xs opacity-70" data-test-tdx-row-crit>{{ critRerollText(row) }}</p>
             </div>
             <div v-if="openKey === row.key" class="border-t border-base-200 px-3 pb-3 pt-2 text-xs" data-test-tdx-row-detail>
               <p class="mb-1 opacity-80">The best lines to keep at each count. Gains are of {{ characterName(row.advice.characterId) }}'s rotation damage.</p>
@@ -306,14 +309,15 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import type { BestOwnerResult, LabSlotSummary } from "./bestOwner";
 import { REROLL_ASSUMPTIONS, type RerollAdviceResult } from "./rerollAdvice";
-import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
-import { bestHeading, chanceText, noRowsText, rareTopText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView } from "./transducerView";
+import { MAX_BUDGET, TRANSDUCER_SORTS, critKeepCheck, goodTry, keptUnknownEr, rerollsUnknownEr, gainAfter, spendPlan, transducerRows, type TransducerFilter, type TransducerRow, type TransducerSort } from "./transducerRank";
+import { bestHeading, chanceText, noRowsText, rareTopText, critErBoundText, extraOf, jointErRows, goodTryText, rerollExtraKey, notWorthText, oneIn, readCharacters, runQueue, unfinished, withCost, withKeep, type TransducerView, keptErNote, critRerollFacts } from "./transducerView";
 import EchoLabPopover from "./EchoLabPopover.vue";
 import { characterName, echoImage, echoName, fmtInt, lineText, pct, portrait, signedPct, slotLabel } from "./echoLabView";
 import { useEchoLab } from "./useEchoLab";
 import { gearRoleOf } from "../gearMap/gearMap";
 import { KIT_INDEX_ENTRIES } from "../kits/load";
-import { statLabel } from "../ai/tools/shared";
+import { subStatLabelMap } from "../../echoes/stats";
+import { rollTiers, type SubstatKey } from "../substats/substatWeights";
 
 const props = defineProps<{ result: BestOwnerResult }>();
 const view = defineModel<TransducerView>("view", { required: true });
@@ -410,7 +414,29 @@ const planWords = (advice: RerollAdviceResult, fields: readonly number[]): strin
     .sort((a, b) => a.field - b.field)
     .map((l) => lineText(l.key, l.value))
     .join(", ");
-const statName = (key: string): string => statLabel(key) ?? key;
+const statName = (key: string): string => subStatLabelMap[key] ?? key;
+/** why a plan re-rolls a crit line: what the line is worth on this build against the lines kept instead */
+function critRerollText(row: TransducerRow): string | null {
+  const facts = critRerollFacts(row.advice.lines, row.plan);
+  if (!facts) return null;
+  const name = characterName(row.advice.characterId);
+  const worthOf = (l: { key: string; value: number; worth: number }): string => `${lineText(l.key, l.value)} (${signedPct(l.worth, 2)})`;
+  // where the crit line's value sits among the values the game rolls for that stat: a low roll is what makes it worth giving up
+  const tiers = rollTiers(facts.crit.key as SubstatKey);
+  const at = tiers.findIndex((v) => Math.abs(v - facts.crit.value) < 1e-6);
+  const roll = at === 0 ? `, the lowest of its ${tiers.length} rolls` : at > 0 ? `, roll ${at + 1} of ${tiers.length} from the lowest` : "";
+  const gone = `${lineText(facts.crit.key, facts.crit.value)} (${signedPct(facts.crit.worth, 2)}${roll})`;
+  const kept = facts.kept.length ? `keeps ${facts.kept.map(worthOf).join(" and ")}` : "keeps no line";
+  const why = facts.keptWorthMore ? `: the lines worth most to ${name} on this echo are the ones kept` : ": of every way to keep this many lines, this one is expected to gain most";
+  const back = view.value.repeat ? ` A re-rolled line can come back as ${statName(facts.crit.key)}, at a higher value.` : "";
+  return `Re-rolls ${gone} and ${kept}${why}. The figures are what ${name}'s damage loses without each line.${back}`;
+}
+/** the note under an echo whose Energy Regen is kept because the app knows no need for its wearer */
+const keptErText = (advice: RerollAdviceResult): string | null =>
+  keptErNote(
+    keptUnknownEr(advice).map((l) => lineText(l.key, l.value)),
+    characterName(advice.characterId),
+  );
 
 const rerollHref = (id: string): string => `/echo-lab?tab=reroll&character=${encodeURIComponent(id)}`;
 const tuneHref = "/echo-lab?tab=tune";
