@@ -38,10 +38,10 @@ export const TAG_LABELS: Record<WhatsNewTag, string> = {
 export const WHATS_NEW: readonly WhatsNewEntry[] = [
   // ==== ADD NEW ENTRIES HERE, newest first (one block per release day, format in the header above) ====
 
-  // ---- on the site since 2026-11-27 (batch 7: the Transducer ranking. If it reaches the site on another day, set these two dates to that day)
+  // ---- on the site since 2026-11-28 (batch 7: the Transducer ranking; built 2026-11-26, shipped 2026-11-28 with batch 6)
   {
     id: "transducer-ranking",
-    date: "2026-11-27",
+    date: "2026-11-28",
     title: "Which echo gets your next Transducer",
     text: "Echo Lab has a Transducers tab: every echo your resonators wear, ranked by what one Transducer is expected to add to their damage, with the lines to keep and to re-roll, the chance a try improves it and the best it can roll. Filter by resonator, by Transducers a try or by lines kept, tell it how many Transducers you have for a plan, and see whether keeping Crit Rate and Crit DMG really is the best lock.",
     where: "Tools+ menu › Echo Lab › Transducers",
@@ -50,7 +50,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "reroll-keeps-energy-regen",
-    date: "2026-11-27",
+    date: "2026-11-28",
     title: "Re-roll advice keeps Energy Regen it cannot judge",
     text: "For a resonator in no saved team the app cannot tell how much Energy Regen their rotation needs, so Echo Lab no longer advises re-rolling their Energy Regen lines: on the Re-roll tab, in the calculator's Echo Lab panel and on the new Transducers tab. Save the team you play them in and the advice weighs the line against their real need. The Transducers tab has a switch to read your echoes without the rule. Transducer costs are the game's own now (1 a try with up to two lines kept, 2 with three, 3 with four), and each number of kept lines shows the best of every way to keep that many.",
     where: "Tools+ menu › Echo Lab › Re-roll advisor",
@@ -58,10 +58,10 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
     tag: "better",
   },
 
-  // ---- on the site since 2026-11-24 (batch 6: pictures and charts; built 2026-11-23 night. If it reaches the site on another day, set these six dates to that day)
+  // ---- on the site since 2026-11-28 (batch 6: pictures and charts; built 2026-11-23 night, shipped 2026-11-28 with batch 7)
   {
     id: "tier-board",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "The Tier list as a picture board",
     text: "The Tier list now opens as a board: every resonator's portrait in tiers T0 to T4, with your own resonators ringed and a count of how many of the top two tiers you own. Tap a face for its best team, or save the whole board as an image to post. Riley's table with the figures is one tap away.",
     where: "Tools+ menu › Tier list",
@@ -70,7 +70,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "gear-map",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "Gear map: every equipped echo at a glance",
     text: "My account has a Gear map: every set-up character's five echoes in one grid, coloured and lettered by how lucky each roll is. It is Echo Lab's rating, the same one the inventory's chips show, and the weakest echoes on your damage dealers are named on top. Tap a cell for the echo's substats and a link into Echo Lab.",
     where: "My account › Gear map",
@@ -79,7 +79,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "roster-card",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "Share your whole roster as one picture",
     text: "One picture of every resonator you have set up, with sequence, weapon and refinement and Build Score, and the best team of your three strongest main DPS with its damage per rotation. Pick what is on it, then download it or send it from the share sheet.",
     where: "My account › Share my roster",
@@ -88,7 +88,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "briefs-with-pictures",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "Resonator briefs, with pictures",
     text: "Every brief opens with the resonator's portrait, and \"What each step of investment is worth\" is drawn as bars: you see at a glance where the big sequence jump is, what each weapon is worth and where you are. The list of briefs is a portrait grid.",
     where: "Tools+ menu › Resonator briefs › pick a resonator › Investment",
@@ -97,7 +97,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "numbers-over-time",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "Your numbers over time",
     text: "Every record of your figures is a line now: see whether a team is climbing as you farm, and tap it for the full chart with what happened between records (an app update, a Sync, an import, a build you changed). The lines start with your second record.",
     where: "Tools+ menu › What's new › Your numbers › Over time",
@@ -106,7 +106,7 @@ export const WHATS_NEW: readonly WhatsNewEntry[] = [
   },
   {
     id: "menu-in-sections",
-    date: "2026-11-24",
+    date: "2026-11-28",
     title: "The Tools+ menu, in sections",
     text: "The Tools+ menu groups its pages under five headings: My account, Rankings, Teams, Echoes and weapons, More. It fits beside its button on a computer and shows every section on a phone. On a phone, Ask moved to the top bar beside Tools+, so it no longer sits on the numbers of a list.",
     where: "The Tools+ button: top right on a phone, in the side rail on a computer",
